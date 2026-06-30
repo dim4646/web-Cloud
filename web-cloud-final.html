@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Web &amp; Cloud Solutions — Gold Coast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root{
+    --bg:#0e0a1a;
+    --panel:#171029;
+    --line:#2a2143;
+    --paper:#f5f3ff;
+    --text-soft:#a99fc9;
+    --grad1:#ff5fa2;
+    --grad2:#7c5cff;
+    --grad3:#33e0c2;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--paper);
+    font-family:'Inter',system-ui,sans-serif;
+    line-height:1.55;
+    overflow-x:hidden;
+    position:relative;
+  }
+  a{color:inherit;text-decoration:none;}
+  h1,h2,h3,.brand{font-family:'Space Grotesk',sans-serif;}
+
+  body::before, body::after{
+    content:"";position:fixed;border-radius:50%;
+    filter:blur(90px);z-index:0;opacity:.45;pointer-events:none;
+  }
+  body::before{
+    width:500px;height:500px;top:-150px;left:-150px;
+    background:radial-gradient(circle, var(--grad2), transparent 70%);
+  }
+  body::after{
+    width:550px;height:550px;bottom:-200px;right:-150px;
+    background:radial-gradient(circle, var(--grad1), transparent 70%);
+  }
+
+  header, .hero, section, footer{position:relative;z-index:1;}
+
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(14,10,26,0.7);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-wrap{
+    max-width:1140px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 24px;
+  }
+  .brand{font-weight:700;font-size:1.15rem;letter-spacing:.2px;}
+  .brand span.dot{
+    display:inline-block;width:7px;height:7px;border-radius:50%;
+    background:linear-gradient(135deg,var(--grad1),var(--grad2));
+    margin:0 4px;
+  }
+  .brand .cloud{
+    background:linear-gradient(135deg,var(--grad2),var(--grad3));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  nav a{margin-left:26px;font-size:.92rem;color:var(--text-soft);font-weight:500;transition:.2s;}
+  nav a:hover{color:var(--paper);}
+  .call-btn{
+    background:linear-gradient(135deg,var(--grad1),var(--grad2));
+    color:#fff;padding:10px 20px;border-radius:30px;font-weight:600;font-size:.85rem;
+  }
+
+  .hero{
+    max-width:1140px;margin:0 auto;
+    padding:100px 24px 80px;
+    display:grid;grid-template-columns:1.2fr .8fr;gap:50px;align-items:center;
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--panel);border:1px solid var(--line);
+    color:var(--grad3);font-size:.78rem;font-weight:600;
+    padding:7px 14px;border-radius:30px;letter-spacing:.5px;
+    margin-bottom:20px;
+  }
+  h1{
+    font-size:3.1rem;line-height:1.12;font-weight:700;margin-bottom:20px;
+    letter-spacing:-.5px;
+  }
+  h1 .grad{
+    background:linear-gradient(135deg,var(--grad1) 0%,var(--grad2) 55%,var(--grad3) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero p.lead{color:var(--text-soft);font-size:1.08rem;max-width:480px;margin-bottom:32px;}
+  .hero-actions a{
+    display:inline-flex;align-items:center;gap:8px;
+    margin-right:14px;padding:14px 26px;border-radius:30px;font-weight:600;font-size:.92rem;
+    transition:.25s;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg,var(--grad1),var(--grad2));color:#fff;
+    box-shadow:0 8px 24px -8px rgba(124,92,255,.6);
+  }
+  .btn-primary:hover{transform:translateY(-2px);}
+  .btn-ghost{border:1px solid var(--line);color:var(--paper);}
+  .btn-ghost:hover{border-color:var(--grad3);color:var(--grad3);}
+
+  .hero-panel{
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:18px;padding:28px;
+    position:relative;overflow:hidden;
+  }
+  .hero-panel::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(135deg,rgba(124,92,255,.15),transparent 60%);
+  }
+  .hero-illustration{
+    width:100%;display:block;margin-bottom:20px;position:relative;z-index:1;
+  }
+  .hero-panel .stat{
+    display:flex;justify-content:space-between;padding:12px 0;
+    border-bottom:1px solid var(--line);font-size:.92rem;position:relative;z-index:1;
+  }
+  .hero-panel .stat:last-child{border-bottom:none;}
+  .hero-panel .stat b{
+    background:linear-gradient(135deg,var(--grad1),var(--grad3));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+
+  .card-illustration{
+    width:100%;height:120px;margin-bottom:18px;display:block;
+  }
+
+  section{max-width:1140px;margin:0 auto;padding:80px 24px;}
+  .section-head{margin-bottom:46px;text-align:center;}
+  .section-head .eyebrow{margin:0 auto 14px;}
+  .section-head h2{font-size:2.1rem;font-weight:700;letter-spacing:-.5px;}
+
+  .services{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .card{
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:18px;padding:32px 28px;
+    transition:.3s;position:relative;overflow:hidden;
+  }
+  .card:hover{border-color:var(--grad2);transform:translateY(-4px);}
+  .card .icon{
+    width:48px;height:48px;border-radius:12px;
+    background:linear-gradient(135deg,var(--grad1),var(--grad2));
+    display:flex;align-items:center;justify-content:center;margin-bottom:20px;
+    font-size:1.3rem;color:#fff;
+  }
+  .card h3{font-size:1.15rem;margin-bottom:10px;font-weight:600;}
+  .card p{color:var(--text-soft);font-size:.93rem;}
+
+  .why{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
+  .why-item{padding:24px;border:1px solid var(--line);border-radius:16px;background:var(--panel);}
+  .why-item .num{
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.6rem;
+    background:linear-gradient(135deg,var(--grad3),var(--grad2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    margin-bottom:10px;display:block;
+  }
+  .why-item h4{font-size:1rem;margin-bottom:8px;font-weight:600;}
+  .why-item p{color:var(--text-soft);font-size:.9rem;}
+
+  .pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .price-card{
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:18px;padding:34px 28px;position:relative;
+  }
+  .price-card.featured{
+    border:1px solid transparent;
+    background:linear-gradient(var(--panel),var(--panel)) padding-box,
+               linear-gradient(135deg,var(--grad1),var(--grad2)) border-box;
+  }
+  .price-card .ribbon{
+    position:absolute;top:-12px;right:24px;
+    background:linear-gradient(135deg,var(--grad1),var(--grad2));
+    color:#fff;font-size:.7rem;font-weight:700;padding:5px 12px;
+    border-radius:20px;letter-spacing:.5px;
+  }
+  .price-card .tag{
+    color:var(--text-soft);font-size:.78rem;text-transform:uppercase;
+    letter-spacing:1.5px;margin-bottom:8px;font-weight:600;
+  }
+  .price-card .amount{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:2.3rem;font-weight:700;margin-bottom:6px;
+    background:linear-gradient(135deg,var(--grad3),var(--grad2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .price-card .amount sup{font-size:.85rem;color:var(--text-soft);font-weight:500;-webkit-text-fill-color:var(--text-soft);}
+  .price-card>p{color:var(--text-soft);font-size:.88rem;}
+  .price-card ul{list-style:none;margin-top:20px;}
+  .eyebrow svg, .hero-actions a svg, .contact-list a svg, .big-cta a svg, .price-card li svg{
+    vertical-align:-2px;flex-shrink:0;
+  }
+  .price-card li{
+    color:var(--text-soft);font-size:.88rem;padding:8px 0;
+    border-top:1px solid var(--line);display:flex;align-items:center;gap:8px;
+  }
+  .price-card li:first-child{border-top:none;}
+  .price-card li svg{color:var(--grad3);}
+
+  .contact-wrap{
+    background:linear-gradient(135deg, rgba(124,92,255,.15), rgba(255,95,162,.1));
+    border:1px solid var(--line);
+    border-radius:22px;padding:54px;
+    display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center;
+  }
+  .contact-wrap h2{font-size:1.8rem;margin-bottom:12px;font-weight:700;}
+  .contact-wrap p{color:var(--text-soft);font-size:.95rem;margin-bottom:22px;}
+  .contact-list a{display:flex;align-items:center;gap:10px;margin-bottom:12px;font-size:1rem;font-weight:500;}
+  .contact-list .label{color:var(--text-soft);font-size:.75rem;text-transform:uppercase;letter-spacing:1px;display:block;}
+  .big-cta{text-align:center;}
+  .big-cta a{
+    display:inline-block;background:linear-gradient(135deg,var(--grad1),var(--grad2));
+    color:#fff;padding:18px 38px;border-radius:30px;font-weight:700;font-size:1.05rem;
+    box-shadow:0 10px 30px -10px rgba(124,92,255,.7);
+  }
+
+  footer{
+    text-align:center;padding:34px 24px;color:var(--text-soft);
+    font-size:.82rem;border-top:1px solid var(--line);
+  }
+
+  @media (max-width:800px){
+    .hero{grid-template-columns:1fr;padding-top:60px;}
+    .services, .why, .contact-wrap, .pricing{grid-template-columns:1fr;}
+    h1{font-size:2.2rem;}
+    nav a{display:none;}
+    section{padding:60px 20px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-wrap">
+    <div class="brand">Web<span class="dot"></span><span class="cloud">Cloud</span></div>
+    <nav>
+      <a href="#services">Services</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#why">Why Us</a>
+      <a href="#contact" class="call-btn">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div>
+    <div class="eyebrow"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg> Gold Coast, QLD</div>
+    <h1>Websites &amp; <span class="grad">Cloud</span> that work for you.</h1>
+    <p class="lead">Website design, hosting, and your own secure private cloud — fast, clean, no clutter. One team, one complete solution.</p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2c3 1 6 4 6 9 0 2-1 4-2 5l1 4-4-1c-1 1-3 2-5 2s-4-1-5-2l-4 1 1-4c-1-1-2-3-2-5 0-5 3-8 6-9 1 2 2 3 4 3s3-1 4-3z"/></svg> Get a Quote</a>
+      <a href="#services" class="btn-ghost">Services</a>
+    </div>
+  </div>
+  <div class="hero-panel">
+    <svg class="hero-illustration" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ff5fa2"/>
+          <stop offset="100%" stop-color="#7c5cff"/>
+        </linearGradient>
+        <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#7c5cff"/>
+          <stop offset="100%" stop-color="#33e0c2"/>
+        </linearGradient>
+      </defs>
+      <rect x="40" y="60" width="240" height="70" rx="12" fill="#211a38" stroke="#3a2f5c" stroke-width="1.5"/>
+      <circle cx="58" cy="78" r="4" fill="#ff5fa2"/>
+      <circle cx="72" cy="78" r="4" fill="#33e0c2"/>
+      <rect x="56" y="96" width="180" height="8" rx="4" fill="url(#g1)" opacity=".8"/>
+      <rect x="56" y="112" width="120" height="8" rx="4" fill="#3a2f5c"/>
+      <path d="M160 60 v-25" stroke="#3a2f5c" stroke-width="2"/>
+      <circle cx="160" cy="28" r="20" fill="url(#g2)"/>
+      <path d="M150 28a10 10 0 0 1 20 0a8 8 0 0 1 -2 16h-16a8 8 0 0 1 -2-16z" fill="#0e0a1a" opacity=".15"/>
+    </svg>
+    <div class="stat"><span>Experience</span><b>30+ years Tech</b></div>
+    <div class="stat"><span>Location</span><b>Gold Coast &amp; QLD</b></div>
+    <div class="stat"><span>Specialty</span><b>Web · Hosting · Cloud</b></div>
+    <div class="stat"><span>Delivery</span><b>Fast Turnaround</b></div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="section-head">
+    <div class="eyebrow"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M12 2 2 7l10 5 10-5-10-5zM2 12l10 5 10-5M2 17l10 5 10-5"/></svg> What We Do</div>
+    <h2>All your digital needs, in one place</h2>
+  </div>
+  <div class="services">
+    <div class="card">
+      <div class="icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" stroke="#1a1330" stroke-width="1.4" fill="none"/></svg></div>
+      <h3>Website Design</h3>
+      <p>A professional, modern website — single-page or multi-page, fast and mobile-first.</p>
+    </div>
+    <div class="card">
+      <div class="icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><rect x="3" y="4" width="18" height="6" rx="1.5" fill="#fff"/><rect x="3" y="14" width="18" height="6" rx="1.5" fill="#fff"/><circle cx="6.5" cy="7" r="1" fill="#1a1330"/><circle cx="6.5" cy="17" r="1" fill="#1a1330"/></svg></div>
+      <h3>Hosting &amp; Maintenance</h3>
+      <p>Hosting, domain, backups, and small content updates — so you don't have to worry about it.</p>
+    </div>
+    <div class="card">
+      <div class="icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M7 18a4.5 4.5 0 0 1-.4-9 5.5 5.5 0 0 1 10.4-1.4A3.5 3.5 0 0 1 16.5 18H7z"/></svg></div>
+      <h3>Private Cloud</h3>
+      <p>Your own secure storage system, instead of Google Drive/Dropbox. Full control of your data.</p>
+    </div>
+  </div>
+</section>
+
+<section id="why">
+  <div class="section-head">
+    <div class="eyebrow"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M12 2l3 7 7 .6-5.5 4.6L18 21l-6-4-6 4 1.5-6.8L2 9.6 9 9z"/></svg> Why Us</div>
+    <h2>Less hassle, more results</h2>
+  </div>
+  <div class="why">
+    <div class="why-item">
+      <span class="num">01</span>
+      <h4>Everything, one team</h4>
+      <p>Website, hosting, and storage are all handled by the same company — no multiple suppliers.</p>
+    </div>
+    <div class="why-item">
+      <span class="num">02</span>
+      <h4>Local Service</h4>
+      <p>Based on the Gold Coast, with local market knowledge and fast response times.</p>
+    </div>
+    <div class="why-item">
+      <span class="num">03</span>
+      <h4>Your data stays yours</h4>
+      <p>With private cloud, your data stays with you — not on a third-party server.</p>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="section-head">
+    <div class="eyebrow"><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M20.6 12.3 12 21l-9-9V4h8zM7 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" stroke="none"/></svg> Packages</div>
+    <h2>Pricing, no hidden costs</h2>
+  </div>
+  <div class="pricing">
+    <div class="price-card">
+      <div class="tag">Basic</div>
+      <div class="amount">$650<sup> one-off</sup></div>
+      <p>Single-page site, up to 4 sections.</p>
+      <ul>
+        <li><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Design &amp; copywriting</li>
+        <li><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Mobile-friendly</li>
+        <li><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> 12 months hosting</li>
+      </ul>
+    </div>
+    <div class="price-card featured">
+      <div class="ribbon">Most Popular</div>
+      <div class="tag">Business</div>
+      <div class="amount">$1,200<sup> one-off</sup></div>
+      <p>Up to 4-5 pages, contact form.</p>
+      <ul>
+        <li><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Everything in Basic</li>
+        <li><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Domain name (1 year)</li>
+        <li><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Basic SEO setup</li>
+      </ul>
+    </div>
+    <div class="price-card">
+      <div class="tag">Maintenance</div>
+      <div class="amount">$40<sup>/month</sup></div>
+      <p>Hosting, updates &amp; small changes.</p>
+      <ul>
+        <li><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Uptime monitoring</li>
+        <li><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Backups</li>
+        <li><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Up to 30 mins of changes/month</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="contact-wrap">
+    <div>
+      <h2>Get a Free Quote</h2>
+      <p>Tell us what you need and we'll get back to you right away.</p>
+      <div class="contact-list">
+        <a href="tel:+61000000000"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1.2 1.2 0 0 1 1.2-.3 11 11 0 0 0 3.4.5 1.2 1.2 0 0 1 1.2 1.2V20a1.2 1.2 0 0 1-1.2 1.2C10.8 21.2 2.8 13.2 2.8 3.2A1.2 1.2 0 0 1 4 2h3.4a1.2 1.2 0 0 1 1.2 1.2 11 11 0 0 0 .5 3.4 1.2 1.2 0 0 1-.3 1.2z"/></svg> <span><span class="label">Phone</span>+61 0XX XXX XXX</span></a>
+        <a href="mailto:info@webcloudsolutions.com.au"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M3 6.5 12 13l9-6.5"/></svg> <span><span class="label">Email</span>info@webcloudsolutions.com.au</span></a>
+      </div>
+    </div>
+    <div class="big-cta">
+      <a href="tel:+61000000000"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1.2 1.2 0 0 1 1.2-.3 11 11 0 0 0 3.4.5 1.2 1.2 0 0 1 1.2 1.2V20a1.2 1.2 0 0 1-1.2 1.2C10.8 21.2 2.8 13.2 2.8 3.2A1.2 1.2 0 0 1 4 2h3.4a1.2 1.2 0 0 1 1.2 1.2 11 11 0 0 0 .5 3.4 1.2 1.2 0 0 1-.3 1.2z"/></svg> Call Now</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 Web &amp; Cloud Solutions — Gold Coast, QLD
+</footer>
+
+</body>
+</html>
