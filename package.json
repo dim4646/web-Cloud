@@ -1,0 +1,8 @@
+{
+  "name": "webcloud-orders",
+  "version": "1.0.0",
+  "description": "Stripe webhook handler for WebCloud orders → Airtable",
+  "dependencies": {
+    "stripe": "^16.0.0"
+  }
+}
