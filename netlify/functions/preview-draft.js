@@ -1,4 +1,4 @@
-const { getStore } = require('@netlify/blobs');
+const { getDraftsStore } = require('./_lib/blobs');
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'GET') {
@@ -10,8 +10,14 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: 'Missing session_id' };
   }
 
-  const store = getStore('drafts');
-  const html = await store.get(sessionId, { type: 'text' });
+  let html;
+  try {
+    const store = getDraftsStore();
+    html = await store.get(sessionId, { type: 'text' });
+  } catch (err) {
+    console.error('preview-draft blob read failed:', err.message);
+    return { statusCode: 500, body: 'Failed to read draft' };
+  }
 
   if (!html) {
     return {

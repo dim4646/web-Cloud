@@ -1,5 +1,5 @@
 const Anthropic = require('@anthropic-ai/sdk');
-const { getStore } = require('@netlify/blobs');
+const { getDraftsStore } = require('./_lib/blobs');
 const { findOrderBySessionId, updateOrderRecord } = require('./_lib/airtable');
 const { getEnv } = require('./_lib/env');
 
@@ -54,7 +54,7 @@ Respond with ONLY the raw HTML, starting with <!DOCTYPE html> — no markdown co
       throw new Error('Model did not return an HTML document');
     }
 
-    const store = getStore('drafts');
+    const store = getDraftsStore();
     await store.set(sessionId, html);
 
     const record = await findOrderBySessionId(sessionId);
