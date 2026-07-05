@@ -48,11 +48,16 @@ Respond with ONLY the raw HTML, starting with <!DOCTYPE html> — no markdown co
     });
 
     let html = (message.content?.[0]?.text || '').trim();
-    html = html.replace(/^```html\s*/i, '').replace(/```\s*$/, '').trim();
+    html = html.replace(/```html\s*/gi, '').replace(/```\s*/g, '').trim();
 
-    if (!/^<!doctype html/i.test(html) && !/^<html/i.test(html)) {
-      throw new Error('Model did not return an HTML document');
+    const docStart = html.search(/<!doctype html/i);
+    const htmlStart = html.search(/<html[ >]/i);
+    const start = docStart !== -1 ? docStart : htmlStart;
+
+    if (start === -1) {
+      throw new Error(`Model did not return an HTML document. Raw response: ${html.slice(0, 300)}`);
     }
+    html = html.slice(start);
 
     const store = getDraftsStore();
     await store.set(sessionId, html);
