@@ -10,7 +10,14 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'Missing session_id' }) };
   }
 
-  const record = await findOrderBySessionId(sessionId);
+  let record;
+  try {
+    record = await findOrderBySessionId(sessionId);
+  } catch (err) {
+    console.error('order.js lookup failed:', err.message);
+    return { statusCode: 500, body: JSON.stringify({ error: 'Lookup failed' }) };
+  }
+
   if (!record) {
     return { statusCode: 404, body: JSON.stringify({ error: 'Order not found' }) };
   }

@@ -7,7 +7,11 @@ async function findOrderBySessionId(sessionId) {
   const res = await fetch(`${BASE_URL}?filterByFormula=${formula}&maxRecords=1`, {
     headers: { Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}` },
   });
-  if (!res.ok) return null;
+  if (!res.ok) {
+    // Distinguish "Airtable/auth is broken" from "no matching record" so
+    // callers don't silently report 404 for what's actually a config error.
+    throw new Error(`Airtable lookup failed (${res.status}): ${await res.text()}`);
+  }
   const data = await res.json();
   return data.records?.[0] || null;
 }

@@ -17,16 +17,28 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'Missing sessionId or answers' }) };
   }
 
-  const record = await findOrderBySessionId(sessionId);
+  let record;
+  try {
+    record = await findOrderBySessionId(sessionId);
+  } catch (err) {
+    console.error('submit-questionnaire lookup failed:', err.message);
+    return { statusCode: 500, body: JSON.stringify({ error: 'Lookup failed' }) };
+  }
+
   if (!record) {
     return { statusCode: 404, body: JSON.stringify({ error: 'Order not found' }) };
   }
 
-  await updateOrderRecord(record.id, {
-    'Form Status': 'Received',
-    'Draft Status': 'Generating',
-    Answers: JSON.stringify(answers, null, 2),
-  });
+  try {
+    await updateOrderRecord(record.id, {
+      'Form Status': 'Received',
+      'Draft Status': 'Generating',
+      Answers: JSON.stringify(answers, null, 2),
+    });
+  } catch (err) {
+    console.error('submit-questionnaire update failed:', err.message);
+    return { statusCode: 500, body: JSON.stringify({ error: 'Update failed' }) };
+  }
 
   // Fire-and-forget: hand off to the background function, which has a much
   // higher execution time limit than this one needs for the AI call.
