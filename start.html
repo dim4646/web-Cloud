@@ -227,12 +227,14 @@
       const res = await fetch(`/.netlify/functions/order?session_id=${encodeURIComponent(sessionId)}`);
       hide(el.loading);
       if (!res.ok) {
+        hide(el.formCard);
         show(el.notFound);
         return;
       }
       renderOrder(await res.json());
     } catch (err) {
       hide(el.loading);
+      hide(el.formCard);
       show(el.notFound);
     }
   }
