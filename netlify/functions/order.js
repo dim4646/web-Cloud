@@ -15,8 +15,7 @@ exports.handler = async (event) => {
     record = await findOrderBySessionId(sessionId);
   } catch (err) {
     console.error('order.js lookup failed:', err.message);
-    // TEMPORARY: surface the error message for debugging. Remove once fixed.
-    return { statusCode: 500, body: JSON.stringify({ error: 'Lookup failed', detail: err.message }) };
+    return { statusCode: 500, body: JSON.stringify({ error: 'Lookup failed' }) };
   }
 
   if (!record) {

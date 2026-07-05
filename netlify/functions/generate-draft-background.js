@@ -1,6 +1,7 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const { getStore } = require('@netlify/blobs');
 const { findOrderBySessionId, updateOrderRecord } = require('./_lib/airtable');
+const { getEnv } = require('./_lib/env');
 
 const DESIGN_TOKENS = `
 Brand: WebCloud (Gold Coast web design / hosting / private cloud company)
@@ -25,7 +26,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const anthropic = new Anthropic({ apiKey: getEnv('ANTHROPIC_API_KEY') });
 
     const prompt = `You are a web designer building a FIRST-DRAFT single-page website for a client of a web design agency called WebCloud.
 

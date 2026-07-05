@@ -1,4 +1,5 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const Stripe = require('stripe');
+const { getEnv } = require('./_lib/env');
 
 const PRICE_TO_PACKAGE = {
   price_1TphB7JM2u2WIzsFKS2pdpUT: 'Basic',
@@ -15,6 +16,8 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
+  const stripe = Stripe(getEnv('STRIPE_SECRET_KEY'));
+
   const sig = event.headers['stripe-signature'];
   const rawBody = event.isBase64Encoded
     ? Buffer.from(event.body, 'base64')
@@ -25,7 +28,7 @@ exports.handler = async (event) => {
     stripeEvent = stripe.webhooks.constructEvent(
       rawBody,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET
+      getEnv('STRIPE_WEBHOOK_SECRET')
     );
   } catch (err) {
     console.error('Webhook signature verification failed:', err.message);
@@ -63,7 +66,7 @@ exports.handler = async (event) => {
       {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`,
+          Authorization: `Bearer ${getEnv('AIRTABLE_API_KEY')}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -97,12 +100,12 @@ exports.handler = async (event) => {
     const emailRes = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        Authorization: `Bearer ${getEnv('RESEND_API_KEY')}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: process.env.RESEND_FROM_EMAIL,
-        to: [process.env.NOTIFICATION_EMAIL],
+        from: getEnv('RESEND_FROM_EMAIL'),
+        to: [getEnv('NOTIFICATION_EMAIL')],
         subject: `New order: ${packageName} from ${customerName}`,
         html: `
           <h2>New WebCloud Order</h2>
@@ -129,4 +132,3 @@ exports.handler = async (event) => {
     body: JSON.stringify({ received: true, package: packageName }),
   };
 };
-

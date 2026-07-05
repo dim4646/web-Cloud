@@ -1,3 +1,5 @@
+const { getEnv } = require('./env');
+
 const AIRTABLE_BASE_ID = 'appv7AQg99c5GqdTU';
 const AIRTABLE_TABLE_ID = 'tblYF1s42rbE88ZYJ';
 const BASE_URL = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_ID}`;
@@ -5,7 +7,7 @@ const BASE_URL = `https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TAB
 async function findOrderBySessionId(sessionId) {
   const formula = encodeURIComponent(`{Stripe Session ID}="${sessionId}"`);
   const res = await fetch(`${BASE_URL}?filterByFormula=${formula}&maxRecords=1`, {
-    headers: { Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}` },
+    headers: { Authorization: `Bearer ${getEnv('AIRTABLE_API_KEY')}` },
   });
   if (!res.ok) {
     // Distinguish "Airtable/auth is broken" from "no matching record" so
@@ -20,7 +22,7 @@ async function updateOrderRecord(recordId, fields) {
   const res = await fetch(`${BASE_URL}/${recordId}`, {
     method: 'PATCH',
     headers: {
-      Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`,
+      Authorization: `Bearer ${getEnv('AIRTABLE_API_KEY')}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ typecast: true, fields }),
