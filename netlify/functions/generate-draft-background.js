@@ -47,7 +47,11 @@ Respond with ONLY the raw HTML, starting with <!DOCTYPE html> — no markdown co
       messages: [{ role: 'user', content: prompt }],
     });
 
-    let html = (message.content?.[0]?.text || '').trim();
+    let html = (message.content || [])
+      .filter((block) => block.type === 'text')
+      .map((block) => block.text)
+      .join('')
+      .trim();
     html = html.replace(/```html\s*/gi, '').replace(/```\s*/g, '').trim();
 
     const docStart = html.search(/<!doctype html/i);
@@ -55,7 +59,11 @@ Respond with ONLY the raw HTML, starting with <!DOCTYPE html> — no markdown co
     const start = docStart !== -1 ? docStart : htmlStart;
 
     if (start === -1) {
-      throw new Error(`Model did not return an HTML document. Raw response: ${html.slice(0, 300)}`);
+      throw new Error(
+        `Model did not return an HTML document. stop_reason=${message.stop_reason}, ` +
+        `blockTypes=${(message.content || []).map((b) => b.type).join(',')}, ` +
+        `raw=${html.slice(0, 300)}`
+      );
     }
     html = html.slice(start);
 
