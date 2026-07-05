@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Questionnaire — WebCloud</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B1220;
+    --paper:#F6F8FB;
+    --white:#FFFFFF;
+    --ink:#0B1220;
+    --muted:#5A6478;
+    --accent:#3DDC97;
+    --accent-dim:#1F8F63;
+    --sky:#4C8DFF;
+    --line: rgba(11,18,32,.10);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,.disp{font-family:'Space Grotesk',sans-serif;}
+  .container{max-width:640px;margin:0 auto;padding:56px 24px;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--accent-dim);background:rgba(61,220,151,.12);
+    padding:6px 14px;border-radius:999px;margin-bottom:18px;
+  }
+  h1{font-size:clamp(1.6rem,4vw,2.1rem);font-weight:700;letter-spacing:-.02em;margin-bottom:10px;}
+  .sub{color:var(--muted);margin-bottom:32px;}
+  .card{
+    background:var(--white);border:1px solid var(--line);border-radius:18px;
+    padding:32px;margin-bottom:20px;
+  }
+  label{display:block;font-weight:600;font-size:.92rem;margin-bottom:6px;}
+  .hint{font-size:.8rem;color:var(--muted);margin-bottom:8px;}
+  .field{margin-bottom:22px;}
+  input[type=text], input[type=email], input[type=tel], textarea, select{
+    width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;
+    font-family:inherit;font-size:.95rem;color:var(--ink);background:var(--paper);
+  }
+  textarea{min-height:90px;resize:vertical;}
+  .radio-row{display:flex;gap:18px;flex-wrap:wrap;}
+  .radio-row label{display:flex;align-items:center;gap:8px;font-weight:500;font-size:.92rem;}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:14px 26px;border-radius:10px;font-weight:600;font-size:.95rem;
+    background:var(--navy);color:var(--white);border:none;cursor:pointer;width:100%;
+  }
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+  .status{
+    display:none;text-align:center;padding:12px 0;
+  }
+  .status.visible{display:block;}
+  .spinner{
+    width:28px;height:28px;border-radius:50%;
+    border:3px solid var(--line);border-top-color:var(--accent-dim);
+    animation:spin .8s linear infinite;margin:0 auto 16px;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .error{color:#B3261E;font-size:.9rem;margin-top:8px;}
+  .success-link{
+    display:inline-block;margin-top:16px;padding:12px 22px;border-radius:10px;
+    background:var(--accent);color:var(--navy);font-weight:600;text-decoration:none;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="eyebrow">Project Questionnaire</div>
+  <h1 id="heading">Let's get your project started</h1>
+  <p class="sub" id="subheading">A few quick questions so we can start building right away.</p>
+
+  <div class="card" id="form-card">
+    <form id="questionnaire-form">
+      <div class="field">
+        <label for="projectName">Business / project name</label>
+        <input type="text" id="projectName" name="projectName" required>
+      </div>
+
+      <div class="field">
+        <label for="pages">Which pages do you need?</label>
+        <div class="hint">e.g. Home, About, Services, Gallery, Contact</div>
+        <input type="text" id="pages" name="pages" required>
+      </div>
+
+      <div class="field">
+        <label for="style">Colours / style preference</label>
+        <div class="hint">Colours you like, a mood (bold, minimal, playful...), or a link to a site you like</div>
+        <textarea id="style" name="style"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Do you have your text/content ready?</label>
+        <div class="radio-row">
+          <label><input type="radio" name="contentReady" value="I'll provide the text" checked> I'll provide it</label>
+          <label><input type="radio" name="contentReady" value="I need copywriting help"> I need help writing it</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="mediaLink">Link to your logo/photos (optional)</label>
+        <div class="hint">Google Drive, Dropbox, or similar</div>
+        <input type="text" id="mediaLink" name="mediaLink">
+      </div>
+
+      <div class="field">
+        <label for="contactInfo">Contact info to show on the site</label>
+        <input type="text" id="contactInfo" name="contactInfo" placeholder="Phone, email, or both" required>
+      </div>
+
+      <div class="field">
+        <label for="notes">Anything else we should know?</label>
+        <textarea id="notes" name="notes"></textarea>
+      </div>
+
+      <button type="submit" class="btn" id="submit-btn">Submit &amp; start my draft</button>
+      <div class="error" id="form-error"></div>
+    </form>
+  </div>
+
+  <div class="status" id="status-generating">
+    <div class="spinner"></div>
+    <p>Thanks! We're generating your first draft — this usually takes under a minute.</p>
+  </div>
+
+  <div class="status" id="status-ready">
+    <p><strong>Your first draft is ready.</strong></p>
+    <a href="#" id="draft-link" class="success-link" target="_blank" rel="noopener">View your draft site</a>
+  </div>
+
+  <div class="status" id="status-failed">
+    <p>Something went wrong generating the draft. No worries — we'll follow up with you directly.</p>
+  </div>
+
+  <div class="status" id="status-loading">
+    <div class="spinner"></div>
+    <p>Loading your order...</p>
+  </div>
+
+  <div class="status" id="status-not-found">
+    <p>We couldn't find that order. Please check the link from your payment confirmation, or contact us directly.</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get('session_id');
+
+  const el = {
+    heading: document.getElementById('heading'),
+    subheading: document.getElementById('subheading'),
+    formCard: document.getElementById('form-card'),
+    form: document.getElementById('questionnaire-form'),
+    submitBtn: document.getElementById('submit-btn'),
+    formError: document.getElementById('form-error'),
+    loading: document.getElementById('status-loading'),
+    notFound: document.getElementById('status-not-found'),
+    generating: document.getElementById('status-generating'),
+    ready: document.getElementById('status-ready'),
+    failed: document.getElementById('status-failed'),
+    draftLink: document.getElementById('draft-link'),
+  };
+
+  function show(elem) { elem.classList.add('visible'); }
+  function hide(elem) { elem.classList.remove('visible'); }
+
+  if (!sessionId) {
+    hide(el.formCard);
+    show(el.notFound);
+    return;
+  }
+
+  let pollTimer = null;
+
+  function renderOrder(order) {
+    if (order.package) {
+      el.subheading.textContent = `${order.package} package — a few quick questions so we can start building right away.`;
+    }
+
+    if (order.draftStatus === 'Ready' && order.draftUrl) {
+      hide(el.formCard);
+      hide(el.generating);
+      el.draftLink.href = order.draftUrl;
+      show(el.ready);
+      if (pollTimer) clearInterval(pollTimer);
+      return;
+    }
+
+    if (order.draftStatus === 'Failed') {
+      hide(el.formCard);
+      hide(el.generating);
+      show(el.failed);
+      if (pollTimer) clearInterval(pollTimer);
+      return;
+    }
+
+    if (order.formStatus === 'Received') {
+      hide(el.formCard);
+      show(el.generating);
+      if (!pollTimer) pollTimer = setInterval(pollOrder, 3000);
+    }
+  }
+
+  async function pollOrder() {
+    try {
+      const res = await fetch(`/.netlify/functions/order?session_id=${encodeURIComponent(sessionId)}`);
+      if (!res.ok) return;
+      renderOrder(await res.json());
+    } catch (err) {
+      console.error('Poll failed:', err);
+    }
+  }
+
+  async function loadOrder() {
+    try {
+      const res = await fetch(`/.netlify/functions/order?session_id=${encodeURIComponent(sessionId)}`);
+      hide(el.loading);
+      if (!res.ok) {
+        show(el.notFound);
+        return;
+      }
+      renderOrder(await res.json());
+    } catch (err) {
+      hide(el.loading);
+      show(el.notFound);
+    }
+  }
+
+  el.form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    el.formError.textContent = '';
+    el.submitBtn.disabled = true;
+    el.submitBtn.textContent = 'Submitting...';
+
+    const formData = new FormData(el.form);
+    const answers = Object.fromEntries(formData.entries());
+
+    try {
+      const res = await fetch('/.netlify/functions/submit-questionnaire', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId, answers }),
+      });
+      if (!res.ok) throw new Error('Submit failed');
+
+      hide(el.formCard);
+      show(el.generating);
+      pollTimer = setInterval(pollOrder, 3000);
+    } catch (err) {
+      el.formError.textContent = 'Something went wrong submitting the form. Please try again.';
+      el.submitBtn.disabled = false;
+      el.submitBtn.textContent = "Submit & start my draft";
+    }
+  });
+
+  loadOrder();
+})();
+</script>
+</body>
+</html>

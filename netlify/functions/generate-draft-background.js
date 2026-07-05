@@ -1,0 +1,80 @@
+const Anthropic = require('@anthropic-ai/sdk');
+const { getStore } = require('@netlify/blobs');
+const { findOrderBySessionId, updateOrderRecord } = require('./_lib/airtable');
+
+const DESIGN_TOKENS = `
+Brand: WebCloud (Gold Coast web design / hosting / private cloud company)
+Colors: --navy:#0B1220 (dark bg/text), --accent:#3DDC97 (mint green), --sky:#4C8DFF (blue), --paper:#F6F8FB (light bg), --muted:#5A6478
+Fonts: 'Space Grotesk' for headings, 'Inter' for body text (both on Google Fonts)
+Style: clean, modern, generous whitespace, rounded corners (14-22px), subtle 1px borders, mobile-first
+`;
+
+exports.handler = async (event) => {
+  let payload;
+  try {
+    payload = JSON.parse(event.body || '{}');
+  } catch {
+    console.error('Invalid JSON payload to generate-draft-background');
+    return { statusCode: 400, body: 'Invalid JSON' };
+  }
+
+  const { sessionId, answers, package: packageName } = payload;
+  if (!sessionId) {
+    console.error('Missing sessionId in generate-draft-background');
+    return { statusCode: 400, body: 'Missing sessionId' };
+  }
+
+  try {
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+    const prompt = `You are a web designer building a FIRST-DRAFT single-page website for a client of a web design agency called WebCloud.
+
+Client's package: ${packageName || 'Basic'}
+Client's answers to our project questionnaire (JSON):
+${JSON.stringify(answers, null, 2)}
+
+Design system to loosely draw from (this is WebCloud's own brand, not necessarily the client's — use it as a starting point and adapt colors/tone to fit the client's business if their answers suggest a different vibe):
+${DESIGN_TOKENS}
+
+Produce a single, complete, self-contained HTML file (inline <style>, no external JS frameworks, a Google Fonts <link> is fine) implementing a draft website for this client based on their answers. Include a header/nav, hero section, a section for their content/services, and a contact section. Make it mobile-responsive. Where the client's answers don't give enough detail, use placeholder text clearly marked like [PLACEHOLDER: short description of what's needed] so the human designer knows what to fill in before it ships.
+
+Respond with ONLY the raw HTML, starting with <!DOCTYPE html> — no markdown code fences, no explanation before or after.`;
+
+    const message = await anthropic.messages.create({
+      model: 'claude-sonnet-5',
+      max_tokens: 8000,
+      messages: [{ role: 'user', content: prompt }],
+    });
+
+    let html = (message.content?.[0]?.text || '').trim();
+    html = html.replace(/^```html\s*/i, '').replace(/```\s*$/, '').trim();
+
+    if (!/^<!doctype html/i.test(html) && !/^<html/i.test(html)) {
+      throw new Error('Model did not return an HTML document');
+    }
+
+    const store = getStore('drafts');
+    await store.set(sessionId, html);
+
+    const record = await findOrderBySessionId(sessionId);
+    if (record) {
+      const siteUrl = process.env.URL || '';
+      await updateOrderRecord(record.id, {
+        'Draft Status': 'Ready',
+        'Draft URL': `${siteUrl}/.netlify/functions/preview-draft?session_id=${encodeURIComponent(sessionId)}`,
+      });
+    }
+  } catch (err) {
+    console.error('Draft generation failed:', err.message);
+    try {
+      const record = await findOrderBySessionId(sessionId);
+      if (record) {
+        await updateOrderRecord(record.id, { 'Draft Status': 'Failed' });
+      }
+    } catch (innerErr) {
+      console.error('Failed to record draft failure:', innerErr.message);
+    }
+  }
+
+  return { statusCode: 200, body: 'ok' };
+};
