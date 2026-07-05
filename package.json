@@ -4,7 +4,6 @@
   "description": "Stripe webhook handler for WebCloud orders → Airtable",
   "dependencies": {
     "stripe": "^16.0.0",
-    "@netlify/blobs": "^8.1.0",
     "@anthropic-ai/sdk": "^0.32.0"
   }
 }

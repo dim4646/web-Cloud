@@ -1,4 +1,4 @@
-const { getDraftsStore } = require('./_lib/blobs');
+const { findOrderBySessionId } = require('./_lib/airtable');
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'GET') {
@@ -10,14 +10,15 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: 'Missing session_id' };
   }
 
-  let html;
+  let record;
   try {
-    const store = getDraftsStore();
-    html = await store.get(sessionId, { type: 'text' });
+    record = await findOrderBySessionId(sessionId);
   } catch (err) {
-    console.error('preview-draft blob read failed:', err.message);
-    return { statusCode: 500, body: 'Failed to read draft' };
+    console.error('preview-draft lookup failed:', err.message);
+    return { statusCode: 500, body: 'Failed to look up draft' };
   }
+
+  const html = record?.fields?.['Draft HTML'];
 
   if (!html) {
     return {

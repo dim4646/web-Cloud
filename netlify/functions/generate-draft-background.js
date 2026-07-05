@@ -1,5 +1,4 @@
 const Anthropic = require('@anthropic-ai/sdk');
-const { getDraftsStore } = require('./_lib/blobs');
 const { findOrderBySessionId, updateOrderRecord } = require('./_lib/airtable');
 const { getEnv } = require('./_lib/env');
 
@@ -67,14 +66,12 @@ Respond with ONLY the raw HTML, starting with <!DOCTYPE html> — no markdown co
     }
     html = html.slice(start);
 
-    const store = getDraftsStore();
-    await store.set(sessionId, html);
-
     const record = await findOrderBySessionId(sessionId);
     if (record) {
-      const siteUrl = process.env.URL || '';
+      const siteUrl = getEnv('URL') || '';
       await updateOrderRecord(record.id, {
         'Draft Status': 'Ready',
+        'Draft HTML': html,
         'Draft URL': `${siteUrl}/.netlify/functions/preview-draft?session_id=${encodeURIComponent(sessionId)}`,
       });
     }
@@ -83,8 +80,7 @@ Respond with ONLY the raw HTML, starting with <!DOCTYPE html> — no markdown co
     try {
       const record = await findOrderBySessionId(sessionId);
       if (record) {
-        // TEMPORARY: store the error message for debugging. Remove once fixed.
-        await updateOrderRecord(record.id, { 'Draft Status': 'Failed', Answers: `DEBUG ERROR: ${err.message}`.slice(0, 500) });
+        await updateOrderRecord(record.id, { 'Draft Status': 'Failed' });
       }
     } catch (innerErr) {
       console.error('Failed to record draft failure:', innerErr.message);
