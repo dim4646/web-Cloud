@@ -160,6 +160,23 @@
   <div class="status" id="status-ready">
     <p><strong>Your first draft is ready.</strong></p>
     <a href="#" id="draft-link" class="success-link" target="_blank" rel="noopener">View your draft site</a>
+
+    <div class="card" id="revision-card" style="text-align:left;margin-top:24px;">
+      <label for="revisionText">Want something changed?</label>
+      <div class="hint">Describe what you'd like different — we'll prepare an updated version for you.</div>
+      <textarea id="revisionText" name="revisionText"></textarea>
+      <button type="button" class="btn" id="revision-btn" style="margin-top:14px;">Request changes</button>
+      <div class="error" id="revision-error"></div>
+    </div>
+  </div>
+
+  <div class="status" id="status-revising">
+    <div class="spinner"></div>
+    <p>Working on your requested changes — this usually takes under a minute.</p>
+  </div>
+
+  <div class="status" id="status-pending-review">
+    <p><strong>Got it!</strong> Your requested changes are ready for a quick review on our end before they go live. We'll be in touch shortly.</p>
   </div>
 
   <div class="status" id="status-failed">
@@ -194,6 +211,11 @@
     ready: document.getElementById('status-ready'),
     failed: document.getElementById('status-failed'),
     draftLink: document.getElementById('draft-link'),
+    revising: document.getElementById('status-revising'),
+    pendingReview: document.getElementById('status-pending-review'),
+    revisionText: document.getElementById('revisionText'),
+    revisionBtn: document.getElementById('revision-btn'),
+    revisionError: document.getElementById('revision-error'),
   };
 
   function show(elem) { elem.classList.add('visible'); }
@@ -212,9 +234,27 @@
       el.subheading.textContent = `${order.package} package — a few quick questions so we can start building right away.`;
     }
 
+    if (order.draftStatus === 'Revising') {
+      hide(el.formCard);
+      hide(el.ready);
+      show(el.revising);
+      if (!pollTimer) pollTimer = setInterval(pollOrder, 3000);
+      return;
+    }
+
+    if (order.draftStatus === 'Pending Review') {
+      hide(el.formCard);
+      hide(el.revising);
+      show(el.pendingReview);
+      if (pollTimer) clearInterval(pollTimer);
+      return;
+    }
+
     if (order.draftStatus === 'Ready' && order.draftUrl) {
       hide(el.formCard);
       hide(el.generating);
+      hide(el.revising);
+      hide(el.pendingReview);
       el.draftLink.href = order.draftUrl;
       show(el.ready);
       if (pollTimer) clearInterval(pollTimer);
@@ -287,6 +327,35 @@
       el.formError.textContent = 'Something went wrong submitting the form. Please try again.';
       el.submitBtn.disabled = false;
       el.submitBtn.textContent = "Submit & start my draft";
+    }
+  });
+
+  el.revisionBtn.addEventListener('click', async function () {
+    const text = el.revisionText.value.trim();
+    el.revisionError.textContent = '';
+    if (!text) {
+      el.revisionError.textContent = 'Please describe what you\'d like changed.';
+      return;
+    }
+
+    el.revisionBtn.disabled = true;
+    el.revisionBtn.textContent = 'Submitting...';
+
+    try {
+      const res = await fetch('/.netlify/functions/request-revision', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId, revisionText: text }),
+      });
+      if (!res.ok) throw new Error('Request failed');
+
+      hide(el.ready);
+      show(el.revising);
+      pollTimer = setInterval(pollOrder, 3000);
+    } catch (err) {
+      el.revisionError.textContent = 'Something went wrong. Please try again.';
+      el.revisionBtn.disabled = false;
+      el.revisionBtn.textContent = 'Request changes';
     }
   });
 
