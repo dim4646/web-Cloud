@@ -70,7 +70,8 @@ Respond with ONLY the raw HTML, starting with <!DOCTYPE html> — no markdown co
     try {
       const record = await findOrderBySessionId(sessionId);
       if (record) {
-        await updateOrderRecord(record.id, { 'Draft Status': 'Failed' });
+        // TEMPORARY: store the error message for debugging. Remove once fixed.
+        await updateOrderRecord(record.id, { 'Draft Status': 'Failed', Answers: `DEBUG ERROR: ${err.message}`.slice(0, 500) });
       }
     } catch (innerErr) {
       console.error('Failed to record draft failure:', innerErr.message);
