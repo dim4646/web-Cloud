@@ -36,7 +36,7 @@ ${JSON.stringify(answers, null, 2)}
 Design system to loosely draw from (this is WebCloud's own brand, not necessarily the client's — use it as a starting point and adapt colors/tone to fit the client's business if their answers suggest a different vibe):
 ${DESIGN_TOKENS}
 
-Produce a single, complete, self-contained HTML file (inline <style>, no external JS frameworks, a Google Fonts <link> is fine) implementing a draft website for this client based on their answers. Include a header/nav, hero section, a section for their content/services, and a contact section. Make it mobile-responsive. Where the client's answers don't give enough detail, use placeholder text clearly marked like [PLACEHOLDER: short description of what's needed] so the human designer knows what to fill in before it ships.
+Produce a single, complete, self-contained HTML file (inline <style>, no external JS frameworks, a Google Fonts <link> is fine) implementing a draft website for this client based on their answers. Include a header/nav, hero section, a section for their content/services, and a contact section. In the contact section, include whichever of email/phone/address/opening hours/social links the client actually provided (skip any that are blank rather than inventing placeholders for them), plus placeholders for any core content that's still missing. Make it mobile-responsive. Where the client's answers don't give enough detail, use placeholder text clearly marked like [PLACEHOLDER: short description of what's needed] so the human designer knows what to fill in before it ships.
 
 Respond with ONLY the raw HTML, starting with <!DOCTYPE html> — no markdown code fences, no explanation before or after.`;
 
