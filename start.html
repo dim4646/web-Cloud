@@ -123,16 +123,28 @@
         <input type="tel" id="phone" name="phone">
       </div>
 
-      <div class="field">
+      <div class="field" data-packages="Basic,Business">
         <label for="address">Business address (optional)</label>
         <div class="hint">Leave blank if you don't have a physical location</div>
         <input type="text" id="address" name="address">
       </div>
 
-      <div class="field">
+      <div class="field" data-packages="Basic,Business">
         <label for="hours">Opening hours (optional)</label>
         <div class="hint">e.g. Mon–Fri 9am–5pm, or "by appointment"</div>
         <input type="text" id="hours" name="hours">
+      </div>
+
+      <div class="field" data-packages="Portfolio">
+        <label for="role">Your role / headline</label>
+        <div class="hint">e.g. "Freelance Photographer", "UX Designer", "Illustrator"</div>
+        <input type="text" id="role" name="role">
+      </div>
+
+      <div class="field" data-packages="Portfolio">
+        <label for="portfolioLinks">Links to your work</label>
+        <div class="hint">Portfolio pieces, LinkedIn, GitHub, Behance, CV/resume — one per line</div>
+        <textarea id="portfolioLinks" name="portfolioLinks"></textarea>
       </div>
 
       <div class="field">
@@ -150,6 +162,28 @@
       <button type="submit" class="btn" id="submit-btn">Submit &amp; start my draft</button>
       <div class="error" id="form-error"></div>
     </form>
+  </div>
+
+  <div class="card" id="form-card-maintenance" style="display:none;">
+    <form id="maintenance-form">
+      <div class="field">
+        <label for="siteUrl">Which site is this for?</label>
+        <div class="hint">The URL of your existing website</div>
+        <input type="text" id="siteUrl" name="siteUrl" required>
+      </div>
+
+      <div class="field">
+        <label for="maintenanceNotes">Anything you'd like updated first? (optional)</label>
+        <textarea id="maintenanceNotes" name="notes"></textarea>
+      </div>
+
+      <button type="submit" class="btn" id="maintenance-submit-btn">Submit</button>
+      <div class="error" id="maintenance-form-error"></div>
+    </form>
+  </div>
+
+  <div class="status" id="status-maintenance-received">
+    <p><strong>Thanks!</strong> We've got your maintenance details — we'll be in touch if we need anything else.</p>
   </div>
 
   <div class="status" id="status-generating">
@@ -216,10 +250,15 @@
     revisionText: document.getElementById('revisionText'),
     revisionBtn: document.getElementById('revision-btn'),
     revisionError: document.getElementById('revision-error'),
+    formCardMaintenance: document.getElementById('form-card-maintenance'),
+    maintenanceForm: document.getElementById('maintenance-form'),
+    maintenanceSubmitBtn: document.getElementById('maintenance-submit-btn'),
+    maintenanceFormError: document.getElementById('maintenance-form-error'),
+    maintenanceReceived: document.getElementById('status-maintenance-received'),
   };
 
-  function show(elem) { elem.classList.add('visible'); }
-  function hide(elem) { elem.classList.remove('visible'); }
+  function show(elem) { elem.style.display = ''; elem.classList.add('visible'); }
+  function hide(elem) { elem.style.display = 'none'; elem.classList.remove('visible'); }
 
   if (!sessionId) {
     hide(el.formCard);
@@ -229,9 +268,35 @@
 
   let pollTimer = null;
 
+  function applyPackageVisibility(pkg) {
+    document.querySelectorAll('#form-card [data-packages]').forEach(function (field) {
+      const list = field.getAttribute('data-packages').split(',').map(function (s) { return s.trim(); });
+      const required = field.querySelector('[required]');
+      if (list.includes(pkg)) {
+        field.style.display = '';
+      } else {
+        field.style.display = 'none';
+        if (required) required.required = false;
+      }
+    });
+  }
+
   function renderOrder(order) {
     if (order.package) {
       el.subheading.textContent = `${order.package} package — a few quick questions so we can start building right away.`;
+      applyPackageVisibility(order.package);
+    }
+
+    if (order.package === 'Maintenance') {
+      hide(el.formCard);
+      hide(el.loading);
+      if (order.formStatus === 'Received') {
+        hide(el.formCardMaintenance);
+        show(el.maintenanceReceived);
+      } else {
+        show(el.formCardMaintenance);
+      }
+      return;
     }
 
     if (order.draftStatus === 'Revising') {
@@ -302,6 +367,32 @@
       show(el.notFound);
     }
   }
+
+  el.maintenanceForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    el.maintenanceFormError.textContent = '';
+    el.maintenanceSubmitBtn.disabled = true;
+    el.maintenanceSubmitBtn.textContent = 'Submitting...';
+
+    const formData = new FormData(el.maintenanceForm);
+    const answers = Object.fromEntries(formData.entries());
+
+    try {
+      const res = await fetch('/.netlify/functions/submit-questionnaire', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId, answers }),
+      });
+      if (!res.ok) throw new Error('Submit failed');
+
+      hide(el.formCardMaintenance);
+      show(el.maintenanceReceived);
+    } catch (err) {
+      el.maintenanceFormError.textContent = 'Something went wrong submitting the form. Please try again.';
+      el.maintenanceSubmitBtn.disabled = false;
+      el.maintenanceSubmitBtn.textContent = 'Submit';
+    }
+  });
 
   el.form.addEventListener('submit', async function (e) {
     e.preventDefault();

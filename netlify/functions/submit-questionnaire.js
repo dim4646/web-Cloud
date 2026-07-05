@@ -29,10 +29,12 @@ exports.handler = async (event) => {
     return { statusCode: 404, body: JSON.stringify({ error: 'Order not found' }) };
   }
 
+  const isMaintenance = record.fields.Package === 'Maintenance';
+
   try {
     await updateOrderRecord(record.id, {
       'Form Status': 'Received',
-      'Draft Status': 'Generating',
+      ...(isMaintenance ? {} : { 'Draft Status': 'Generating' }),
       Answers: JSON.stringify(answers, null, 2),
     });
   } catch (err) {
@@ -40,14 +42,18 @@ exports.handler = async (event) => {
     return { statusCode: 500, body: JSON.stringify({ error: 'Update failed' }) };
   }
 
-  // Fire-and-forget: hand off to the background function, which has a much
-  // higher execution time limit than this one needs for the AI call.
-  const siteUrl = process.env.URL || `https://${event.headers.host}`;
-  fetch(`${siteUrl}/.netlify/functions/generate-draft-background`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ sessionId, answers, package: record.fields.Package }),
-  }).catch((err) => console.error('Failed to trigger draft generation:', err.message));
+  // Maintenance is for an existing site - there's nothing to draft, so skip
+  // triggering the AI generation entirely.
+  if (!isMaintenance) {
+    // Fire-and-forget: hand off to the background function, which has a much
+    // higher execution time limit than this one needs for the AI call.
+    const siteUrl = process.env.URL || `https://${event.headers.host}`;
+    fetch(`${siteUrl}/.netlify/functions/generate-draft-background`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId, answers, package: record.fields.Package }),
+    }).catch((err) => console.error('Failed to trigger draft generation:', err.message));
+  }
 
   return {
     statusCode: 200,

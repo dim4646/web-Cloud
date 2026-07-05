@@ -27,11 +27,20 @@ exports.handler = async (event) => {
   try {
     const anthropic = new Anthropic({ apiKey: getEnv('ANTHROPIC_API_KEY') });
 
+    const portfolioGuidance = packageName === 'Portfolio' ? `
+
+This is a PERSONAL PORTFOLIO site for an individual, not a business. Treat it accordingly:
+- Use "About Me" framing, not "About Us"/"Our story".
+- Use the client's "role" answer (their headline/profession) prominently in the hero.
+- Replace any business-style sections (services/menu, opening hours, physical address) with a "Work" or "Projects" section, and turn each entry in "portfolioLinks" into a linked item there (or in the contact/footer area) rather than inventing project descriptions.
+- Skip opening hours and physical address entirely — they don't apply here.` : '';
+
     const prompt = `You are a web designer building a FIRST-DRAFT single-page website for a client of a web design agency called WebCloud.
 
 Client's package: ${packageName || 'Basic'}
 Client's answers to our project questionnaire (JSON):
 ${JSON.stringify(answers, null, 2)}
+${portfolioGuidance}
 
 Design system to loosely draw from (this is WebCloud's own brand, not necessarily the client's — use it as a starting point and adapt colors/tone to fit the client's business if their answers suggest a different vibe):
 ${DESIGN_TOKENS}
