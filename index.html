@@ -130,7 +130,8 @@
 
   /* PRICING */
   .pricing-grid{display:grid;grid-template-columns:1fr;gap:22px;}
-  @media (min-width:820px){ .pricing-grid{grid-template-columns:repeat(3,1fr);} }
+  @media (min-width:640px){ .pricing-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (min-width:1100px){ .pricing-grid{grid-template-columns:repeat(4,1fr);} }
   .plan{
     background:var(--white);border:1px solid var(--line);border-radius:18px;
     padding:30px 26px;display:flex;flex-direction:column;position:relative;
@@ -266,7 +267,7 @@
 
         <div class="plan">
           <h3>Basic</h3>
-          <div class="price">$650 <small>one-off</small></div>
+          <div class="price">$549 <small>one-off</small></div>
           <div class="tagline">Single-page site, up to 4 sections.</div>
           <ul>
             <li>Design &amp; copywriting</li>
@@ -274,13 +275,13 @@
             <li>12 months hosting</li>
           </ul>
           <!-- STRIPE TEST MODE LINK — replace with live link before going live -->
-          <a class="btn btn-ghost btn-block" href="https://buy.stripe.com/test_aFa8wQ9QUcUT3HJ7UCgQE00" data-package="basic">Get Started — $650</a>
+          <a class="btn btn-ghost btn-block" href="https://buy.stripe.com/test_aFa8wQ9QUcUT3HJ7UCgQE00" data-package="basic">Get Started — $549</a>
         </div>
 
         <div class="plan popular">
           <span class="plan-badge">Most Popular</span>
           <h3>Business</h3>
-          <div class="price">$1,200 <small>one-off</small></div>
+          <div class="price">$999 <small>one-off</small></div>
           <div class="tagline">Up to 4–5 pages, contact form.</div>
           <ul>
             <li>Everything in Basic</li>
@@ -288,12 +289,25 @@
             <li>Basic SEO setup</li>
           </ul>
           <!-- STRIPE TEST MODE LINK — replace with live link before going live -->
-          <a class="btn btn-accent btn-block" href="https://buy.stripe.com/test_3cIfZi3sw4on923fn4gQE01" data-package="business">Get Started — $1,200</a>
+          <a class="btn btn-accent btn-block" href="https://buy.stripe.com/test_3cIfZi3sw4on923fn4gQE01" data-package="business">Get Started — $999</a>
+        </div>
+
+        <div class="plan">
+          <h3>Portfolio</h3>
+          <div class="price">$250 <small>one-off</small></div>
+          <div class="tagline">A simple personal site to showcase your work.</div>
+          <ul>
+            <li>Single-page personal portfolio</li>
+            <li>Photos, projects &amp; CV/bio section</li>
+            <li>Mobile-friendly</li>
+          </ul>
+          <!-- STRIPE TEST MODE LINK — replace with live link before going live -->
+          <a class="btn btn-ghost btn-block" href="https://buy.stripe.com/test_9B6aEYgfi4on1zB8YGgQE03" data-package="portfolio">Get Started — $250</a>
         </div>
 
         <div class="plan">
           <h3>Maintenance</h3>
-          <div class="price">$40 <small>/month</small></div>
+          <div class="price">$35 <small>/month</small></div>
           <div class="tagline">Hosting, updates &amp; small changes.</div>
           <ul>
             <li>Uptime monitoring</li>
@@ -301,7 +315,7 @@
             <li>Up to 30 mins of changes/month</li>
           </ul>
           <!-- STRIPE TEST MODE LINK — replace with live link before going live -->
-          <a class="btn btn-ghost btn-block" href="https://buy.stripe.com/test_aFacN68MQdYXa671wegQE02" data-package="maintenance">Subscribe — $40/mo</a>
+          <a class="btn btn-ghost btn-block" href="https://buy.stripe.com/test_aFacN68MQdYXa671wegQE02" data-package="maintenance">Subscribe — $35/mo</a>
         </div>
 
       </div>
