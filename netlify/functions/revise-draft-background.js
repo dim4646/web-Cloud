@@ -1,6 +1,7 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const { findOrderBySessionId, updateOrderRecord } = require('./_lib/airtable');
 const { getEnv } = require('./_lib/env');
+const { sendNotification } = require('./_lib/email');
 
 exports.handler = async (event) => {
   let payload;
@@ -80,12 +81,28 @@ Respond with ONLY the raw HTML, starting with <!DOCTYPE html> — no markdown co
 
     const siteUrl = getEnv('URL') || '';
     const adminKey = getEnv('ADMIN_KEY') || '';
+    const previewUrl = `${siteUrl}/.netlify/functions/preview-pending?session_id=${encodeURIComponent(sessionId)}`;
+    const approveUrl = `${siteUrl}/.netlify/functions/approve-revision?session_id=${encodeURIComponent(sessionId)}&key=${encodeURIComponent(adminKey)}`;
     await updateOrderRecord(record.id, {
       'Draft Status': 'Pending Review',
       'Pending HTML': html,
-      'Pending Preview URL': `${siteUrl}/.netlify/functions/preview-pending?session_id=${encodeURIComponent(sessionId)}`,
-      'Approve URL': `${siteUrl}/.netlify/functions/approve-revision?session_id=${encodeURIComponent(sessionId)}&key=${encodeURIComponent(adminKey)}`,
+      'Pending Preview URL': previewUrl,
+      'Approve URL': approveUrl,
     });
+
+    await sendNotification(
+      `Revision ready for review: ${record.fields['Customer Name'] || 'customer'}`,
+      `
+        <h2>Revision Ready for Review</h2>
+        <table cellpadding="8" style="border-collapse:collapse">
+          <tr><td><strong>Customer</strong></td><td>${record.fields['Customer Name'] || ''}</td></tr>
+          <tr><td><strong>Package</strong></td><td>${record.fields.Package || ''}</td></tr>
+          <tr><td><strong>Requested change</strong></td><td>${revisionRequest}</td></tr>
+        </table>
+        <p><a href="${previewUrl}">Preview the revised draft</a></p>
+        <p><a href="${approveUrl}">Approve &amp; go live</a></p>
+      `
+    );
   } catch (err) {
     console.error('Draft revision failed:', err.message);
     try {

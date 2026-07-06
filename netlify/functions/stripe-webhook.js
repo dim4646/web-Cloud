@@ -1,5 +1,6 @@
 const Stripe = require('stripe');
 const { getEnv } = require('./_lib/env');
+const { sendNotification } = require('./_lib/email');
 
 const PRICE_TO_PACKAGE = {
   price_1TphB7JM2u2WIzsFKS2pdpUT: 'Basic',
@@ -95,37 +96,19 @@ exports.handler = async (event) => {
     return { statusCode: 500, body: 'Airtable request failed' };
   }
 
-  // Send notification email via Resend (non-fatal if it fails)
-  try {
-    const emailRes = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${getEnv('RESEND_API_KEY')}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: getEnv('RESEND_FROM_EMAIL'),
-        to: [getEnv('NOTIFICATION_EMAIL')],
-        subject: `New order: ${packageName} from ${customerName}`,
-        html: `
-          <h2>New WebCloud Order</h2>
-          <table cellpadding="8" style="border-collapse:collapse">
-            <tr><td><strong>Package</strong></td><td>${packageName}</td></tr>
-            <tr><td><strong>Customer</strong></td><td>${customerName}</td></tr>
-            <tr><td><strong>Email</strong></td><td>${email}</td></tr>
-            <tr><td><strong>Session ID</strong></td><td>${sessionId}</td></tr>
-            <tr><td><strong>Date</strong></td><td>${today}</td></tr>
-          </table>
-        `,
-      }),
-    });
-
-    if (!emailRes.ok) {
-      console.error('Resend error:', await emailRes.text());
-    }
-  } catch (err) {
-    console.error('Email request failed:', err.message);
-  }
+  await sendNotification(
+    `New order: ${packageName} from ${customerName}`,
+    `
+      <h2>New WebCloud Order</h2>
+      <table cellpadding="8" style="border-collapse:collapse">
+        <tr><td><strong>Package</strong></td><td>${packageName}</td></tr>
+        <tr><td><strong>Customer</strong></td><td>${customerName}</td></tr>
+        <tr><td><strong>Email</strong></td><td>${email}</td></tr>
+        <tr><td><strong>Session ID</strong></td><td>${sessionId}</td></tr>
+        <tr><td><strong>Date</strong></td><td>${today}</td></tr>
+      </table>
+    `
+  );
 
   return {
     statusCode: 200,
