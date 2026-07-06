@@ -45,14 +45,22 @@ exports.handler = async (event) => {
   // Maintenance is for an existing site - there's nothing to draft, so skip
   // triggering the AI generation entirely.
   if (!isMaintenance) {
-    // Fire-and-forget: hand off to the background function, which has a much
-    // higher execution time limit than this one needs for the AI call.
+    // Hand off to the background function, which has a much higher execution
+    // time limit than this one needs for the AI call. We only await the
+    // initial 202 Accepted response (not the background work itself) -
+    // awaiting is required because an un-awaited fetch can get cut off
+    // before the request is actually sent, since Netlify may freeze the
+    // execution environment as soon as this handler returns.
     const siteUrl = process.env.URL || `https://${event.headers.host}`;
-    fetch(`${siteUrl}/.netlify/functions/generate-draft-background`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sessionId, answers, package: record.fields.Package }),
-    }).catch((err) => console.error('Failed to trigger draft generation:', err.message));
+    try {
+      await fetch(`${siteUrl}/.netlify/functions/generate-draft-background`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId, answers, package: record.fields.Package }),
+      });
+    } catch (err) {
+      console.error('Failed to trigger draft generation:', err.message);
+    }
   }
 
   return {

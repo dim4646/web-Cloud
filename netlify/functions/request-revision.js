@@ -39,12 +39,20 @@ exports.handler = async (event) => {
     return { statusCode: 500, body: JSON.stringify({ error: 'Update failed' }) };
   }
 
+  // Await the initial 202 Accepted response (not the background work itself)
+  // - an un-awaited fetch can get cut off before the request is actually
+  // sent, since Netlify may freeze the execution environment as soon as
+  // this handler returns.
   const siteUrl = process.env.URL || `https://${event.headers.host}`;
-  fetch(`${siteUrl}/.netlify/functions/revise-draft-background`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ sessionId }),
-  }).catch((err) => console.error('Failed to trigger revision generation:', err.message));
+  try {
+    await fetch(`${siteUrl}/.netlify/functions/revise-draft-background`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId }),
+    });
+  } catch (err) {
+    console.error('Failed to trigger revision generation:', err.message);
+  }
 
   return {
     statusCode: 200,
