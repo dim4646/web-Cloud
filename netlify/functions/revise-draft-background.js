@@ -57,9 +57,16 @@ Respond with ONLY the raw HTML, starting with <!DOCTYPE html> — no markdown co
 
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-5',
-      max_tokens: 8000,
+      max_tokens: 16000,
       messages: [{ role: 'user', content: prompt }],
     });
+
+    // A full single-page site can run past the token budget, in which case
+    // Anthropic cuts the response off mid-tag rather than erroring - treat
+    // that the same as a failure instead of shipping half a page.
+    if (message.stop_reason === 'max_tokens') {
+      throw new Error('Model output was truncated by the max_tokens limit - the generated HTML is incomplete.');
+    }
 
     let html = (message.content || [])
       .filter((block) => block.type === 'text')
