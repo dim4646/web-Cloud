@@ -59,6 +59,23 @@
     .nav-loc{display:block;}
   }
 
+  .nav-toggle{display:flex;align-items:center;justify-content:center;width:36px;height:36px;flex:none;background:none;border:none;cursor:pointer;padding:0;}
+  .nav-toggle span{position:relative;display:block;width:20px;height:2px;background:var(--ink);border-radius:2px;transition:background .15s ease;}
+  .nav-toggle span::before,.nav-toggle span::after{content:"";position:absolute;left:0;width:20px;height:2px;background:var(--ink);border-radius:2px;transition:transform .2s ease,top .2s ease,opacity .2s ease;}
+  .nav-toggle span::before{top:-6px;}
+  .nav-toggle span::after{top:6px;}
+  .nav-toggle.open span{background:transparent;}
+  .nav-toggle.open span::before{top:0;transform:rotate(45deg);}
+  .nav-toggle.open span::after{top:0;transform:rotate(-45deg);}
+  @media (min-width:820px){ .nav-toggle{display:none;} }
+
+  .mobile-menu{display:none;max-height:0;overflow:hidden;border-top:1px solid var(--line);transition:max-height .2s ease;}
+  .mobile-menu.open{display:block;max-height:320px;}
+  .mobile-menu .container{display:flex;flex-direction:column;padding-top:6px;padding-bottom:14px;}
+  .mobile-menu a{padding:13px 0;font-size:.98rem;font-weight:500;color:var(--ink);border-bottom:1px solid var(--line);}
+  .mobile-menu .nav-loc-mobile{padding-top:13px;font-size:.82rem;color:var(--muted);}
+  @media (min-width:820px){ .mobile-menu{display:none !important;} }
+
   /* HERO */
   .hero{padding:72px 0 56px;}
   .eyebrow{
@@ -234,6 +251,16 @@
       <a href="#contact">Contact</a>
     </nav>
     <div class="nav-loc">Gold Coast, QLD</div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu"><span></span></button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="container">
+      <a href="#services">Services</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#why">Why Us</a>
+      <a href="#contact">Contact</a>
+      <div class="nav-loc-mobile">Gold Coast, QLD</div>
+    </div>
   </div>
 </header>
 
@@ -449,6 +476,21 @@
   });
   closeBtn.addEventListener('click', function(){
     panel.classList.remove('open');
+  });
+
+  var navToggle = document.getElementById('navToggle');
+  var mobileMenu = document.getElementById('mobileMenu');
+  navToggle.addEventListener('click', function(){
+    var isOpen = mobileMenu.classList.toggle('open');
+    navToggle.classList.toggle('open', isOpen);
+    navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+  mobileMenu.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click', function(){
+      mobileMenu.classList.remove('open');
+      navToggle.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
+    });
   });
 })();
 </script>
