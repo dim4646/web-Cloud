@@ -311,7 +311,7 @@
       hide(el.formCard);
       hide(el.revising);
       show(el.pendingReview);
-      if (pollTimer) clearInterval(pollTimer);
+      if (!pollTimer) pollTimer = setInterval(pollOrder, 3000);
       return;
     }
 
