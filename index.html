@@ -46,8 +46,11 @@
     border-bottom:1px solid var(--line);
   }
   .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0;}
-  .logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:1.15rem;letter-spacing:-.01em;}
+  .logo{display:flex;align-items:center;gap:9px;}
   .logo-mark{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--sky),var(--accent));flex:none;}
+  .logo-text{display:flex;flex-direction:column;line-height:1.05;}
+  .logo-title{font-weight:700;font-size:1.15rem;letter-spacing:-.01em;}
+  .logo-sub{font-size:.6rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-top:2px;}
   .nav-links{display:none;gap:32px;font-size:.92rem;font-weight:500;color:var(--muted);}
   .nav-links a:hover{color:var(--ink);}
   .nav-loc{display:none;font-size:.82rem;color:var(--muted);}
@@ -223,7 +226,7 @@
 
 <header>
   <div class="container nav">
-    <div class="logo"><span class="logo-mark"></span>WebCloud</div>
+    <div class="logo"><span class="logo-mark"></span><div class="logo-text"><span class="logo-title">WebCloud</span><span class="logo-sub">Solutions</span></div></div>
     <nav class="nav-links">
       <a href="#services">Services</a>
       <a href="#pricing">Pricing</a>
