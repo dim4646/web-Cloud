@@ -11,16 +11,16 @@
 <style>
   :root{
     --navy:#0B1220;
-    --navy-2:#111B2E;
-    --paper:#F6F8FB;
-    --white:#FFFFFF;
-    --ink:#0B1220;
-    --muted:#5A6478;
+    --navy-2:#141E36;
+    --paper:#0A0F1C;
+    --white:#131C31;
+    --ink:#EDF1F7;
+    --muted:#8F9BB3;
     --accent:#3DDC97;
-    --accent-dim:#1F8F63;
-    --sky:#4C8DFF;
-    --line: rgba(11,18,32,.10);
-    --line-dark: rgba(255,255,255,.12);
+    --accent-dim:#2ECB86;
+    --sky:#5B9CFF;
+    --line: rgba(255,255,255,.10);
+    --line-dark: rgba(255,255,255,.14);
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -41,7 +41,7 @@
   /* HEADER */
   header{
     position:sticky;top:0;z-index:50;
-    background:rgba(246,248,251,.88);
+    background:rgba(10,15,28,.86);
     backdrop-filter:blur(10px);
     border-bottom:1px solid var(--line);
   }
@@ -76,19 +76,19 @@
     padding:13px 26px;border-radius:10px;font-weight:600;font-size:.95rem;
     transition:transform .15s ease, box-shadow .15s ease;
   }
-  .btn-primary{background:var(--navy);color:var(--white);}
-  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(11,18,32,.22);}
-  .btn-ghost{border:1px solid var(--line);color:var(--ink);background:var(--white);}
-  .btn-ghost:hover{border-color:var(--ink);}
+  .btn-primary{background:var(--accent);color:var(--navy);}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(61,220,151,.30);}
+  .btn-ghost{border:1px solid var(--line);color:var(--ink);background:rgba(255,255,255,.04);}
+  .btn-ghost:hover{border-color:var(--ink);background:rgba(255,255,255,.08);}
   .btn-accent{background:var(--accent);color:var(--navy);}
   .btn-accent:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(61,220,151,.35);}
   .btn-block{width:100%;}
 
   .stats{
-    display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
+    display:grid;grid-template-columns:1fr;gap:1px;
     background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;
   }
-  @media (min-width:700px){ .stats{grid-template-columns:repeat(4,1fr);} }
+  @media (min-width:560px){ .stats{grid-template-columns:repeat(3,1fr);} }
   .stat{background:var(--white);padding:20px 18px;}
   .stat .label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:4px;}
   .stat .val{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1rem;}
@@ -110,14 +110,14 @@
   .card p{color:var(--muted);font-size:.94rem;}
   .icon-dot{
     width:38px;height:38px;border-radius:10px;
-    background:var(--navy);color:var(--accent);
+    background:var(--accent);color:var(--navy);
     display:flex;align-items:center;justify-content:center;
     font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.85rem;
     margin-bottom:16px;
   }
 
   /* WHY US */
-  .why-section{background:var(--navy);color:var(--white);}
+  .why-section{background:var(--navy-2);color:var(--ink);}
   .why-section .section-tag{color:var(--accent);}
   .why-section .section-head p{color:rgba(255,255,255,.62);}
   .why-item{
@@ -136,10 +136,10 @@
     background:var(--white);border:1px solid var(--line);border-radius:18px;
     padding:30px 26px;display:flex;flex-direction:column;position:relative;
   }
-  .plan.popular{border-color:var(--navy);box-shadow:0 14px 32px rgba(11,18,32,.10);}
+  .plan.popular{border-color:var(--accent);box-shadow:0 14px 32px rgba(0,0,0,.35);}
   .plan-badge{
     position:absolute;top:-13px;left:26px;
-    background:var(--navy);color:var(--accent);
+    background:var(--accent);color:var(--navy);
     font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
     padding:5px 12px;border-radius:999px;
   }
@@ -158,7 +158,8 @@
 
   /* CONTACT */
   .contact-box{
-    background:var(--navy);color:var(--white);border-radius:22px;
+    background:linear-gradient(135deg,var(--navy-2),var(--navy));color:var(--ink);border-radius:22px;
+    border:1px solid var(--line);
     padding:44px 30px;display:grid;gap:28px;
   }
   @media (min-width:760px){ .contact-box{grid-template-columns:1.2fr 1fr;padding:52px 48px;align-items:center;} }
@@ -173,6 +174,49 @@
   .contact-link .l{color:rgba(255,255,255,.55);font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;font-weight:600;}
 
   footer{padding:32px 0;text-align:center;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);}
+
+  /* CHAT WIDGET */
+  .chat-fab{
+    position:fixed;right:20px;bottom:20px;z-index:100;
+    width:56px;height:56px;border-radius:50%;border:none;cursor:pointer;
+    background:var(--accent);color:var(--navy);font-size:1.4rem;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 10px 24px rgba(0,0,0,.35);
+    transition:transform .15s ease;
+  }
+  .chat-fab:hover{transform:translateY(-2px);}
+  .chat-panel{
+    position:fixed;right:20px;bottom:88px;z-index:100;
+    width:min(340px, calc(100vw - 40px));
+    max-height:min(480px, calc(100vh - 140px));
+    background:var(--white);border:1px solid var(--line);border-radius:16px;
+    box-shadow:0 20px 50px rgba(0,0,0,.45);
+    display:flex;flex-direction:column;overflow:hidden;
+    opacity:0;transform:translateY(12px) scale(.98);pointer-events:none;
+    transition:opacity .18s ease, transform .18s ease;
+  }
+  .chat-panel.open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
+  .chat-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 18px;background:var(--navy);border-bottom:1px solid var(--line);
+  }
+  .chat-head strong{font-family:'Space Grotesk',sans-serif;font-size:.95rem;color:var(--ink);}
+  .chat-head span{display:block;font-size:.76rem;color:var(--muted);margin-top:2px;}
+  .chat-close{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;line-height:1;padding:4px;}
+  .chat-close:hover{color:var(--ink);}
+  .chat-body{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:12px;}
+  .chat-msg{font-size:.88rem;line-height:1.5;max-width:88%;}
+  .chat-msg.bot{background:rgba(255,255,255,.05);border:1px solid var(--line);padding:10px 12px;border-radius:12px 12px 12px 4px;color:var(--ink);}
+  .chat-msg.user{background:var(--accent);color:var(--navy);padding:10px 12px;border-radius:12px 12px 4px 12px;align-self:flex-end;font-weight:500;}
+  .chat-suggestions{display:flex;flex-direction:column;gap:8px;}
+  .chat-q{
+    text-align:left;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--ink);
+    padding:9px 12px;border-radius:10px;font-size:.84rem;cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .chat-q:hover{border-color:var(--accent);background:rgba(61,220,151,.08);}
+  .chat-foot{padding:12px 18px;border-top:1px solid var(--line);text-align:center;font-size:.78rem;color:var(--muted);}
+  .chat-foot a{color:var(--sky);font-weight:600;}
 </style>
 </head>
 <body>
@@ -201,7 +245,6 @@
       <a class="btn btn-ghost" href="#services">Services</a>
     </div>
     <div class="stats">
-      <div class="stat"><div class="label">Experience</div><div class="val">30+ years tech</div></div>
       <div class="stat"><div class="label">Location</div><div class="val">Gold Coast &amp; QLD</div></div>
       <div class="stat"><div class="label">Specialty</div><div class="val">Web · Hosting · Cloud</div></div>
       <div class="stat"><div class="label">Delivery</div><div class="val">Fast turnaround</div></div>
@@ -343,6 +386,69 @@
 <footer>
   © 2026 Web &amp; Cloud Solutions — Gold Coast, QLD
 </footer>
+
+<button class="chat-fab" id="chatFab" aria-label="Open chat">💬</button>
+<div class="chat-panel" id="chatPanel" role="dialog" aria-label="WebCloud chat">
+  <div class="chat-head">
+    <div>
+      <strong>WebCloud</strong>
+      <span>Ask us anything</span>
+    </div>
+    <button class="chat-close" id="chatClose" aria-label="Close chat">&times;</button>
+  </div>
+  <div class="chat-body" id="chatBody">
+    <div class="chat-msg bot">Hi! 👋 Pick a question below, or email us directly.</div>
+    <div class="chat-suggestions" id="chatSuggestions"></div>
+  </div>
+  <div class="chat-foot">
+    Still have a question? <a href="mailto:info@webcloudsolutions.com.au">Email us</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var faqs = [
+    { q: "What packages do you offer?", a: "We have four packages: Basic ($549), Business ($999, our most popular), Portfolio ($250), and Maintenance ($35/mo). See the Packages section above for full details." },
+    { q: "How fast can I get my site?", a: "After payment you'll fill in a short questionnaire, and we typically have your first draft ready very quickly. You can then request any tweaks before it goes live." },
+    { q: "Do you handle hosting too?", a: "Yes — hosting, your domain, backups and small updates are all included and handled by the same team, so you don't need multiple suppliers." },
+    { q: "Can I request changes after my site is built?", a: "Absolutely. Just tell us what you'd like changed and we'll update your draft — you approve it before anything goes live." },
+    { q: "Is my data private?", a: "With our Private Cloud option your files stay with you, not on a third-party server like Google Drive or Dropbox." }
+  ];
+
+  var fab = document.getElementById('chatFab');
+  var panel = document.getElementById('chatPanel');
+  var closeBtn = document.getElementById('chatClose');
+  var body = document.getElementById('chatBody');
+  var suggestions = document.getElementById('chatSuggestions');
+
+  faqs.forEach(function(item){
+    var btn = document.createElement('button');
+    btn.className = 'chat-q';
+    btn.type = 'button';
+    btn.textContent = item.q;
+    btn.addEventListener('click', function(){
+      var userMsg = document.createElement('div');
+      userMsg.className = 'chat-msg user';
+      userMsg.textContent = item.q;
+      var botMsg = document.createElement('div');
+      botMsg.className = 'chat-msg bot';
+      botMsg.textContent = item.a;
+      body.insertBefore(userMsg, suggestions);
+      body.insertBefore(botMsg, suggestions);
+      btn.remove();
+      body.scrollTop = body.scrollHeight;
+    });
+    suggestions.appendChild(btn);
+  });
+
+  fab.addEventListener('click', function(){
+    panel.classList.toggle('open');
+  });
+  closeBtn.addEventListener('click', function(){
+    panel.classList.remove('open');
+  });
+})();
+</script>
 
 </body>
 </html>
