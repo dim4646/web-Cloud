@@ -196,6 +196,15 @@
     <a href="#" id="draft-link" class="success-link" target="_blank" rel="noopener">View your draft site</a>
 
     <div class="card" id="revision-card" style="text-align:left;margin-top:24px;">
+      <label for="photoLink">Add or update your photos</label>
+      <div class="hint">Paste a Google Drive/Dropbox link with photos to add or replace the ones you sent before.</div>
+      <input type="text" id="photoLink" name="photoLink" placeholder="https://drive.google.com/...">
+      <button type="button" class="btn" id="photo-btn" style="margin-top:14px;">Update photos</button>
+      <div class="error" id="photo-error"></div>
+      <div class="hint" id="photo-success" style="display:none;margin-top:10px;color:var(--accent-dim);font-weight:600;">Got it — we'll use these.</div>
+
+      <hr style="margin:26px 0;border:none;border-top:1px solid var(--line);">
+
       <label for="revisionText">Want something changed?</label>
       <div class="hint">Describe what you'd like different — we'll prepare an updated version for you.</div>
       <textarea id="revisionText" name="revisionText"></textarea>
@@ -245,11 +254,16 @@
     ready: document.getElementById('status-ready'),
     failed: document.getElementById('status-failed'),
     draftLink: document.getElementById('draft-link'),
+    revisionCard: document.getElementById('revision-card'),
     revising: document.getElementById('status-revising'),
     pendingReview: document.getElementById('status-pending-review'),
     revisionText: document.getElementById('revisionText'),
     revisionBtn: document.getElementById('revision-btn'),
     revisionError: document.getElementById('revision-error'),
+    photoLink: document.getElementById('photoLink'),
+    photoBtn: document.getElementById('photo-btn'),
+    photoError: document.getElementById('photo-error'),
+    photoSuccess: document.getElementById('photo-success'),
     formCardMaintenance: document.getElementById('form-card-maintenance'),
     maintenanceForm: document.getElementById('maintenance-form'),
     maintenanceSubmitBtn: document.getElementById('maintenance-submit-btn'),
@@ -321,6 +335,7 @@
       hide(el.revising);
       hide(el.pendingReview);
       el.draftLink.href = order.draftUrl;
+      hide(el.revisionCard);
       show(el.ready);
       if (pollTimer) clearInterval(pollTimer);
       return;
@@ -421,6 +436,10 @@
     }
   });
 
+  el.draftLink.addEventListener('click', function () {
+    show(el.revisionCard);
+  });
+
   el.revisionBtn.addEventListener('click', async function () {
     const text = el.revisionText.value.trim();
     el.revisionError.textContent = '';
@@ -447,6 +466,36 @@
       el.revisionError.textContent = 'Something went wrong. Please try again.';
       el.revisionBtn.disabled = false;
       el.revisionBtn.textContent = 'Request changes';
+    }
+  });
+
+  el.photoBtn.addEventListener('click', async function () {
+    const link = el.photoLink.value.trim();
+    el.photoError.textContent = '';
+    hide(el.photoSuccess);
+    if (!link) {
+      el.photoError.textContent = 'Please paste a link to your photos.';
+      return;
+    }
+
+    el.photoBtn.disabled = true;
+    el.photoBtn.textContent = 'Submitting...';
+
+    try {
+      const res = await fetch('/.netlify/functions/request-revision', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId, revisionText: `Updated photo link — please use these photos: ${link}` }),
+      });
+      if (!res.ok) throw new Error('Request failed');
+
+      hide(el.ready);
+      show(el.revising);
+      pollTimer = setInterval(pollOrder, 3000);
+    } catch (err) {
+      el.photoError.textContent = 'Something went wrong. Please try again.';
+      el.photoBtn.disabled = false;
+      el.photoBtn.textContent = 'Update photos';
     }
   });
 
