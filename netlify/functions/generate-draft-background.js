@@ -47,6 +47,8 @@ ${DESIGN_TOKENS}
 
 Produce a single, complete, self-contained HTML file (inline <style>, no external JS frameworks, a Google Fonts <link> is fine) implementing a draft website for this client based on their answers. Include a header/nav, hero section, a section for their content/services, and a contact section. In the contact section, include whichever of email/phone/address/opening hours/social links the client actually provided (skip any that are blank rather than inventing placeholders for them), plus placeholders for any core content that's still missing. Make it mobile-responsive. Where the client's answers don't give enough detail, use placeholder text clearly marked like [PLACEHOLDER: short description of what's needed] so the human designer knows what to fill in before it ships.
 
+For every element that is meant to hold a client-supplied photo (profile photo, hero image, project thumbnail, etc.), add a data-wc-photo="N" attribute to that specific element (N starting at 1 and incrementing for each photo slot on the page — e.g. data-wc-photo="1", data-wc-photo="2", ...). This applies whether or not the client provided a photo link. These attributes are used later to let the client drop in real photos themselves, so every distinct photo-shaped placeholder on the page needs its own number, in the order it appears.
+
 Respond with ONLY the raw HTML, starting with <!DOCTYPE html> — no markdown code fences, no explanation before or after.`;
 
     const message = await anthropic.messages.create({

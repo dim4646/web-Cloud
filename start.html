@@ -194,6 +194,7 @@
   <div class="status" id="status-ready">
     <p><strong>Your first draft is ready.</strong></p>
     <a href="#" id="draft-link" class="success-link" target="_blank" rel="noopener">View your draft site</a>
+    <p class="hint" id="self-serve-hint" style="margin-top:10px;"></p>
 
     <div class="card" id="revision-card" style="text-align:left;margin-top:24px;">
       <label for="photoLink">Add or update your photos</label>
@@ -206,7 +207,7 @@
       <hr style="margin:26px 0;border:none;border-top:1px solid var(--line);">
 
       <label for="revisionText">Want something changed?</label>
-      <div class="hint">Describe what you'd like different — we'll prepare an updated version for you.</div>
+      <div class="hint">Describe what you'd like different, and the WebCloud team will prepare an updated version for you.</div>
       <textarea id="revisionText" name="revisionText"></textarea>
       <button type="button" class="btn" id="revision-btn" style="margin-top:14px;">Request changes</button>
       <div class="error" id="revision-error"></div>
@@ -254,6 +255,7 @@
     ready: document.getElementById('status-ready'),
     failed: document.getElementById('status-failed'),
     draftLink: document.getElementById('draft-link'),
+    selfServeHint: document.getElementById('self-serve-hint'),
     revisionCard: document.getElementById('revision-card'),
     revising: document.getElementById('status-revising'),
     pendingReview: document.getElementById('status-pending-review'),
@@ -335,6 +337,11 @@
       hide(el.revising);
       hide(el.pendingReview);
       el.draftLink.href = order.draftUrl;
+      if (typeof order.selfServeRoundsRemaining === 'number' && order.selfServeRoundsRemaining > 0) {
+        el.selfServeHint.textContent = `Open your draft — a WebCloud assistant there lets you change colors, fonts, and photos yourself (${order.selfServeRoundsRemaining} of ${order.selfServeRoundsLimit} free changes left).`;
+      } else {
+        el.selfServeHint.textContent = '';
+      }
       hide(el.revisionCard);
       show(el.ready);
       if (pollTimer) clearInterval(pollTimer);

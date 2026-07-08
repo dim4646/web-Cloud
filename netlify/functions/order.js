@@ -1,4 +1,5 @@
 const { findOrderBySessionId } = require('./_lib/airtable');
+const { ROUNDS_LIMIT } = require('./_lib/design-presets');
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'GET') {
@@ -23,6 +24,7 @@ exports.handler = async (event) => {
   }
 
   const f = record.fields;
+  const roundsUsed = f['Self-Serve Rounds Used'] || 0;
   return {
     statusCode: 200,
     headers: { 'Content-Type': 'application/json' },
@@ -32,6 +34,9 @@ exports.handler = async (event) => {
       formStatus: f['Form Status'] || null,
       draftStatus: f['Draft Status'] || null,
       draftUrl: f['Draft URL'] || null,
+      selfServeRoundsUsed: roundsUsed,
+      selfServeRoundsLimit: ROUNDS_LIMIT,
+      selfServeRoundsRemaining: Math.max(0, ROUNDS_LIMIT - roundsUsed),
     }),
   };
 };
