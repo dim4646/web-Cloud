@@ -123,6 +123,36 @@
   .stat .label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:4px;}
   .stat .val{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1rem;}
 
+  /* PACKAGE FINDER */
+  .finder{margin-top:22px;}
+  .finder-box{
+    display:flex;align-items:center;gap:10px;
+    background:var(--white);border:1px solid var(--line);border-radius:16px;
+    padding:6px 8px 6px 20px;
+    box-shadow:0 12px 32px rgba(0,0,0,.28);
+  }
+  .finder-box:focus-within{border-color:var(--accent);}
+  #finder-input{
+    flex:1;background:none;border:none;outline:none;color:var(--ink);
+    font-family:'Inter',sans-serif;font-size:.98rem;padding:12px 0;min-width:0;
+  }
+  #finder-input::placeholder{color:var(--muted);}
+  #finder-btn{
+    flex:none;width:38px;height:38px;border-radius:11px;border:none;cursor:pointer;
+    background:var(--accent);color:var(--navy);display:flex;align-items:center;justify-content:center;
+    transition:transform .15s ease;
+  }
+  #finder-btn:hover{transform:translateY(-1px);}
+  .finder-hint{margin-top:10px;font-size:.82rem;color:var(--muted);padding-left:4px;}
+  .plan.finder-highlight{
+    animation:finderPulse 1.8s ease 2;
+    border-color:var(--accent) !important;
+  }
+  @keyframes finderPulse{
+    0%,100%{box-shadow:none;}
+    50%{box-shadow:0 0 0 4px rgba(61,220,151,.35);}
+  }
+
   /* SECTION LABEL */
   .section{padding:72px 0;}
   .section-tag{font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--sky);margin-bottom:10px;}
@@ -290,6 +320,16 @@
       <div class="stat"><div class="label">Location</div><div class="val">Gold Coast &amp; QLD</div></div>
       <div class="stat"><div class="label">Specialty</div><div class="val">Web · Hosting · Cloud</div></div>
       <div class="stat"><div class="label">Delivery</div><div class="val">Fast turnaround</div></div>
+    </div>
+
+    <div class="finder">
+      <div class="finder-box">
+        <input type="text" id="finder-input" autocomplete="off" aria-label="Describe what you need">
+        <button type="button" id="finder-btn" aria-label="Find my package">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+        </button>
+      </div>
+      <div class="finder-hint">Tell us what you need — we'll point you to the right package.</div>
     </div>
   </section>
 
@@ -502,6 +542,81 @@
       navToggle.classList.remove('open');
       navToggle.setAttribute('aria-expanded', 'false');
     });
+  });
+
+  // --- Package finder: animated placeholder + keyword-match scroll ---
+  var finderInput = document.getElementById('finder-input');
+  var finderBtn = document.getElementById('finder-btn');
+
+  var examples = [
+    "Which package do you need? e.g. \"a site for my portfolio\"",
+    "\"I need a site for my small business\"",
+    "\"I already have a site, just need it maintained\"",
+    "\"I want a multi-page site for my company\"",
+    "\"I'm a freelancer, need a personal site\""
+  ];
+  var exIndex = 0, charIndex = 0, deleting = false;
+
+  function typeLoop(){
+    if (document.activeElement === finderInput || finderInput.value) return;
+    var current = examples[exIndex];
+    if (!deleting) {
+      charIndex++;
+      finderInput.setAttribute('placeholder', current.slice(0, charIndex));
+      if (charIndex >= current.length) {
+        deleting = true;
+        setTimeout(typeLoop, 1600);
+        return;
+      }
+    } else {
+      charIndex--;
+      finderInput.setAttribute('placeholder', current.slice(0, charIndex));
+      if (charIndex <= 0) {
+        deleting = false;
+        exIndex = (exIndex + 1) % examples.length;
+      }
+    }
+    setTimeout(typeLoop, deleting ? 25 : 45);
+  }
+  typeLoop();
+
+  var packageKeywords = {
+    maintenance: ['maintain', 'maintenance', 'existing site', 'already have a site', 'update my site', 'fix my site'],
+    portfolio: ['portfolio', 'personal site', 'freelance', 'freelancer', 'photographer', 'resume', 'cv', 'showcase'],
+    business: ['business', 'company', 'multiple pages', 'multi-page', 'shop', 'store', 'professional site'],
+    basic: ['small business', 'one page', 'single page', 'simple site', 'basic site']
+  };
+
+  function findPackage(text){
+    var lower = text.toLowerCase();
+    var order = ['maintenance', 'portfolio', 'business', 'basic'];
+    for (var i = 0; i < order.length; i++) {
+      var pkg = order[i];
+      var keywords = packageKeywords[pkg];
+      for (var j = 0; j < keywords.length; j++) {
+        if (lower.indexOf(keywords[j]) !== -1) return pkg;
+      }
+    }
+    return null;
+  }
+
+  function submitFinder(){
+    var text = finderInput.value.trim();
+    var pkg = text ? findPackage(text) : null;
+    var target = pkg ? document.querySelector('.plan [data-package="' + pkg + '"]') : null;
+    var card = target ? target.closest('.plan') : document.getElementById('pricing');
+    if (!card) return;
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (target) {
+      var planCard = target.closest('.plan');
+      planCard.classList.add('finder-highlight');
+      setTimeout(function(){ planCard.classList.remove('finder-highlight'); }, 3600);
+    }
+  }
+
+  finderBtn.addEventListener('click', submitFinder);
+  finderInput.addEventListener('keydown', function(e){
+    if (e.key === 'Enter') submitFinder();
   });
 })();
 </script>
