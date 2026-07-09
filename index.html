@@ -123,27 +123,7 @@
   .stat .label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:4px;}
   .stat .val{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1rem;}
 
-  /* PACKAGE FINDER */
-  .finder{margin-top:22px;}
-  .finder-box{
-    display:flex;align-items:center;gap:10px;
-    background:var(--white);border:1px solid var(--line);border-radius:16px;
-    padding:6px 8px 6px 20px;
-    box-shadow:0 12px 32px rgba(0,0,0,.28);
-  }
-  .finder-box:focus-within{border-color:var(--accent);}
-  #finder-input{
-    flex:1;background:none;border:none;outline:none;color:var(--ink);
-    font-family:'Inter',sans-serif;font-size:.98rem;padding:12px 0;min-width:0;
-  }
-  #finder-input::placeholder{color:var(--muted);}
-  #finder-btn{
-    flex:none;width:38px;height:38px;border-radius:11px;border:none;cursor:pointer;
-    background:var(--accent);color:var(--navy);display:flex;align-items:center;justify-content:center;
-    transition:transform .15s ease;
-  }
-  #finder-btn:hover{transform:translateY(-1px);}
-  .finder-hint{margin-top:10px;font-size:.82rem;color:var(--muted);padding-left:4px;}
+  /* PACKAGE FINDER (lives inside the chat widget, see .chat-input below) */
   .plan.finder-highlight{
     animation:finderPulse 1.8s ease 2;
     border-color:var(--accent) !important;
@@ -277,6 +257,19 @@
   .chat-q:hover{border-color:var(--accent);background:rgba(61,220,151,.08);}
   .chat-foot{padding:12px 18px;border-top:1px solid var(--line);text-align:center;font-size:.78rem;color:var(--muted);}
   .chat-foot a{color:var(--sky);font-weight:600;}
+  .chat-input-row{display:flex;align-items:center;gap:8px;padding:12px 18px;border-top:1px solid var(--line);}
+  #chat-finder-input{
+    flex:1;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:10px;outline:none;
+    color:var(--ink);font-family:'Inter',sans-serif;font-size:.86rem;padding:9px 12px;min-width:0;
+  }
+  #chat-finder-input:focus{border-color:var(--accent);}
+  #chat-finder-input::placeholder{color:var(--muted);}
+  #chat-finder-btn{
+    flex:none;width:34px;height:34px;border-radius:9px;border:none;cursor:pointer;
+    background:var(--accent);color:var(--navy);display:flex;align-items:center;justify-content:center;
+    transition:transform .15s ease;
+  }
+  #chat-finder-btn:hover{transform:translateY(-1px);}
 </style>
 </head>
 <body>
@@ -322,15 +315,6 @@
       <div class="stat"><div class="label">Delivery</div><div class="val">Fast turnaround</div></div>
     </div>
 
-    <div class="finder">
-      <div class="finder-box">
-        <input type="text" id="finder-input" autocomplete="off" aria-label="Describe what you need">
-        <button type="button" id="finder-btn" aria-label="Find my package">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
-        </button>
-      </div>
-      <div class="finder-hint">Tell us what you need — we'll point you to the right package.</div>
-    </div>
   </section>
 
   <section class="section" id="services">
@@ -478,8 +462,14 @@
     <button class="chat-close" id="chatClose" aria-label="Close chat">&times;</button>
   </div>
   <div class="chat-body" id="chatBody">
-    <div class="chat-msg bot">Hi! 👋 Pick a question below, or email us directly.</div>
+    <div class="chat-msg bot">Hi! 👋 Pick a question below, tell me what you need built, or email us directly.</div>
     <div class="chat-suggestions" id="chatSuggestions"></div>
+  </div>
+  <div class="chat-input-row">
+    <input type="text" id="chat-finder-input" autocomplete="off" aria-label="Tell us what you need">
+    <button type="button" id="chat-finder-btn" aria-label="Send">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+    </button>
   </div>
   <div class="chat-foot">
     Still have a question? <a href="mailto:info@webcloudsolutions.com.au">Email us</a>
@@ -544,12 +534,12 @@
     });
   });
 
-  // --- Package finder: animated placeholder + keyword-match scroll ---
-  var finderInput = document.getElementById('finder-input');
-  var finderBtn = document.getElementById('finder-btn');
+  // --- Package finder: lives inside the chat widget, animated placeholder + keyword match ---
+  var finderInput = document.getElementById('chat-finder-input');
+  var finderBtn = document.getElementById('chat-finder-btn');
 
   var examples = [
-    "Which package do you need? e.g. \"a site for my portfolio\"",
+    "Tell me what you need... e.g. \"a site for my portfolio\"",
     "\"I need a site for my small business\"",
     "\"I already have a site, just need it maintained\"",
     "\"I want a multi-page site for my company\"",
@@ -580,6 +570,12 @@
   }
   typeLoop();
 
+  var packageInfo = {
+    maintenance: { label: 'Maintenance', reply: "Sounds like our <b>Maintenance</b> plan ($35/mo) is what you need — hosting, updates and small changes on an existing site. Check it out below! 👇" },
+    portfolio: { label: 'Portfolio', reply: "Sounds like our <b>Portfolio</b> package ($250) is perfect for you — a simple personal site to showcase your work. Check it out below! 👇" },
+    business: { label: 'Business', reply: "Sounds like our <b>Business</b> package ($999) fits best — up to 4-5 pages with a contact form. Check it out below! 👇" },
+    basic: { label: 'Basic', reply: "Sounds like our <b>Basic</b> package ($549) fits best — a single-page site with up to 4 sections. Check it out below! 👇" }
+  };
   var packageKeywords = {
     maintenance: ['maintain', 'maintenance', 'existing site', 'already have a site', 'update my site', 'fix my site'],
     portfolio: ['portfolio', 'personal site', 'freelance', 'freelancer', 'photographer', 'resume', 'cv', 'showcase'],
@@ -600,18 +596,35 @@
     return null;
   }
 
+  function addChatMsg(text, who){
+    var msg = document.createElement('div');
+    msg.className = 'chat-msg ' + who;
+    msg.innerHTML = text;
+    body.insertBefore(msg, suggestions);
+    body.scrollTop = body.scrollHeight;
+  }
+
   function submitFinder(){
     var text = finderInput.value.trim();
-    var pkg = text ? findPackage(text) : null;
+    if (!text) return;
+    addChatMsg(text, 'user');
+    finderInput.value = '';
+
+    var pkg = findPackage(text);
+    var info = pkg ? packageInfo[pkg] : null;
+    addChatMsg(info ? info.reply : "Not 100% sure from that — take a look at our packages below, or email us and we'll help you pick. 👇", 'bot');
+
     var target = pkg ? document.querySelector('.plan [data-package="' + pkg + '"]') : null;
     var card = target ? target.closest('.plan') : document.getElementById('pricing');
     if (!card) return;
-    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    if (target) {
-      var planCard = target.closest('.plan');
-      planCard.classList.add('finder-highlight');
-      setTimeout(function(){ planCard.classList.remove('finder-highlight'); }, 3600);
-    }
+    setTimeout(function(){
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (target) {
+        var planCard = target.closest('.plan');
+        planCard.classList.add('finder-highlight');
+        setTimeout(function(){ planCard.classList.remove('finder-highlight'); }, 3600);
+      }
+    }, 400);
   }
 
   finderBtn.addEventListener('click', submitFinder);
