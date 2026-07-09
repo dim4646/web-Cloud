@@ -67,35 +67,39 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
   <div class="wc-head"><strong>${hasRounds ? 'Your WebCloud assistant' : 'Request a change'}</strong><button class="wc-close" id="wc-rev-close" type="button">&times;</button></div>
   <div class="wc-body" id="wc-rev-form">
     ${hasRounds ? `
-    <div class="wc-greet">Hi! I'm your WebCloud assistant. You can update your site's <b>colors</b>, <b>fonts</b>, and <b>photos</b> yourself, no need to wait on us. You have <b>${roundsRemaining} of ${ROUNDS_LIMIT}</b> free changes left. Camera icons on the page let you drop in your own photos — pick anything else below, then hit Apply to use one of your changes.</div>
+    <div class="wc-greet">Hi! I'm your WebCloud assistant. You can update colors, fonts, photos, wording, or anything else yourself, no need to wait on us — just describe it below or pick from the shortcuts. You have <b>${roundsRemaining} of ${ROUNDS_LIMIT}</b> free changes left. Camera icons on the page let you drop in your own photos too.</div>
 
     <div class="wc-section">
-      <label>Color palette</label>
+      <label>Color palette (optional shortcut)</label>
       <div class="wc-swatches" id="wc-palettes">
         ${PALETTES.map((p) => `<div class="wc-swatch" data-palette="${p.id}"><span class="wc-dot" style="background:${p.colors.accent}"></span><span class="wc-label">${p.label}</span></div>`).join('')}
       </div>
     </div>
 
     <div class="wc-section">
-      <label for="wc-font-select">Font pair</label>
+      <label for="wc-font-select">Font pair (optional shortcut)</label>
       <select id="wc-font-select">
         <option value="">No change</option>
         ${FONT_PAIRS.map((f) => `<option value="${f.id}">${f.label}</option>`).join('')}
       </select>
     </div>
 
+    <div class="wc-section">
+      <label for="wc-change-text">Anything else? Describe it in your own words</label>
+      <div class="wc-hint">e.g. "make the hero background darker" or "change the tagline to..."</div>
+      <textarea id="wc-change-text"></textarea>
+    </div>
+
     <button class="wc-submit" id="wc-apply-btn" type="button">Apply my changes</button>
     <div class="wc-error" id="wc-apply-error"></div>
-
-    <hr>
-    <div class="wc-hint">Need something bigger, like new sections or wording changes? That still goes to our team.</div>
-    ` : ''}
-
-    <label for="wc-change-text">${hasRounds ? 'Ask our team for something else' : "Want something changed?"}</label>
-    <div class="wc-hint">${hasRounds ? "Describe what you'd like — this goes straight to the WebCloud team." : "You've used all your free self-service changes. Describe what else you'd like, and the WebCloud team will review it and get back to you."}</div>
+    <div class="wc-hint" id="wc-apply-wait" style="display:none;margin-top:10px;">Working on it — this can take up to a minute...</div>
+    ` : `
+    <label for="wc-change-text">Want something changed?</label>
+    <div class="wc-hint">You've used all your free self-service changes. Describe what else you'd like, and the WebCloud team will review it and get back to you.</div>
     <textarea id="wc-change-text"></textarea>
     <button class="wc-submit" id="wc-change-btn" type="button">Send to the team</button>
     <div class="wc-error" id="wc-change-error"></div>
+    `}
   </div>
   <div class="wc-done" id="wc-rev-done"></div>
 </div>
@@ -168,14 +172,39 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
     });
   });
 
+  function pollUntilReady(btn, errorEl, waitEl){
+    var attempts = 0;
+    var timer = setInterval(function(){
+      attempts++;
+      fetch('/.netlify/functions/order?session_id=' + encodeURIComponent(sessionId))
+        .then(function(res){ return res.ok ? res.json() : null; })
+        .then(function(order){
+          if (order && order.draftStatus !== 'Self-Editing') {
+            clearInterval(timer);
+            showDone('Applied! Reloading your preview...');
+            setTimeout(function(){ window.location.reload(); }, 1000);
+          } else if (attempts > 40) {
+            clearInterval(timer);
+            waitEl.style.display = 'none';
+            errorEl.textContent = "This is taking longer than expected — refresh the page in a bit to check.";
+            btn.disabled = false;
+            btn.textContent = 'Apply my changes';
+          }
+        })
+        .catch(function(){});
+    }, 3000);
+  }
+
   document.getElementById('wc-apply-btn').addEventListener('click', function(){
     var btn = this;
     var errorEl = document.getElementById('wc-apply-error');
+    var waitEl = document.getElementById('wc-apply-wait');
     errorEl.textContent = '';
     var fontId = document.getElementById('wc-font-select').value;
     var photos = Object.keys(pendingPhotos).map(function(k){ return pendingPhotos[k]; });
-    if (!selectedPalette && !fontId && !photos.length) {
-      errorEl.textContent = 'Pick a color, font, or photo to apply first.';
+    var changeText = document.getElementById('wc-change-text').value.trim();
+    if (!selectedPalette && !fontId && !photos.length && !changeText) {
+      errorEl.textContent = 'Pick a color/font/photo, or describe a change, first.';
       return;
     }
     btn.disabled = true;
@@ -183,14 +212,20 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
     fetch('/.netlify/functions/self-serve-edit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sessionId: sessionId, paletteId: selectedPalette, fontId: fontId || undefined, photos: photos }),
+      body: JSON.stringify({ sessionId: sessionId, paletteId: selectedPalette, fontId: fontId || undefined, photos: photos, changeText: changeText || undefined }),
     }).then(function(res){
       if (res.status === 403) { throw new Error('limit'); }
       if (!res.ok) throw new Error('failed');
       return res.json();
-    }).then(function(){
-      showDone('Applied! Reloading your preview...');
-      setTimeout(function(){ window.location.reload(); }, 1200);
+    }).then(function(data){
+      if (data && data.processing) {
+        btn.textContent = 'Working on it...';
+        waitEl.style.display = 'block';
+        pollUntilReady(btn, errorEl, waitEl);
+      } else {
+        showDone('Applied! Reloading your preview...');
+        setTimeout(function(){ window.location.reload(); }, 1200);
+      }
     }).catch(function(err){
       if (err.message === 'limit') {
         errorEl.textContent = "You've used all your free changes - use the team request box below instead.";

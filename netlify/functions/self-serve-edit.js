@@ -41,11 +41,11 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) };
   }
 
-  const { sessionId, paletteId, fontId, photos } = body;
+  const { sessionId, paletteId, fontId, photos, changeText } = body;
   if (!sessionId) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Missing sessionId' }) };
   }
-  if (!paletteId && !fontId && !(Array.isArray(photos) && photos.length)) {
+  if (!paletteId && !fontId && !(Array.isArray(photos) && photos.length) && !changeText) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Nothing to apply' }) };
   }
 
@@ -72,6 +72,32 @@ exports.handler = async (event) => {
   const currentHtml = record.fields['Draft HTML'];
   if (!currentHtml) {
     return { statusCode: 404, body: JSON.stringify({ error: 'Draft not ready yet' }) };
+  }
+
+  // Free-text requests need a Claude call, which can run past Netlify's sync
+  // function time limit - hand those off to a background function (same
+  // pattern as request-revision.js -> revise-draft-background.js) instead of
+  // blocking this response. Palette/font/photo-only rounds stay synchronous
+  // below since they're just string swaps, no AI call needed.
+  if (changeText) {
+    try {
+      await updateOrderRecord(record.id, { 'Draft Status': 'Self-Editing' });
+      const siteUrl = process.env.URL || `https://${event.headers.host}`;
+      await fetch(`${siteUrl}/.netlify/functions/self-serve-edit-background`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId, paletteId, fontId, photos, changeText }),
+      });
+    } catch (err) {
+      console.error('Failed to trigger self-serve-edit-background:', err.message);
+      return { statusCode: 500, body: JSON.stringify({ error: 'Failed to start' }) };
+    }
+
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ok: true, processing: true }),
+    };
   }
 
   let html = currentHtml;
