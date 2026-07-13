@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit your site — WebCloud</title>
+<link href="https://unpkg.com/grapesjs/dist/css/grapes.min.css" rel="stylesheet">
+<link href="https://unpkg.com/grapesjs-preset-webpage/dist/grapesjs-preset-webpage.min.css" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B1220;
+    --paper:#F6F8FB;
+    --white:#FFFFFF;
+    --ink:#0B1220;
+    --muted:#5A6478;
+    --accent:#3DDC97;
+    --accent-dim:#1F8F63;
+    --line: rgba(11,18,32,.10);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif;color:var(--ink);}
+  #wc-topbar{
+    height:56px;display:flex;align-items:center;justify-content:space-between;
+    padding:0 18px;background:var(--navy);color:var(--white);
+  }
+  #wc-topbar .wc-brand{font-weight:700;font-size:.95rem;}
+  #wc-topbar .wc-actions{display:flex;align-items:center;gap:10px;}
+  #wc-topbar button{
+    border:none;border-radius:8px;padding:9px 16px;font:600 .85rem/1 'Inter',sans-serif;
+    cursor:pointer;
+  }
+  #wc-save-btn{background:var(--accent);color:var(--navy);}
+  #wc-save-btn:disabled{opacity:.5;cursor:not-allowed;}
+  #wc-close-btn{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,.3) !important;}
+  #wc-status{font-size:.8rem;color:rgba(255,255,255,.7);margin-right:6px;}
+  #gjs{height:calc(100vh - 56px);}
+  #wc-loading, #wc-error{
+    position:fixed;inset:0;top:56px;display:flex;align-items:center;justify-content:center;
+    background:var(--paper);font-size:.95rem;color:var(--muted);text-align:center;padding:20px;
+  }
+  #wc-error{display:none;color:#c0392b;}
+</style>
+</head>
+<body>
+
+<div id="wc-topbar">
+  <div class="wc-brand">✏️ Edit your site</div>
+  <div class="wc-actions">
+    <span id="wc-status"></span>
+    <button id="wc-close-btn" type="button">Close</button>
+    <button id="wc-save-btn" type="button">Save changes</button>
+  </div>
+</div>
+
+<div id="wc-loading">Loading your site…</div>
+<div id="wc-error"></div>
+<div id="gjs" style="display:none;"></div>
+
+<script src="https://unpkg.com/grapesjs"></script>
+<script src="https://unpkg.com/grapesjs-preset-webpage"></script>
+<script>
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var sessionId = params.get('session_id');
+  var loadingEl = document.getElementById('wc-loading');
+  var errorEl = document.getElementById('wc-error');
+  var gjsEl = document.getElementById('gjs');
+  var statusEl = document.getElementById('wc-status');
+  var saveBtn = document.getElementById('wc-save-btn');
+  var closeBtn = document.getElementById('wc-close-btn');
+
+  function showError(msg){
+    loadingEl.style.display = 'none';
+    errorEl.style.display = 'flex';
+    errorEl.textContent = msg;
+  }
+
+  if (!sessionId) {
+    showError('Missing session — please open this page from your draft preview link.');
+    return;
+  }
+
+  closeBtn.addEventListener('click', function(){
+    window.location.href = '/.netlify/functions/preview-draft?session_id=' + encodeURIComponent(sessionId);
+  });
+
+  fetch('/.netlify/functions/get-draft?session_id=' + encodeURIComponent(sessionId))
+    .then(function(res){
+      if (!res.ok) throw new Error(res.status === 404 ? 'Your draft isn\'t ready yet.' : 'Failed to load your site.');
+      return res.json();
+    })
+    .then(function(data){
+      loadingEl.style.display = 'none';
+      gjsEl.style.display = 'block';
+
+      var editor = grapesjs.init({
+        container: '#gjs',
+        height: '100%',
+        fromElement: false,
+        storageManager: false,
+        plugins: ['grapesjs-preset-webpage'],
+        pluginsOpts: {
+          'grapesjs-preset-webpage': {}
+        },
+      });
+
+      editor.setComponents(data.html);
+
+      saveBtn.addEventListener('click', function(){
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving…';
+        statusEl.textContent = '';
+
+        var fullHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+          + '<style>' + editor.getCss() + '</style></head><body>'
+          + editor.getHtml() + '</body></html>';
+
+        fetch('/.netlify/functions/visual-edit-save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId: sessionId, html: fullHtml }),
+        }).then(function(res){
+          if (!res.ok) throw new Error('save failed');
+          return res.json();
+        }).then(function(){
+          statusEl.textContent = 'Saved!';
+          saveBtn.disabled = false;
+          saveBtn.textContent = 'Save changes';
+        }).catch(function(){
+          statusEl.textContent = 'Something went wrong — try again.';
+          saveBtn.disabled = false;
+          saveBtn.textContent = 'Save changes';
+        });
+      });
+    })
+    .catch(function(err){
+      showError(err.message || 'Something went wrong loading your site.');
+    });
+})();
+</script>
+</body>
+</html>

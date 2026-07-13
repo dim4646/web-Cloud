@@ -59,9 +59,12 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
   #wc-rev-panel .wc-section{margin-bottom:18px;}
   .wc-photo-fab{position:absolute;top:10px;right:10px;z-index:900;width:36px;height:36px;border-radius:50%;border:none;background:rgba(11,18,32,.82);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 4px 12px rgba(0,0,0,.25);}
   .wc-photo-fab.wc-queued{background:#3DDC97;color:#0B1220;}
+  #wc-visual-fab{position:fixed;bottom:78px;right:22px;z-index:2147483000;display:flex;align-items:center;gap:8px;padding:14px 20px;border-radius:999px;border:none;cursor:pointer;background:#3DDC97;color:#0B1220;font:600 14px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.28);text-decoration:none;}
+  #wc-visual-fab:hover{transform:translateY(-2px);}
 </style>
 
-<button id="wc-rev-fab" type="button">✏️ ${hasRounds ? 'Edit my site' : 'Request a change'}</button>
+<a id="wc-visual-fab" href="/visual-edit.html?session_id=${sessionId}">✏️ Edit directly</a>
+<button id="wc-rev-fab" type="button">💬 ${hasRounds ? 'Ask for a change' : 'Request a change'}</button>
 
 <div id="wc-rev-panel">
   <div class="wc-head"><strong>${hasRounds ? 'Your WebCloud assistant' : 'Request a change'}</strong><button class="wc-close" id="wc-rev-close" type="button">&times;</button></div>
