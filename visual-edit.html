@@ -32,6 +32,8 @@
   #wc-save-btn{background:var(--accent);color:var(--navy);}
   #wc-save-btn:disabled{opacity:.5;cursor:not-allowed;}
   #wc-close-btn{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,.3) !important;}
+  #wc-photo-btn{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,.3) !important;}
+  #wc-photo-btn:disabled{opacity:.5;cursor:not-allowed;}
   #wc-status{font-size:.8rem;color:rgba(255,255,255,.7);margin-right:6px;}
   #gjs{height:calc(100vh - 56px);}
   #wc-loading, #wc-error{
@@ -47,6 +49,7 @@
   <div class="wc-brand">✏️ Edit your site</div>
   <div class="wc-actions">
     <span id="wc-status"></span>
+    <button id="wc-photo-btn" type="button">📷 Add photo</button>
     <button id="wc-close-btn" type="button">Close</button>
     <button id="wc-save-btn" type="button">Save changes</button>
   </div>
@@ -105,6 +108,62 @@
       });
 
       editor.setComponents(data.html);
+
+      var photoBtn = document.getElementById('wc-photo-btn');
+      var photoInput = document.createElement('input');
+      photoInput.type = 'file';
+      photoInput.accept = 'image/*';
+      photoInput.style.display = 'none';
+      document.body.appendChild(photoInput);
+
+      photoBtn.addEventListener('click', function(){ photoInput.click(); });
+
+      photoInput.addEventListener('change', function(){
+        var file = photoInput.files && photoInput.files[0];
+        photoInput.value = '';
+        if (!file) return;
+
+        photoBtn.disabled = true;
+        photoBtn.textContent = 'Uploading…';
+
+        var reader = new FileReader();
+        reader.onload = function(){
+          var result = String(reader.result || '');
+          var m = /^data:(.+);base64,(.*)$/.exec(result);
+          if (!m) {
+            photoBtn.disabled = false;
+            photoBtn.textContent = '📷 Add photo';
+            return;
+          }
+          fetch('/.netlify/functions/visual-upload-photo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              sessionId: sessionId,
+              contentType: m[1],
+              base64: m[2],
+              filename: file.name || 'photo.jpg',
+            }),
+          }).then(function(res){
+            if (!res.ok) throw new Error('upload failed');
+            return res.json();
+          }).then(function(data){
+            var selected = editor.getSelected();
+            if (selected && selected.get('type') === 'image') {
+              selected.addAttributes({ src: data.url });
+            } else {
+              editor.getWrapper().append('<img src="' + data.url + '" style="max-width:100%;">');
+            }
+            statusEl.textContent = 'Photo added!';
+          }).catch(function(){
+            statusEl.textContent = 'Photo upload failed — try again.';
+          }).finally(function(){
+            photoBtn.disabled = false;
+            photoBtn.textContent = '📷 Add photo';
+          });
+        };
+        reader.readAsDataURL(file);
+      });
 
       saveBtn.addEventListener('click', function(){
         saveBtn.disabled = true;
