@@ -109,6 +109,19 @@
 
       editor.setComponents(data.html);
 
+      // Photo slots are empty <div data-wc-photo="N"> containers with no
+      // visible cue - highlight them directly in the canvas iframe so the
+      // customer can see where photos go. Injected straight into the canvas
+      // document (not via GrapesJS's CssComposer), so it's purely visual for
+      // editing and never ends up in editor.getCss()/getHtml() on save.
+      var canvasDoc = editor.Canvas.getDocument();
+      var hintStyle = canvasDoc.createElement('style');
+      hintStyle.textContent = '[data-wc-photo]{outline:2px dashed #3DDC97 !important;outline-offset:-2px;position:relative;cursor:pointer;}' +
+        '[data-wc-photo]::after{content:"📷 Click, then use \'Add photo\' above";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font:600 12px/1.3 sans-serif;color:#0B1220;background:rgba(61,220,151,.35);pointer-events:none;}' +
+        '[data-wc-photo]:has(img)::after{content:none;}' +
+        '[data-wc-photo]:has(img){outline:2px dashed transparent !important;}';
+      canvasDoc.head.appendChild(hintStyle);
+
       var photoBtn = document.getElementById('wc-photo-btn');
       var photoInput = document.createElement('input');
       photoInput.type = 'file';
@@ -149,7 +162,12 @@
             return res.json();
           }).then(function(data){
             var selected = editor.getSelected();
-            if (selected && selected.get('type') === 'image') {
+            var slotId = selected && selected.getAttributes && selected.getAttributes()['data-wc-photo'];
+            if (slotId) {
+              // Photo-slot div: fill it with an <img>, same as how the
+              // draft looks once a photo is set via the older upload path.
+              selected.components('<img src="' + data.url + '" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;">');
+            } else if (selected && selected.get('type') === 'image') {
               selected.addAttributes({ src: data.url });
             } else {
               editor.getWrapper().append('<img src="' + data.url + '" style="max-width:100%;">');
