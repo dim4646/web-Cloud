@@ -1,5 +1,7 @@
 const { findOrderBySessionId, updateOrderRecord, uploadAttachment } = require('./_lib/airtable');
 const { ROUNDS_LIMIT, PALETTES, FONT_PAIRS } = require('./_lib/design-presets');
+const { deployLiveSite } = require('./_lib/netlify-deploy');
+const { sendNotification } = require('./_lib/email');
 
 // Both regexes target the CSS rule shape the generation prompt always
 // produces (h1-h4 selector, body selector), not the current font name -
@@ -122,6 +124,18 @@ exports.handler = async (event) => {
       'Draft HTML': html,
       'Self-Serve Rounds Used': newRoundsUsed,
     });
+
+    try {
+      const { liveUrl, isFirstDeploy } = await deployLiveSite(record, html);
+      if (isFirstDeploy) {
+        await sendNotification(
+          `Site is live: ${record.fields['Customer Name'] || 'customer'}`,
+          `<h2>Customer site is now live</h2><p><a href="${liveUrl}">${liveUrl}</a></p>`
+        );
+      }
+    } catch (err) {
+      console.error('Live site deploy failed:', err.message);
+    }
 
     return {
       statusCode: 200,

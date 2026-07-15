@@ -195,6 +195,7 @@
     <p><strong>Your first draft is ready.</strong></p>
     <a href="#" id="draft-link" class="success-link" target="_blank" rel="noopener">View your draft site</a>
     <p class="hint" id="self-serve-hint" style="margin-top:10px;"></p>
+    <p class="hint" id="live-site-banner" style="display:none;margin-top:10px;color:var(--accent-dim);font-weight:600;">&#127881; Your site is now live at <a href="#" id="live-site-link" target="_blank" rel="noopener"></a></p>
 
     <div class="card" id="revision-card" style="text-align:left;margin-top:24px;">
       <label for="photoLink">Add or update your photos</label>
@@ -256,6 +257,8 @@
     failed: document.getElementById('status-failed'),
     draftLink: document.getElementById('draft-link'),
     selfServeHint: document.getElementById('self-serve-hint'),
+    liveSiteBanner: document.getElementById('live-site-banner'),
+    liveSiteLink: document.getElementById('live-site-link'),
     revisionCard: document.getElementById('revision-card'),
     revising: document.getElementById('status-revising'),
     pendingReview: document.getElementById('status-pending-review'),
@@ -337,6 +340,13 @@
       hide(el.revising);
       hide(el.pendingReview);
       el.draftLink.href = order.draftUrl;
+      if (order.liveSiteUrl) {
+        el.liveSiteLink.href = order.liveSiteUrl;
+        el.liveSiteLink.textContent = order.liveSiteUrl;
+        el.liveSiteBanner.style.display = '';
+      } else {
+        el.liveSiteBanner.style.display = 'none';
+      }
       if (typeof order.selfServeRoundsRemaining === 'number' && order.selfServeRoundsRemaining > 0) {
         el.selfServeHint.textContent = `Open your draft — a WebCloud assistant there lets you change colors, fonts, and photos yourself (${order.selfServeRoundsRemaining} of ${order.selfServeRoundsLimit} free changes left).`;
       } else {

@@ -34,6 +34,7 @@ exports.handler = async (event) => {
       formStatus: f['Form Status'] || null,
       draftStatus: f['Draft Status'] || null,
       draftUrl: f['Draft URL'] || null,
+      liveSiteUrl: f['Live Site URL'] || null,
       selfServeRoundsUsed: roundsUsed,
       selfServeRoundsLimit: ROUNDS_LIMIT,
       selfServeRoundsRemaining: Math.max(0, ROUNDS_LIMIT - roundsUsed),

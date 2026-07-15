@@ -1,6 +1,8 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const { findOrderBySessionId, updateOrderRecord } = require('./_lib/airtable');
 const { getEnv } = require('./_lib/env');
+const { deployLiveSite } = require('./_lib/netlify-deploy');
+const { sendNotification } = require('./_lib/email');
 
 const DESIGN_TOKENS = `
 Brand: WebCloud (Gold Coast web design / hosting / private cloud company)
@@ -93,6 +95,18 @@ Respond with ONLY the raw HTML, starting with <!DOCTYPE html> — no markdown co
         'Draft HTML': html,
         'Draft URL': `${siteUrl}/.netlify/functions/preview-draft?session_id=${encodeURIComponent(sessionId)}`,
       });
+
+      try {
+        const { liveUrl, isFirstDeploy } = await deployLiveSite(record, html);
+        if (isFirstDeploy) {
+          await sendNotification(
+            `Site is live: ${record.fields['Customer Name'] || 'customer'}`,
+            `<h2>Customer site is now live</h2><p><a href="${liveUrl}">${liveUrl}</a></p>`
+          );
+        }
+      } catch (err) {
+        console.error('Live site deploy failed:', err.message);
+      }
     }
   } catch (err) {
     console.error('Draft generation failed:', err.message);

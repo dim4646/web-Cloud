@@ -3,6 +3,8 @@ const { findOrderBySessionId, updateOrderRecord, uploadAttachment } = require('.
 const { getEnv } = require('./_lib/env');
 const { ROUNDS_LIMIT } = require('./_lib/design-presets');
 const { applyPalette, applyFontPair } = require('./self-serve-edit');
+const { deployLiveSite } = require('./_lib/netlify-deploy');
+const { sendNotification } = require('./_lib/email');
 
 exports.handler = async (event) => {
   let payload;
@@ -107,6 +109,18 @@ Respond with ONLY the raw HTML, starting with <!DOCTYPE html> — no markdown co
       'Draft HTML': html,
       'Self-Serve Rounds Used': newRoundsUsed,
     });
+
+    try {
+      const { liveUrl, isFirstDeploy } = await deployLiveSite(record, html);
+      if (isFirstDeploy) {
+        await sendNotification(
+          `Site is live: ${record.fields['Customer Name'] || 'customer'}`,
+          `<h2>Customer site is now live</h2><p><a href="${liveUrl}">${liveUrl}</a></p>`
+        );
+      }
+    } catch (deployErr) {
+      console.error('Live site deploy failed:', deployErr.message);
+    }
   } catch (err) {
     console.error('self-serve-edit-background failed:', err.message);
     // A failed attempt shouldn't cost the customer one of their free rounds.

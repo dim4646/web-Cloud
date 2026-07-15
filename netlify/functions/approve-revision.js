@@ -1,5 +1,7 @@
 const { findOrderBySessionId, updateOrderRecord } = require('./_lib/airtable');
 const { getEnv } = require('./_lib/env');
+const { deployLiveSite } = require('./_lib/netlify-deploy');
+const { sendNotification } = require('./_lib/email');
 
 function htmlResponse(statusCode, message) {
   return {
@@ -52,6 +54,18 @@ exports.handler = async (event) => {
   } catch (err) {
     console.error('approve-revision update failed:', err.message);
     return htmlResponse(500, 'Failed to approve.');
+  }
+
+  try {
+    const { liveUrl, isFirstDeploy } = await deployLiveSite(record, pendingHtml);
+    if (isFirstDeploy) {
+      await sendNotification(
+        `Site is live: ${record.fields['Customer Name'] || 'customer'}`,
+        `<h2>Customer site is now live</h2><p><a href="${liveUrl}">${liveUrl}</a></p>`
+      );
+    }
+  } catch (err) {
+    console.error('Live site deploy failed:', err.message);
   }
 
   return htmlResponse(200, '&#9989; Approved — the change is now live on the customer\'s draft.');

@@ -1,4 +1,6 @@
 const { findOrderBySessionId, updateOrderRecord } = require('./_lib/airtable');
+const { deployLiveSite } = require('./_lib/netlify-deploy');
+const { sendNotification } = require('./_lib/email');
 
 // Saves HTML produced by the GrapesJS visual editor directly to Airtable.
 // Deliberately bypasses ROUNDS_LIMIT and never calls the AI - direct
@@ -34,6 +36,19 @@ exports.handler = async (event) => {
 
   try {
     await updateOrderRecord(record.id, { 'Draft HTML': html });
+
+    try {
+      const { liveUrl, isFirstDeploy } = await deployLiveSite(record, html);
+      if (isFirstDeploy) {
+        await sendNotification(
+          `Site is live: ${record.fields['Customer Name'] || 'customer'}`,
+          `<h2>Customer site is now live</h2><p><a href="${liveUrl}">${liveUrl}</a></p>`
+        );
+      }
+    } catch (deployErr) {
+      console.error('Live site deploy failed:', deployErr.message);
+    }
+
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
