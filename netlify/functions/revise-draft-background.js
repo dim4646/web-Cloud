@@ -106,6 +106,7 @@ Respond with ONLY the raw HTML, starting with <!DOCTYPE html> — no markdown co
           <tr><td><strong>Package</strong></td><td>${record.fields.Package || ''}</td></tr>
           <tr><td><strong>Requested change</strong></td><td>${revisionRequest}</td></tr>
         </table>
+        ${record.fields['Live Site URL'] ? `<p><strong>Current live site:</strong> <a href="${record.fields['Live Site URL']}">${record.fields['Live Site URL']}</a></p>` : ''}
         <p><a href="${previewUrl}">Preview the revised draft</a></p>
         <p><a href="${approveUrl}">Approve &amp; go live</a></p>
       `
