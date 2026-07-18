@@ -47,9 +47,10 @@ exports.handler = async (event) => {
     subject: `Your website is ready — ${record.fields['Customer Name'] || 'WebCloud'}`,
     html: `
       <h2>Your site is ready 🎉</h2>
-      <p>Here's your permanent link:</p>
+      <p>Here's your permanent link — this is your website's real, final address:</p>
       <p><a href="${finalUrl}">${finalUrl}</a></p>
-      <p>Bookmark this page — it's your site's real address. If you want to make more changes later, just come back to this link.</p>
+      <p>Bookmark this page so you don't lose it. If you want to make more changes later, just come back to this link.</p>
+      <p>Need any further edits, updates, or have a question? Just reach out to our team at <a href="mailto:notifications@webcloudsolutions.com.au">notifications@webcloudsolutions.com.au</a> — happy to help.</p>
       <p>— The WebCloud team</p>
     `,
   });
