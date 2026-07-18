@@ -61,10 +61,14 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
   .wc-photo-fab.wc-queued{background:#3DDC97;color:#0B1220;}
   #wc-visual-fab{position:fixed;bottom:78px;right:22px;z-index:2147483000;display:flex;align-items:center;gap:8px;padding:14px 20px;border-radius:999px;border:none;cursor:pointer;background:#3DDC97;color:#0B1220;font:600 14px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.28);text-decoration:none;}
   #wc-visual-fab:hover{transform:translateY(-2px);}
+  #wc-finish-fab{position:fixed;bottom:134px;right:22px;z-index:2147483000;display:flex;align-items:center;gap:8px;padding:14px 20px;border-radius:999px;border:none;cursor:pointer;background:#0B1220;color:#fff;font:600 14px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.28);}
+  #wc-finish-fab:hover{transform:translateY(-2px);}
+  #wc-finish-fab:disabled{opacity:.6;cursor:not-allowed;transform:none;}
 </style>
 
 <a id="wc-visual-fab" href="/visual-edit.html?session_id=${sessionId}">✏️ Edit directly</a>
 <button id="wc-rev-fab" type="button">💬 ${hasRounds ? 'Ask for a change' : 'Request a change'}</button>
+<button id="wc-finish-fab" type="button">✅ I'm happy — email me the link</button>
 
 <div id="wc-rev-panel">
   <div class="wc-head"><strong>${hasRounds ? 'Your WebCloud assistant' : 'Request a change'}</strong><button class="wc-close" id="wc-rev-close" type="button">&times;</button></div>
@@ -104,13 +108,6 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
     <button class="wc-submit" id="wc-change-btn" type="button">Send to the team</button>
     <div class="wc-error" id="wc-change-error"></div>
     `}
-
-    <hr>
-    <div class="wc-section">
-      <div class="wc-hint">Happy with how it looks? Get your permanent link emailed to you so you never lose it.</div>
-      <button class="wc-submit" id="wc-finish-btn" type="button" style="background:#3DDC97;color:#0B1220;">✅ I'm happy with this — email me the final link</button>
-      <div class="wc-error" id="wc-finish-error"></div>
-    </div>
   </div>
   <div class="wc-done" id="wc-rev-done"></div>
 </div>
@@ -292,10 +289,8 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
   });
   ` : ''}
 
-  document.getElementById('wc-finish-btn').addEventListener('click', function(){
+  document.getElementById('wc-finish-fab').addEventListener('click', function(){
     var btn = this;
-    var errorEl = document.getElementById('wc-finish-error');
-    errorEl.textContent = '';
     btn.disabled = true;
     btn.textContent = 'Sending...';
     fetch('/.netlify/functions/finish-editing', {
@@ -308,9 +303,8 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
     }).then(function(){
       btn.textContent = '\\u2713 Sent! Check your email';
     }).catch(function(){
-      errorEl.textContent = 'Something went wrong. Please try again.';
       btn.disabled = false;
-      btn.textContent = "\\u2705 I'm happy with this — email me the final link";
+      btn.textContent = 'Something went wrong — tap to retry';
     });
   });
 })();
