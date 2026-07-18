@@ -104,6 +104,13 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
     <button class="wc-submit" id="wc-change-btn" type="button">Send to the team</button>
     <div class="wc-error" id="wc-change-error"></div>
     `}
+
+    <hr>
+    <div class="wc-section">
+      <div class="wc-hint">Happy with how it looks? Get your permanent link emailed to you so you never lose it.</div>
+      <button class="wc-submit" id="wc-finish-btn" type="button" style="background:#3DDC97;color:#0B1220;">✅ I'm happy with this — email me the final link</button>
+      <div class="wc-error" id="wc-finish-error"></div>
+    </div>
   </div>
   <div class="wc-done" id="wc-rev-done"></div>
 </div>
@@ -261,6 +268,7 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
   });
   ` : ''}
 
+  ${!hasRounds ? `
   document.getElementById('wc-change-btn').addEventListener('click', function(){
     var btn = this;
     var errorEl = document.getElementById('wc-change-error');
@@ -280,6 +288,29 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
       errorEl.textContent = 'Something went wrong. Please try again.';
       btn.disabled = false;
       btn.textContent = 'Send to the team';
+    });
+  });
+  ` : ''}
+
+  document.getElementById('wc-finish-btn').addEventListener('click', function(){
+    var btn = this;
+    var errorEl = document.getElementById('wc-finish-error');
+    errorEl.textContent = '';
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    fetch('/.netlify/functions/finish-editing', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId: sessionId }),
+    }).then(function(res){
+      if (!res.ok) throw new Error('failed');
+      return res.json();
+    }).then(function(){
+      btn.textContent = '\\u2713 Sent! Check your email';
+    }).catch(function(){
+      errorEl.textContent = 'Something went wrong. Please try again.';
+      btn.disabled = false;
+      btn.textContent = "\\u2705 I'm happy with this — email me the final link";
     });
   });
 })();
