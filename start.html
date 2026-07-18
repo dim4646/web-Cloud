@@ -318,6 +318,11 @@
       return;
     }
 
+    if (order.draftStatus === 'Choosing') {
+      window.location.href = `/choose-draft.html?session_id=${encodeURIComponent(sessionId)}`;
+      return;
+    }
+
     if (order.draftStatus === 'Revising') {
       hide(el.formCard);
       hide(el.ready);

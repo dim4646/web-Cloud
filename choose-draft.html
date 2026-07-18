@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Choose your style — WebCloud</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B1220;
+    --paper:#F6F8FB;
+    --white:#FFFFFF;
+    --ink:#0B1220;
+    --muted:#5A6478;
+    --accent:#3DDC97;
+    --accent-dim:#1F8F63;
+    --line: rgba(11,18,32,.10);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;}
+  h1,h2{font-family:'Space Grotesk',sans-serif;}
+  .container{max-width:1100px;margin:0 auto;padding:48px 24px;}
+  h1{font-size:clamp(1.5rem,3.6vw,2rem);font-weight:700;letter-spacing:-.02em;margin-bottom:8px;}
+  .sub{color:var(--muted);margin-bottom:36px;}
+  #loading, #error{padding:60px 0;text-align:center;color:var(--muted);}
+  #error{color:#c0392b;display:none;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;}
+  .card iframe{width:100%;height:360px;border:none;border-bottom:1px solid var(--line);background:var(--paper);}
+  .card .body{padding:18px 20px;display:flex;flex-direction:column;gap:12px;flex:1;}
+  .card .label{font-weight:700;font-size:1.02rem;}
+  .card .actions{display:flex;gap:10px;margin-top:auto;}
+  .btn{flex:1;padding:11px;border-radius:8px;border:none;font:600 .88rem/1 'Inter',sans-serif;cursor:pointer;text-align:center;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;}
+  .btn-primary{background:var(--navy);color:var(--white);}
+  .btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+  .btn-secondary{background:var(--paper);color:var(--ink);border:1px solid var(--line) !important;}
+  .status{margin-top:10px;font-size:.85rem;color:var(--accent-dim);min-height:1.2em;}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Pick your favorite style</h1>
+  <p class="sub">We built three different starting points based on your answers. Choose the one you like best — you'll be able to fine-tune everything (colors, photos, wording) afterwards.</p>
+
+  <div id="loading">Loading your options…</div>
+  <div id="error"></div>
+  <div class="grid" id="grid" style="display:none;"></div>
+</div>
+
+<script>
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var sessionId = params.get('session_id');
+  var loadingEl = document.getElementById('loading');
+  var errorEl = document.getElementById('error');
+  var gridEl = document.getElementById('grid');
+
+  var VARIATIONS = [
+    { index: 1, label: 'Minimal & Clean' },
+    { index: 2, label: 'Bold & Colorful' },
+    { index: 3, label: 'Classic & Professional' },
+  ];
+
+  function showError(msg){
+    loadingEl.style.display = 'none';
+    errorEl.style.display = 'block';
+    errorEl.textContent = msg;
+  }
+
+  if (!sessionId) {
+    showError('Missing session — please open this page from the link we sent you.');
+    return;
+  }
+
+  function poll(){
+    fetch('/.netlify/functions/order?session_id=' + encodeURIComponent(sessionId))
+      .then(function(res){ return res.ok ? res.json() : null; })
+      .then(function(order){
+        if (!order) { showError('Could not load your order.'); return; }
+        if (order.draftStatus === 'Choosing') {
+          render();
+        } else if (order.draftStatus === 'Generating' || order.draftStatus === 'Queued') {
+          setTimeout(poll, 3000);
+        } else if (order.draftStatus === 'Ready' && order.draftUrl) {
+          window.location.href = order.draftUrl;
+        } else {
+          setTimeout(poll, 3000);
+        }
+      })
+      .catch(function(){ setTimeout(poll, 3000); });
+  }
+
+  function render(){
+    loadingEl.style.display = 'none';
+    gridEl.style.display = 'grid';
+    gridEl.innerHTML = '';
+
+    VARIATIONS.forEach(function(v){
+      var card = document.createElement('div');
+      card.className = 'card';
+
+      var iframe = document.createElement('iframe');
+      iframe.src = '/.netlify/functions/preview-variation?session_id=' + encodeURIComponent(sessionId) + '&variation=' + v.index;
+      card.appendChild(iframe);
+
+      var body = document.createElement('div');
+      body.className = 'body';
+
+      var label = document.createElement('div');
+      label.className = 'label';
+      label.textContent = v.label;
+      body.appendChild(label);
+
+      var actions = document.createElement('div');
+      actions.className = 'actions';
+
+      var viewLink = document.createElement('a');
+      viewLink.className = 'btn btn-secondary';
+      viewLink.href = iframe.src;
+      viewLink.target = '_blank';
+      viewLink.textContent = 'Open full page';
+      actions.appendChild(viewLink);
+
+      var chooseBtn = document.createElement('button');
+      chooseBtn.className = 'btn btn-primary';
+      chooseBtn.type = 'button';
+      chooseBtn.textContent = 'Choose this one';
+      chooseBtn.addEventListener('click', function(){
+        document.querySelectorAll('.btn-primary').forEach(function(b){ b.disabled = true; });
+        chooseBtn.textContent = 'Setting up…';
+
+        fetch('/.netlify/functions/choose-draft-variation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId: sessionId, variation: v.index }),
+        }).then(function(res){
+          if (!res.ok) throw new Error('failed');
+          return res.json();
+        }).then(function(){
+          window.location.href = '/start.html?session_id=' + encodeURIComponent(sessionId);
+        }).catch(function(){
+          document.querySelectorAll('.btn-primary').forEach(function(b){ b.disabled = false; });
+          chooseBtn.textContent = 'Choose this one';
+          alert('Something went wrong — please try again.');
+        });
+      });
+      actions.appendChild(chooseBtn);
+
+      body.appendChild(actions);
+      card.appendChild(body);
+      gridEl.appendChild(card);
+    });
+  }
+
+  poll();
+})();
+</script>
+</body>
+</html>
