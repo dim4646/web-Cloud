@@ -93,6 +93,7 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
       <textarea id="wc-change-text"></textarea>
     </div>
 
+    <div class="wc-hint" id="wc-photo-queue-note" style="display:none;color:#1F8F63;font-weight:600;"></div>
     <button class="wc-submit" id="wc-apply-btn" type="button">Apply my changes</button>
     <div class="wc-error" id="wc-apply-error"></div>
     <div class="wc-hint" id="wc-apply-wait" style="display:none;margin-top:10px;">Working on it — this can take up to a minute...</div>
@@ -128,6 +129,19 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
 
   // --- Photo slot overlays (only meaningful while rounds remain) ---
   ${hasRounds ? `
+  var queueNote = document.getElementById('wc-photo-queue-note');
+  function updateQueueNote(){
+    var n = Object.keys(pendingPhotos).length;
+    if (n > 0) {
+      queueNote.style.display = 'block';
+      queueNote.textContent = n === 1
+        ? '1 photo queued below \\u2014 click "Apply my changes" to save it.'
+        : n + ' photos queued below \\u2014 click "Apply my changes" to save them.';
+    } else {
+      queueNote.style.display = 'none';
+    }
+  }
+
   document.querySelectorAll('[data-wc-photo]').forEach(function(el){
     var slotId = el.getAttribute('data-wc-photo');
     var computed = window.getComputedStyle(el);
@@ -153,6 +167,12 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
         pendingPhotos[slotId] = { slotId: slotId, contentType: m[1], base64: m[2], filename: file.name || 'photo.jpg' };
         btn.classList.add('wc-queued');
         btn.textContent = '\\u2713';
+        btn.title = 'Photo queued \\u2014 click "Apply my changes" below to save it';
+        // Not yet saved - only the "Apply my changes" click actually uploads
+        // it, so pop the panel open right away instead of leaving the
+        // customer with a checkmark that looks done but silently isn't.
+        panel.classList.add('wc-open');
+        updateQueueNote();
       };
       reader.readAsDataURL(file);
     });
