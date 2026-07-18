@@ -40,7 +40,7 @@
     position:fixed;inset:0;top:56px;display:flex;align-items:center;justify-content:center;
     background:var(--paper);font-size:.95rem;color:var(--muted);text-align:center;padding:20px;
   }
-  #wc-error{display:none;color:#c0392b;}
+  #wc-error{display:none;color:#c0392b;z-index:10;}
 </style>
 </head>
 <body>
@@ -74,6 +74,7 @@
 
   function showError(msg){
     loadingEl.style.display = 'none';
+    gjsEl.style.display = 'none';
     errorEl.style.display = 'flex';
     errorEl.textContent = msg;
   }
@@ -114,13 +115,23 @@
       // customer can see where photos go. Injected straight into the canvas
       // document (not via GrapesJS's CssComposer), so it's purely visual for
       // editing and never ends up in editor.getCss()/getHtml() on save.
-      var canvasDoc = editor.Canvas.getDocument();
-      var hintStyle = canvasDoc.createElement('style');
-      hintStyle.textContent = '[data-wc-photo]{outline:2px dashed #3DDC97 !important;outline-offset:-2px;position:relative;cursor:pointer;}' +
-        '[data-wc-photo]::after{content:"📷 Click, then use \'Add photo\' above";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font:600 12px/1.3 sans-serif;color:#0B1220;background:rgba(61,220,151,.35);pointer-events:none;}' +
-        '[data-wc-photo]:has(img)::after{content:none;}' +
-        '[data-wc-photo]:has(img){outline:2px dashed transparent !important;}';
-      canvasDoc.head.appendChild(hintStyle);
+      // Runs on the 'load' event (not immediately after init/setComponents)
+      // because the canvas iframe document isn't guaranteed to exist yet at
+      // that point - calling Canvas.getDocument() too early throws, and
+      // since that used to happen synchronously in this same .then(), the
+      // exception aborted this whole callback before the button listeners
+      // below ever got attached (found 2026-07-18: Save/Add photo silently
+      // did nothing, page showed no visible error because #wc-error sits
+      // behind #gjs in the stacking order).
+      editor.on('load', function(){
+        var canvasDoc = editor.Canvas.getDocument();
+        var hintStyle = canvasDoc.createElement('style');
+        hintStyle.textContent = '[data-wc-photo]{outline:2px dashed #3DDC97 !important;outline-offset:-2px;position:relative;cursor:pointer;}' +
+          '[data-wc-photo]::after{content:"📷 Click, then use \'Add photo\' above";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font:600 12px/1.3 sans-serif;color:#0B1220;background:rgba(61,220,151,.35);pointer-events:none;}' +
+          '[data-wc-photo]:has(img)::after{content:none;}' +
+          '[data-wc-photo]:has(img){outline:2px dashed transparent !important;}';
+        canvasDoc.head.appendChild(hintStyle);
+      });
 
       var photoBtn = document.getElementById('wc-photo-btn');
       var photoInput = document.createElement('input');
