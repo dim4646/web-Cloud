@@ -3,6 +3,7 @@ const { findOrderBySessionId, updateOrderRecord, uploadAttachment } = require('.
 const { getEnv } = require('./_lib/env');
 const { ROUNDS_LIMIT } = require('./_lib/design-presets');
 const { applyPalette, applyFontPair } = require('./self-serve-edit');
+const { injectPhotoUrls } = require('./preview-draft');
 const { deployLiveSite } = require('./_lib/netlify-deploy');
 const { sendNotification } = require('./_lib/email');
 
@@ -49,14 +50,25 @@ exports.handler = async (event) => {
 
   try {
     if (Array.isArray(photos)) {
+      // Same fix as self-serve-edit.js: bake in a stable, never-expiring
+      // photo-proxy URL rather than leaving the slot for preview-draft.js's
+      // request-time resolution - the static deployLiveSite() snapshot below
+      // has no request-time logic to resolve data-wc-photo slots itself.
+      const siteUrl = process.env.URL || `https://${event.headers.host}`;
+      const proxyUrls = {};
       for (const photo of photos) {
         if (!photo || !photo.slotId || !photo.base64 || !photo.contentType) continue;
         const ext = (photo.filename || '').split('.').pop() || 'jpg';
+        const filename = `slot-${photo.slotId}.${ext}`;
         await uploadAttachment(record.id, 'Self-Serve Photos', {
           contentType: photo.contentType,
           file: photo.base64,
-          filename: `slot-${photo.slotId}.${ext}`,
+          filename,
         });
+        proxyUrls[photo.slotId] = `${siteUrl}/.netlify/functions/photo-proxy?session=${encodeURIComponent(sessionId)}&filename=${encodeURIComponent(filename)}`;
+      }
+      if (Object.keys(proxyUrls).length) {
+        html = injectPhotoUrls(html, proxyUrls);
       }
     }
 

@@ -2,6 +2,7 @@ const { findOrderBySessionId, updateOrderRecord, uploadAttachment } = require('.
 const { ROUNDS_LIMIT, PALETTES, FONT_PAIRS } = require('./_lib/design-presets');
 const { deployLiveSite } = require('./_lib/netlify-deploy');
 const { sendNotification } = require('./_lib/email');
+const { injectPhotoUrls } = require('./preview-draft');
 
 // Both regexes target the CSS rule shape the generation prompt always
 // produces (h1-h4 selector, body selector), not the current font name -
@@ -108,14 +109,31 @@ exports.handler = async (event) => {
 
   try {
     if (Array.isArray(photos)) {
+      // Airtable attachment URLs are signed and expire, so - same as the
+      // GrapesJS photo-proxy path - never embed one directly into the HTML
+      // that gets deployed as a static file. preview-draft.js/get-draft.js
+      // re-resolve data-wc-photo slots to a fresh Airtable URL on every
+      // request, which is fine for those function-served pages, but the
+      // static deployLiveSite() snapshot below has no request-time logic to
+      // do that - without baking in a stable URL here, the deployed site
+      // permanently shows the empty placeholder slot even though the photo
+      // uploaded successfully (confirmed live: preview-draft.js showed the
+      // photo, the deployed customer-facing link never did).
+      const siteUrl = process.env.URL || `https://${event.headers.host}`;
+      const proxyUrls = {};
       for (const photo of photos) {
         if (!photo || !photo.slotId || !photo.base64 || !photo.contentType) continue;
         const ext = (photo.filename || '').split('.').pop() || 'jpg';
+        const filename = `slot-${photo.slotId}.${ext}`;
         await uploadAttachment(record.id, 'Self-Serve Photos', {
           contentType: photo.contentType,
           file: photo.base64,
-          filename: `slot-${photo.slotId}.${ext}`,
+          filename,
         });
+        proxyUrls[photo.slotId] = `${siteUrl}/.netlify/functions/photo-proxy?session=${encodeURIComponent(sessionId)}&filename=${encodeURIComponent(filename)}`;
+      }
+      if (Object.keys(proxyUrls).length) {
+        html = injectPhotoUrls(html, proxyUrls);
       }
     }
 
