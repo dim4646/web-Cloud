@@ -97,6 +97,16 @@
       loadingEl.style.display = 'none';
       gjsEl.style.display = 'block';
 
+      // GrapesJS's setComponents/getCss round-trip doesn't reliably preserve
+      // every original CSS rule (confirmed 2026-07-19: a draft's .hero
+      // background-image gradient silently vanished after a save, leaving
+      // white text on no background - invisible - even though nothing about
+      // the hero was actually edited). Capture the real original stylesheet
+      // here, before GrapesJS ever touches it, and use this verbatim on save
+      // instead of editor.getCss() - see the save handler below.
+      var originalStyleMatch = /<style[^>]*>([\s\S]*?)<\/style>/i.exec(data.html);
+      var originalCss = originalStyleMatch ? originalStyleMatch[1] : '';
+
       var editor = grapesjs.init({
         container: '#gjs',
         height: 'calc(100vh - 56px)',
@@ -200,7 +210,7 @@
         statusEl.textContent = '';
 
         var fullHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
-          + '<style>' + editor.getCss() + '</style></head><body>'
+          + '<style>' + originalCss + '</style></head><body>'
           + editor.getHtml() + '</body></html>';
 
         fetch('/.netlify/functions/visual-edit-save', {
