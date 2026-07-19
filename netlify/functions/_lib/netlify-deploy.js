@@ -69,6 +69,17 @@ async function deployLiveSite(record, html) {
   let liveUrl = record.fields['Live Site URL'];
   const isFirstDeploy = !siteId;
 
+  // Every caller fetches `record` before writing the new Draft HTML, so
+  // record.fields['Draft HTML'] here still holds the pre-save content -
+  // comparing against it catches true no-op saves (e.g. clicking "Save
+  // changes" in the visual editor with no actual edits) before spending a
+  // real deploy. Netlify's account-wide credit pool (15 credits/deploy,
+  // shared across every customer site) makes deploying unchanged content
+  // pure waste. Never skips the first deploy since siteId won't exist yet.
+  if (!isFirstDeploy && html === record.fields['Draft HTML']) {
+    return { liveUrl, isFirstDeploy: false, skipped: true };
+  }
+
   if (isFirstDeploy) {
     const site = await createSite(record.fields['Customer Name']);
     siteId = site.id;
