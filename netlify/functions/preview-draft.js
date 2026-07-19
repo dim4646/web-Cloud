@@ -134,6 +134,42 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
   // --- Photo slot overlays (only meaningful while rounds remain) ---
   ${hasRounds ? `
   var queueNote = document.getElementById('wc-photo-queue-note');
+
+  // Raw phone photos (often 3-8MB each) queued as-is would blow past
+  // Netlify's ~6MB synchronous function body limit once a few are bundled
+  // into one JSON request on "Apply my changes" - the request then fails at
+  // the platform level before self-serve-edit.js ever runs, surfacing as a
+  // generic "Something went wrong" with nothing actually saved. Downscale
+  // and re-encode as JPEG client-side first so even several queued photos
+  // stay well under that ceiling.
+  function resizeImageFile(file, maxDim, quality){
+    return new Promise(function(resolve, reject){
+      var reader = new FileReader();
+      reader.onload = function(){
+        var img = new Image();
+        img.onload = function(){
+          var w = img.width, h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+            else { w = Math.round(w * maxDim / h); h = maxDim; }
+          }
+          var canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          var dataUrl = canvas.toDataURL('image/jpeg', quality);
+          var m = /^data:(.+);base64,(.*)$/.exec(dataUrl);
+          if (!m) { reject(new Error('encode failed')); return; }
+          resolve({ contentType: m[1], base64: m[2] });
+        };
+        img.onerror = function(){ reject(new Error('image load failed')); };
+        img.src = String(reader.result || '');
+      };
+      reader.onerror = function(){ reject(new Error('read failed')); };
+      reader.readAsDataURL(file);
+    });
+  }
+
   function updateQueueNote(){
     var n = Object.keys(pendingPhotos).length;
     if (n > 0) {
@@ -163,12 +199,8 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
     input.addEventListener('change', function(){
       var file = input.files && input.files[0];
       if (!file) return;
-      var reader = new FileReader();
-      reader.onload = function(){
-        var result = String(reader.result || '');
-        var m = /^data:(.+);base64,(.*)$/.exec(result);
-        if (!m) return;
-        pendingPhotos[slotId] = { slotId: slotId, contentType: m[1], base64: m[2], filename: file.name || 'photo.jpg' };
+      resizeImageFile(file, 1600, 0.82).then(function(resized){
+        pendingPhotos[slotId] = { slotId: slotId, contentType: resized.contentType, base64: resized.base64, filename: file.name || 'photo.jpg' };
         btn.classList.add('wc-queued');
         btn.textContent = '\\u2713';
         btn.title = 'Photo queued \\u2014 click "Apply my changes" below to save it';
@@ -177,8 +209,9 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
         // customer with a checkmark that looks done but silently isn't.
         panel.classList.add('wc-open');
         updateQueueNote();
-      };
-      reader.readAsDataURL(file);
+      }).catch(function(){
+        btn.title = 'Could not process that photo \\u2014 try a different one';
+      });
     });
     el.appendChild(btn);
     el.appendChild(input);
