@@ -37,6 +37,7 @@ exports.handler = async (event) => {
   const siteUrl = process.env.URL || `https://${event.headers.host}`;
   const finalUrl = record.fields['Live Site URL']
     || `${siteUrl}/.netlify/functions/preview-draft?session_id=${encodeURIComponent(sessionId)}`;
+  const startUrl = `${siteUrl}/start.html?session_id=${encodeURIComponent(sessionId)}`;
 
   if (!customerEmail) {
     return { statusCode: 400, body: JSON.stringify({ error: 'No customer email on file' }) };
@@ -50,7 +51,7 @@ exports.handler = async (event) => {
       <p>Here's your permanent link — this is your website's real, final address:</p>
       <p><a href="${finalUrl}">${finalUrl}</a></p>
       <p>Bookmark this page so you don't lose it. If you want to make more changes later, just come back to this link.</p>
-      <p>Need any further edits, updates, or have a question? Just reach out to our team at <a href="mailto:notifications@webcloudsolutions.com.au">notifications@webcloudsolutions.com.au</a> — happy to help.</p>
+      <p>Need any further edits, updates, or have a question? Head back to <a href="${startUrl}">your project page</a> and use the "Want something changed?" box — that reaches our team directly.</p>
       <p>— The WebCloud team</p>
     `,
   });
