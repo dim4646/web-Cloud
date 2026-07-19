@@ -120,6 +120,17 @@
 
       editor.setComponents(data.html);
 
+      // Snapshot of GrapesJS's own serialization right after load, before any
+      // edit - used to detect true no-op saves. Can't compare against the
+      // original data.html/Draft HTML: GrapesJS's getHtml() never round-trips
+      // byte-identical to the source markup (found 2026-07-19: it renamed
+      // "nav-wrap" to "navwrap" and added a duplicate <body> on a session
+      // where nothing was touched), so a GrapesJS-vs-GrapesJS comparison is
+      // the only reliable way to tell "the customer didn't actually change
+      // anything" from "they did" - avoids spending a Netlify deploy credit
+      // (shared account-wide, 15/deploy) on saves that click-only-no-edit.
+      var initialHtml = null;
+
       // Photo slots are empty <div data-wc-photo="N"> containers with no
       // visible cue - highlight them directly in the canvas iframe so the
       // customer can see where photos go. Injected straight into the canvas
@@ -141,6 +152,8 @@
           '[data-wc-photo]:has(img)::after{content:none;}' +
           '[data-wc-photo]:has(img){outline:2px dashed transparent !important;}';
         canvasDoc.head.appendChild(hintStyle);
+
+        initialHtml = editor.getHtml();
       });
 
       var photoBtn = document.getElementById('wc-photo-btn');
@@ -205,13 +218,19 @@
       });
 
       saveBtn.addEventListener('click', function(){
+        var currentHtml = editor.getHtml();
+        if (initialHtml !== null && currentHtml === initialHtml) {
+          statusEl.textContent = 'No changes to save.';
+          return;
+        }
+
         saveBtn.disabled = true;
         saveBtn.textContent = 'Saving…';
         statusEl.textContent = '';
 
         var fullHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
           + '<style>' + originalCss + '</style></head><body>'
-          + editor.getHtml() + '</body></html>';
+          + currentHtml + '</body></html>';
 
         fetch('/.netlify/functions/visual-edit-save', {
           method: 'POST',
@@ -221,6 +240,7 @@
           if (!res.ok) throw new Error('save failed');
           return res.json();
         }).then(function(){
+          initialHtml = currentHtml;
           statusEl.textContent = 'Saved!';
           saveBtn.disabled = false;
           saveBtn.textContent = 'Save changes';
