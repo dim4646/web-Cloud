@@ -3,9 +3,10 @@ const { getEnv } = require('./_lib/env');
 // Exposes Netlify account credit usage for the lab monitoring report on the
 // Raspberry Pi - reuses the NETLIFY_API_TOKEN already configured for site
 // auto-deploy instead of needing a second copy of a Netlify credential
-// stored on the Pi. Gated by ADMIN_KEY since it reveals account billing info.
+// stored on the Pi. Gated by its own MONITOR_KEY (not ADMIN_KEY) so a leak
+// of the Pi's monitoring config can't be used to approve revisions.
 exports.handler = async (event) => {
-  if (event.queryStringParameters?.key !== getEnv('ADMIN_KEY')) {
+  if (event.queryStringParameters?.key !== getEnv('MONITOR_KEY')) {
     return { statusCode: 403, body: JSON.stringify({ error: 'Invalid key' }) };
   }
 
