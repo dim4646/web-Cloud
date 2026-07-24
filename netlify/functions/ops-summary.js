@@ -37,7 +37,9 @@ async function stripeSummary() {
   const currency = balance.available[0]?.currency?.toUpperCase() || '';
   const successfulLast7d = charges.data.filter((c) => c.status === 'succeeded').length;
 
-  return { availableBalance: available, currency, successfulLast7d };
+  // Stripe is still in test mode as of this writing - surface that plainly
+  // so the report never gets misread as real revenue.
+  return { availableBalance: available, currency, successfulLast7d, liveMode: balance.livemode };
 }
 
 exports.handler = async (event) => {
