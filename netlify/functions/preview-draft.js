@@ -182,6 +182,27 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
     }
   }
 
+  function pollPhotoSlotReady(regenBtn){
+    var attempts = 0;
+    var timer = setInterval(function(){
+      attempts++;
+      fetch('/.netlify/functions/order?session_id=' + encodeURIComponent(sessionId))
+        .then(function(res){ return res.ok ? res.json() : null; })
+        .then(function(order){
+          if (order && order.draftStatus !== 'Self-Editing') {
+            clearInterval(timer);
+            window.location.reload();
+          } else if (attempts > 40) {
+            clearInterval(timer);
+            regenBtn.disabled = false;
+            regenBtn.textContent = '\\uD83D\\uDD04';
+            regenBtn.title = 'Taking longer than expected \\u2014 refresh the page in a bit to check';
+          }
+        })
+        .catch(function(){});
+    }, 3000);
+  }
+
   document.querySelectorAll('[data-wc-photo]').forEach(function(el){
     var slotId = el.getAttribute('data-wc-photo');
     var computed = window.getComputedStyle(el);
@@ -215,6 +236,42 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
     });
     el.appendChild(btn);
     el.appendChild(input);
+
+    // Only AI-generated slots (marked with data-wc-photo-desc by
+    // inject-photos.js) can be regenerated - a slot the customer never got
+    // an AI photo for, or already replaced with their own upload, has no
+    // saved prompt to regenerate from.
+    if (el.hasAttribute('data-wc-photo-desc')) {
+      var regenBtn = document.createElement('button');
+      regenBtn.type = 'button';
+      regenBtn.className = 'wc-photo-fab';
+      regenBtn.style.right = '54px';
+      regenBtn.textContent = '\\uD83D\\uDD04';
+      regenBtn.title = 'Try another AI photo here';
+      regenBtn.addEventListener('click', function(){
+        regenBtn.disabled = true;
+        regenBtn.textContent = '\\u23F3';
+        regenBtn.title = 'Generating a new photo\\u2026';
+        fetch('/.netlify/functions/regenerate-photo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId: sessionId, slotId: slotId }),
+        }).then(function(res){
+          if (res.status === 403) { throw new Error('limit'); }
+          if (!res.ok) throw new Error('failed');
+          return res.json();
+        }).then(function(){
+          pollPhotoSlotReady(regenBtn);
+        }).catch(function(err){
+          regenBtn.disabled = false;
+          regenBtn.textContent = '\\uD83D\\uDD04';
+          regenBtn.title = err.message === 'limit'
+            ? "You've used all your free changes"
+            : 'Something went wrong \\u2014 try again';
+        });
+      });
+      el.appendChild(regenBtn);
+    }
   });
 
   var selectedPalette = null;

@@ -43,10 +43,17 @@ async function injectGeneratedPhotos(html, record, brandContext) {
         const proxyUrl = `${siteUrl}/.netlify/functions/photo-proxy?session=${encodeURIComponent(sessionId)}&filename=${encodeURIComponent(filename)}`;
         const bgStyle = `background-image:url('${proxyUrl}');background-size:cover;background-position:center;`;
 
-        const styleMatch = attrs.match(/style="([^"]*)"/i);
-        const newAttrs = styleMatch
-          ? attrs.replace(/style="([^"]*)"/i, `style="$1;${bgStyle}"`)
-          : `${attrs} style="${bgStyle}"`;
+        // Keep the original description in a data attribute (not visible,
+        // unlike the [PLACEHOLDER] text it replaces) so a later "regenerate
+        // this photo" request can re-run the same prompt without needing the
+        // placeholder text back - see regenerate-photo-background.js.
+        let newAttrs = attrs.includes('data-wc-photo-desc=')
+          ? attrs
+          : `${attrs} data-wc-photo-desc="${encodeURIComponent(description)}"`;
+        const styleMatch = newAttrs.match(/style="([^"]*)"/i);
+        newAttrs = styleMatch
+          ? newAttrs.replace(/style="([^"]*)"/i, `style="$1;${bgStyle}"`)
+          : `${newAttrs} style="${bgStyle}"`;
 
         const newInner = innerContent.replace(PLACEHOLDER_TEXT_REGEX, '');
         return { fullMatch, replacement: `<${tag}${newAttrs}>${newInner}</${tag}>` };
