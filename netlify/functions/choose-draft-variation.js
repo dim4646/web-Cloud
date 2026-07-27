@@ -2,7 +2,6 @@ const { findOrderBySessionId, updateOrderRecord } = require('./_lib/airtable');
 const { getEnv } = require('./_lib/env');
 const { deployLiveSite } = require('./_lib/netlify-deploy');
 const { sendNotification } = require('./_lib/email');
-const { injectGeneratedPhotos } = require('./_lib/inject-photos');
 
 const FIELD_BY_INDEX = {
   1: 'Draft Variation 1',
@@ -44,27 +43,9 @@ exports.handler = async (event) => {
     return { statusCode: 404, body: JSON.stringify({ error: 'Order not found' }) };
   }
 
-  let html = record.fields[field];
+  const html = record.fields[field];
   if (!html) {
     return { statusCode: 404, body: JSON.stringify({ error: 'Variation not found or not ready yet' }) };
-  }
-
-  // Best-effort: generate a real photo for each [PLACEHOLDER] photo slot via
-  // Imagen, only for the variation the customer actually picked (generating
-  // for all 3 upfront would waste image-gen cost on the 2 unpicked ones).
-  // Falls back to leaving placeholders untouched if GEMINI_API_KEY isn't set
-  // or any individual image fails - never blocks the choose/deploy flow.
-  try {
-    let answers = {};
-    try {
-      answers = JSON.parse(record.fields['Answers'] || '{}');
-    } catch {
-      // ignore malformed/missing Answers JSON, brandContext just falls back below
-    }
-    const brandContext = `Business: ${answers.projectName || record.fields['Customer Name'] || 'this business'}. Visual style: ${answers.style || 'clean and professional'}.`;
-    html = await injectGeneratedPhotos(html, record, brandContext);
-  } catch (err) {
-    console.error('injectGeneratedPhotos failed, continuing with placeholders:', err.message);
   }
 
   try {
@@ -85,6 +66,22 @@ exports.handler = async (event) => {
       }
     } catch (deployErr) {
       console.error('Live site deploy failed:', deployErr.message);
+    }
+
+    // Photo generation (one Gemini call per [PLACEHOLDER] slot, up to ~9 on
+    // some layouts) easily runs past Netlify's sync function time limit, so
+    // it's handed off to a background function - same fire-and-forget
+    // pattern as self-serve-edit.js -> self-serve-edit-background.js. The
+    // customer already has a working site with placeholder photos from the
+    // deploy above; the background function redeploys once real photos land.
+    try {
+      await fetch(`${siteUrl}/.netlify/functions/inject-photos-background`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId }),
+      });
+    } catch (err) {
+      console.error('Failed to trigger inject-photos-background:', err.message);
     }
 
     return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ok: true }) };

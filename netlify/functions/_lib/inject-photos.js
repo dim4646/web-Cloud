@@ -21,35 +21,45 @@ async function injectGeneratedPhotos(html, record, brandContext) {
   const siteUrl = getEnv('URL') || 'https://webcloudsolutions.com.au';
   const sessionId = record.fields['Stripe Session ID'];
 
+  // Generate + upload all slots in parallel - same wall-clock time as one
+  // slot, since each is an independent API call (mirrors the 3-variations
+  // Promise.all in generate-draft-background.js). We're already inside a
+  // background function so there's headroom, but no reason to serialize.
+  const replacements = await Promise.all(
+    matches.map(async (match) => {
+      const [fullMatch, tag, attrs, slotNum, innerContent] = match;
+      const descMatch = innerContent.match(PLACEHOLDER_TEXT_REGEX);
+      if (!descMatch) return null; // no placeholder text in this slot - leave as-is
+
+      const description = descMatch[1].trim();
+      try {
+        const prompt = `${brandContext} Professional photograph for a business website: ${description}. Photorealistic, natural lighting, high quality, no text or watermarks, no people's faces unless explicitly described above.`;
+        const { base64, contentType } = await generateImage(prompt);
+        const ext = contentType.includes('jpeg') ? 'jpg' : 'png';
+        const filename = `ai-slot${slotNum}-${Date.now()}.${ext}`;
+
+        await uploadAttachment(record.id, 'Self-Serve Photos', { contentType, file: base64, filename });
+
+        const proxyUrl = `${siteUrl}/.netlify/functions/photo-proxy?session=${encodeURIComponent(sessionId)}&filename=${encodeURIComponent(filename)}`;
+        const bgStyle = `background-image:url('${proxyUrl}');background-size:cover;background-position:center;`;
+
+        const styleMatch = attrs.match(/style="([^"]*)"/i);
+        const newAttrs = styleMatch
+          ? attrs.replace(/style="([^"]*)"/i, `style="$1;${bgStyle}"`)
+          : `${attrs} style="${bgStyle}"`;
+
+        const newInner = innerContent.replace(PLACEHOLDER_TEXT_REGEX, '');
+        return { fullMatch, replacement: `<${tag}${newAttrs}>${newInner}</${tag}>` };
+      } catch (err) {
+        console.error(`Image generation failed for data-wc-photo="${slotNum}":`, err.message);
+        return null;
+      }
+    })
+  );
+
   let result = html;
-  for (const match of matches) {
-    const [fullMatch, tag, attrs, slotNum, innerContent] = match;
-    const descMatch = innerContent.match(PLACEHOLDER_TEXT_REGEX);
-    if (!descMatch) continue; // no placeholder text in this slot - leave as-is
-
-    const description = descMatch[1].trim();
-    try {
-      const prompt = `${brandContext} Professional photograph for a business website: ${description}. Photorealistic, natural lighting, high quality, no text or watermarks, no people's faces unless explicitly described above.`;
-      const { base64, contentType } = await generateImage(prompt);
-      const ext = contentType.includes('jpeg') ? 'jpg' : 'png';
-      const filename = `ai-slot${slotNum}-${Date.now()}.${ext}`;
-
-      await uploadAttachment(record.id, 'Self-Serve Photos', { contentType, file: base64, filename });
-
-      const proxyUrl = `${siteUrl}/.netlify/functions/photo-proxy?session=${encodeURIComponent(sessionId)}&filename=${encodeURIComponent(filename)}`;
-      const bgStyle = `background-image:url('${proxyUrl}');background-size:cover;background-position:center;`;
-
-      const styleMatch = attrs.match(/style="([^"]*)"/i);
-      const newAttrs = styleMatch
-        ? attrs.replace(/style="([^"]*)"/i, `style="$1;${bgStyle}"`)
-        : `${attrs} style="${bgStyle}"`;
-
-      const newInner = innerContent.replace(PLACEHOLDER_TEXT_REGEX, '');
-      const replacement = `<${tag}${newAttrs}>${newInner}</${tag}>`;
-      result = result.replace(fullMatch, replacement);
-    } catch (err) {
-      console.error(`Image generation failed for data-wc-photo="${slotNum}":`, err.message);
-    }
+  for (const item of replacements) {
+    if (item) result = result.replace(item.fullMatch, item.replacement);
   }
   return result;
 }
