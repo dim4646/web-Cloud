@@ -33,7 +33,7 @@ async function injectGeneratedPhotos(html, record, brandContext) {
 
       const description = descMatch[1].trim();
       try {
-        const prompt = `${brandContext} Professional photograph for a business website: ${description}. Photorealistic, natural lighting, high quality, no text or watermarks, no people's faces unless explicitly described above.`;
+        const prompt = `${brandContext} Professional photograph for a business website: ${description}. Photorealistic, natural lighting, high quality. A single cohesive photo of one scene only - not a collage, grid, split-image, or multiple panels. No text, no watermarks, no logos baked into the image. No people's faces unless explicitly described above.`;
         const { base64, contentType } = await generateImage(prompt);
         const ext = contentType.includes('jpeg') ? 'jpg' : 'png';
         const filename = `ai-slot${slotNum}-${Date.now()}.${ext}`;

@@ -61,7 +61,7 @@ exports.handler = async (event) => {
       // ignore malformed/missing Answers JSON, brandContext just falls back below
     }
     const brandContext = `Business: ${answers.projectName || record.fields['Customer Name'] || 'this business'}. Visual style: ${answers.style || 'clean and professional'}.`;
-    const prompt = `${brandContext} Professional photograph for a business website: ${description}. Photorealistic, natural lighting, high quality, no text or watermarks, no people's faces unless explicitly described above.`;
+    const prompt = `${brandContext} Professional photograph for a business website: ${description}. Photorealistic, natural lighting, high quality. A single cohesive photo of one scene only - not a collage, grid, split-image, or multiple panels. No text, no watermarks, no logos baked into the image. No people's faces unless explicitly described above.`;
 
     const { base64, contentType } = await generateImage(prompt);
     const ext = contentType.includes('jpeg') ? 'jpg' : 'png';
