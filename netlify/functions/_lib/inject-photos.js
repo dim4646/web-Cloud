@@ -1,0 +1,57 @@
+const { uploadAttachment } = require('./airtable');
+const { generateImage } = require('./image-gen');
+const { getEnv } = require('./env');
+
+const SLOT_REGEX = /<([a-z][a-z0-9]*)\b([^>]*\bdata-wc-photo="(\d+)"[^>]*)>([\s\S]*?)<\/\1>/gi;
+const PLACEHOLDER_TEXT_REGEX = /\[PLACEHOLDER:\s*([^\]]+)\]/i;
+
+// Finds every data-wc-photo="N" slot left by the AI draft prompt, generates
+// a real image for each via Imagen, uploads it to the order's existing
+// "Self-Serve Photos" attachment field (same field the camera-icon and
+// visual-editor uploads already use), and splices a background-image into
+// the slot element in place of the [PLACEHOLDER: ...] label.
+//
+// Best-effort by design: any single slot that fails to generate/upload just
+// keeps its original placeholder text rather than failing the whole draft -
+// same "never break the customer-facing flow" approach as deployLiveSite.
+async function injectGeneratedPhotos(html, record, brandContext) {
+  const matches = [...html.matchAll(SLOT_REGEX)];
+  if (matches.length === 0) return html;
+
+  const siteUrl = getEnv('URL') || 'https://webcloudsolutions.com.au';
+  const sessionId = record.fields['Stripe Session ID'];
+
+  let result = html;
+  for (const match of matches) {
+    const [fullMatch, tag, attrs, slotNum, innerContent] = match;
+    const descMatch = innerContent.match(PLACEHOLDER_TEXT_REGEX);
+    if (!descMatch) continue; // no placeholder text in this slot - leave as-is
+
+    const description = descMatch[1].trim();
+    try {
+      const prompt = `${brandContext} Professional photograph for a business website: ${description}. Photorealistic, natural lighting, high quality, no text or watermarks, no people's faces unless explicitly described above.`;
+      const { base64, contentType } = await generateImage(prompt);
+      const ext = contentType.includes('jpeg') ? 'jpg' : 'png';
+      const filename = `ai-slot${slotNum}-${Date.now()}.${ext}`;
+
+      await uploadAttachment(record.id, 'Self-Serve Photos', { contentType, file: base64, filename });
+
+      const proxyUrl = `${siteUrl}/.netlify/functions/photo-proxy?session=${encodeURIComponent(sessionId)}&filename=${encodeURIComponent(filename)}`;
+      const bgStyle = `background-image:url('${proxyUrl}');background-size:cover;background-position:center;`;
+
+      const styleMatch = attrs.match(/style="([^"]*)"/i);
+      const newAttrs = styleMatch
+        ? attrs.replace(/style="([^"]*)"/i, `style="$1;${bgStyle}"`)
+        : `${attrs} style="${bgStyle}"`;
+
+      const newInner = innerContent.replace(PLACEHOLDER_TEXT_REGEX, '');
+      const replacement = `<${tag}${newAttrs}>${newInner}</${tag}>`;
+      result = result.replace(fullMatch, replacement);
+    } catch (err) {
+      console.error(`Image generation failed for data-wc-photo="${slotNum}":`, err.message);
+    }
+  }
+  return result;
+}
+
+module.exports = { injectGeneratedPhotos };
