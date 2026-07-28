@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Edit your site — WebCloud</title>
-<link href="https://unpkg.com/grapesjs/dist/css/grapes.min.css" rel="stylesheet">
-<link href="https://unpkg.com/grapesjs-preset-webpage/dist/grapesjs-preset-webpage.min.css" rel="stylesheet">
 <style>
   :root{
     --navy:#0B1220;
@@ -24,6 +22,7 @@
     padding:0 18px;background:var(--navy);color:var(--white);
   }
   #wc-topbar .wc-brand{font-weight:700;font-size:.95rem;}
+  #wc-topbar .wc-hint{font-size:.78rem;color:rgba(255,255,255,.55);margin-left:14px;}
   #wc-topbar .wc-actions{display:flex;align-items:center;gap:10px;}
   #wc-topbar button{
     border:none;border-radius:8px;padding:9px 16px;font:600 .85rem/1 'Inter',sans-serif;
@@ -32,10 +31,8 @@
   #wc-save-btn{background:var(--accent);color:var(--navy);}
   #wc-save-btn:disabled{opacity:.5;cursor:not-allowed;}
   #wc-close-btn{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,.3) !important;}
-  #wc-photo-btn{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,.3) !important;}
-  #wc-photo-btn:disabled{opacity:.5;cursor:not-allowed;}
   #wc-status{font-size:.8rem;color:rgba(255,255,255,.7);margin-right:6px;}
-  #gjs{height:calc(100vh - 56px);}
+  #wc-canvas{position:fixed;inset:0;top:56px;width:100%;height:calc(100vh - 56px);border:none;}
   #wc-loading, #wc-error{
     position:fixed;inset:0;top:56px;display:flex;align-items:center;justify-content:center;
     background:var(--paper);font-size:.95rem;color:var(--muted);text-align:center;padding:20px;
@@ -46,10 +43,9 @@
 <body>
 
 <div id="wc-topbar">
-  <div class="wc-brand">✏️ Edit your site</div>
+  <div class="wc-brand">✏️ Edit your site <span class="wc-hint">Click any text to edit it</span></div>
   <div class="wc-actions">
     <span id="wc-status"></span>
-    <button id="wc-photo-btn" type="button">📷 Add photo</button>
     <button id="wc-close-btn" type="button">Close</button>
     <button id="wc-save-btn" type="button">Save changes</button>
   </div>
@@ -57,29 +53,36 @@
 
 <div id="wc-loading">Loading your site…</div>
 <div id="wc-error"></div>
-<div id="gjs" style="display:none;"></div>
+<iframe id="wc-canvas" style="display:none;" title="Your site"></iframe>
 
-<script src="https://unpkg.com/grapesjs"></script>
-<script src="https://unpkg.com/grapesjs-preset-webpage"></script>
 <script>
 (function(){
   var params = new URLSearchParams(window.location.search);
   var sessionId = params.get('session_id');
   var loadingEl = document.getElementById('wc-loading');
   var errorEl = document.getElementById('wc-error');
-  var gjsEl = document.getElementById('gjs');
+  var canvas = document.getElementById('wc-canvas');
   var statusEl = document.getElementById('wc-status');
   var saveBtn = document.getElementById('wc-save-btn');
   var closeBtn = document.getElementById('wc-close-btn');
+
   // A real generated draft's body markup (header/nav/hero/sections/footer)
   // is always well over this many characters - used as a floor to detect a
-  // canvas that failed to load/populate rather than a genuinely tiny page.
+  // draft that failed to load/save properly rather than a genuinely tiny
+  // page. Same protection previously added to the old GrapesJS-based editor,
+  // kept here since it's cheap insurance regardless of editor implementation.
   var MIN_VALID_HTML_LENGTH = 200;
-  var canvasLoadBroken = false;
+
+  // Elements whose text a customer is allowed to click into and edit
+  // directly. Deliberately only "leaf" containers (checked in makeEditable
+  // below) - never divs/sections/headers themselves - so contenteditable
+  // can never let a customer accidentally merge or restructure sections,
+  // only change the words inside them.
+  var EDITABLE_SELECTOR = 'h1,h2,h3,h4,h5,h6,p,span,a,li,button,label,strong,em,small,figcaption,blockquote';
 
   function showError(msg){
     loadingEl.style.display = 'none';
-    gjsEl.style.display = 'none';
+    canvas.style.display = 'none';
     errorEl.style.display = 'flex';
     errorEl.textContent = msg;
   }
@@ -93,112 +96,90 @@
     window.location.href = '/.netlify/functions/preview-draft?session_id=' + encodeURIComponent(sessionId);
   });
 
+  // Everything below works directly on the real rendered document inside
+  // the iframe - no parsing into an intermediate component model, no
+  // separate stylesheet/HTML round-trip. This deliberately replaces an
+  // earlier GrapesJS-based editor (removed 2026-07-28) that hit three
+  // separate real data-loss/corruption bugs over its lifetime, all rooted
+  // in the same cause: GrapesJS re-serializing the page from its own model
+  // never round-trips perfectly. Editing the live DOM in place and saving
+  // its literal outerHTML has no such round-trip to go wrong.
   fetch('/.netlify/functions/get-draft?session_id=' + encodeURIComponent(sessionId))
     .then(function(res){
       if (!res.ok) throw new Error(res.status === 404 ? 'Your draft isn\'t ready yet.' : 'Failed to load your site.');
       return res.json();
     })
     .then(function(data){
-      loadingEl.style.display = 'none';
-      gjsEl.style.display = 'block';
+      if (!data.html || data.html.length < MIN_VALID_HTML_LENGTH) {
+        showError('Couldn\'t load your site properly — please refresh, or use "Ask for a change" instead.');
+        return;
+      }
 
-      // GrapesJS's setComponents/getCss round-trip doesn't reliably preserve
-      // every original CSS rule (confirmed 2026-07-19: a draft's .hero
-      // background-image gradient silently vanished after a save, leaving
-      // white text on no background - invisible - even though nothing about
-      // the hero was actually edited). Capture the real original stylesheet
-      // here, before GrapesJS ever touches it, and use this verbatim on save
-      // instead of editor.getCss() - see the save handler below.
-      var originalStyleMatch = /<style[^>]*>([\s\S]*?)<\/style>/i.exec(data.html);
-      var originalCss = originalStyleMatch ? originalStyleMatch[1] : '';
+      canvas.addEventListener('load', function onLoad(){
+        loadingEl.style.display = 'none';
+        canvas.style.display = 'block';
 
-      var editor = grapesjs.init({
-        container: '#gjs',
-        height: 'calc(100vh - 56px)',
-        fromElement: false,
-        storageManager: false,
-        plugins: ['grapesjs-preset-webpage'],
-        pluginsOpts: {
-          'grapesjs-preset-webpage': {}
-        },
-      });
+        var doc = canvas.contentDocument;
+        makeEditable(doc);
+        wireUpPhotoSlots(doc);
+        injectEditingStyles(doc);
+      }, { once: true });
 
-      editor.setComponents(data.html);
+      // srcdoc iframes share the parent's origin (no sandbox attribute is
+      // set here), so contentDocument access below is same-origin - no CORS
+      // involved, unlike fetching a cross-origin URL directly.
+      canvas.srcdoc = data.html;
+    })
+    .catch(function(err){
+      showError(err.message || 'Something went wrong loading your site.');
+    });
 
-      // Snapshot of GrapesJS's own serialization right after load, before any
-      // edit - used to detect true no-op saves. Can't compare against the
-      // original data.html/Draft HTML: GrapesJS's getHtml() never round-trips
-      // byte-identical to the source markup (found 2026-07-19: it renamed
-      // "nav-wrap" to "navwrap" and added a duplicate <body> on a session
-      // where nothing was touched), so a GrapesJS-vs-GrapesJS comparison is
-      // the only reliable way to tell "the customer didn't actually change
-      // anything" from "they did" - avoids spending a Netlify deploy credit
-      // (shared account-wide, 15/deploy) on saves that click-only-no-edit.
-      var initialHtml = null;
+  function makeEditable(doc){
+    var candidates = doc.body.querySelectorAll(EDITABLE_SELECTOR);
+    candidates.forEach(function(el){
+      if (el.closest('[data-wc-photo]')) return; // photo slots handle their own content
+      if (el.querySelector(EDITABLE_SELECTOR)) return; // not a leaf - has editable descendants of its own
+      if (!el.textContent.trim()) return; // nothing to edit
+      el.setAttribute('contenteditable', 'true');
+      el.setAttribute('spellcheck', 'false');
+      el.setAttribute('data-wc-editable', '1');
+    });
+  }
 
-      // Photo slots are empty <div data-wc-photo="N"> containers with no
-      // visible cue - highlight them directly in the canvas iframe so the
-      // customer can see where photos go. Injected straight into the canvas
-      // document (not via GrapesJS's CssComposer), so it's purely visual for
-      // editing and never ends up in editor.getCss()/getHtml() on save.
-      // Runs on the 'load' event (not immediately after init/setComponents)
-      // because the canvas iframe document isn't guaranteed to exist yet at
-      // that point - calling Canvas.getDocument() too early throws, and
-      // since that used to happen synchronously in this same .then(), the
-      // exception aborted this whole callback before the button listeners
-      // below ever got attached (found 2026-07-18: Save/Add photo silently
-      // did nothing, page showed no visible error because #wc-error sits
-      // behind #gjs in the stacking order).
-      editor.on('load', function(){
-        var canvasDoc = editor.Canvas.getDocument();
-        var hintStyle = canvasDoc.createElement('style');
-        hintStyle.textContent = '[data-wc-photo]{outline:2px dashed #3DDC97 !important;outline-offset:-2px;position:relative;cursor:pointer;}' +
-          '[data-wc-photo]::after{content:"📷 Click, then use \'Add photo\' above";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font:600 12px/1.3 sans-serif;color:#0B1220;background:rgba(61,220,151,.35);pointer-events:none;}' +
-          '[data-wc-photo]:has(img)::after{content:none;}' +
-          '[data-wc-photo]:has(img){outline:2px dashed transparent !important;}';
-        canvasDoc.head.appendChild(hintStyle);
+  function wireUpPhotoSlots(doc){
+    doc.querySelectorAll('[data-wc-photo]').forEach(function(el){
+      var computed = doc.defaultView.getComputedStyle(el);
+      if (computed.position === 'static') el.style.position = 'relative';
 
-        initialHtml = editor.getHtml();
+      var btn = doc.createElement('button');
+      btn.type = 'button';
+      btn.className = 'wc-edit-photo-btn';
+      btn.textContent = '📷';
+      btn.title = 'Change this photo';
 
-        // Guard against a broken/empty canvas load (seen live 2026-07-27:
-        // a draft failed to populate any real components, and a later Save
-        // click - with nothing visibly there to warn otherwise - silently
-        // overwrote a perfectly good Draft HTML with an almost-empty page).
-        // A real generated draft always has real structural markup; if the
-        // canvas loaded to something this small, something went wrong during
-        // parsing/loading, not a legitimately blank site. Refuse to let the
-        // customer save from this state at all rather than risk data loss.
-        if (initialHtml.length < MIN_VALID_HTML_LENGTH) {
-          canvasLoadBroken = true;
-          saveBtn.disabled = true;
-          statusEl.textContent = "Couldn't load your site properly — please refresh, or use \"Ask for a change\" instead.";
-        }
-      });
+      var input = doc.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.className = 'wc-edit-photo-input';
+      input.style.display = 'none';
 
-      var photoBtn = document.getElementById('wc-photo-btn');
-      var photoInput = document.createElement('input');
-      photoInput.type = 'file';
-      photoInput.accept = 'image/*';
-      photoInput.style.display = 'none';
-      document.body.appendChild(photoInput);
+      btn.addEventListener('click', function(){ input.click(); });
 
-      photoBtn.addEventListener('click', function(){ photoInput.click(); });
-
-      photoInput.addEventListener('change', function(){
-        var file = photoInput.files && photoInput.files[0];
-        photoInput.value = '';
+      input.addEventListener('change', function(){
+        var file = input.files && input.files[0];
+        input.value = '';
         if (!file) return;
 
-        photoBtn.disabled = true;
-        photoBtn.textContent = 'Uploading…';
+        btn.disabled = true;
+        btn.textContent = '⏳';
 
         var reader = new FileReader();
         reader.onload = function(){
           var result = String(reader.result || '');
           var m = /^data:(.+);base64,(.*)$/.exec(result);
           if (!m) {
-            photoBtn.disabled = false;
-            photoBtn.textContent = '📷 Add photo';
+            btn.disabled = false;
+            btn.textContent = '📷';
             return;
           }
           fetch('/.netlify/functions/visual-upload-photo', {
@@ -213,82 +194,87 @@
           }).then(function(res){
             if (!res.ok) throw new Error('upload failed');
             return res.json();
-          }).then(function(data){
-            var selected = editor.getSelected();
-            var slotId = selected && selected.getAttributes && selected.getAttributes()['data-wc-photo'];
-            if (slotId) {
-              // Photo-slot div: fill it with an <img>, same as how the
-              // draft looks once a photo is set via the older upload path.
-              selected.components('<img src="' + data.url + '" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;">');
-            } else if (selected && selected.get('type') === 'image') {
-              selected.addAttributes({ src: data.url });
-            } else {
-              editor.getWrapper().append('<img src="' + data.url + '" style="max-width:100%;">');
-            }
+          }).then(function(uploaded){
+            el.querySelectorAll('img').forEach(function(img){ img.remove(); });
+            var img = doc.createElement('img');
+            img.src = uploaded.url;
+            img.alt = '';
+            img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;';
+            el.insertBefore(img, el.firstChild);
             statusEl.textContent = 'Photo added!';
           }).catch(function(){
             statusEl.textContent = 'Photo upload failed — try again.';
           }).finally(function(){
-            photoBtn.disabled = false;
-            photoBtn.textContent = '📷 Add photo';
+            btn.disabled = false;
+            btn.textContent = '📷';
           });
         };
         reader.readAsDataURL(file);
       });
 
-      saveBtn.addEventListener('click', function(){
-        if (canvasLoadBroken) {
-          statusEl.textContent = "Can't save — your site didn't load properly. Please refresh the page first.";
-          return;
-        }
-
-        var currentHtml = editor.getHtml();
-        if (initialHtml !== null && currentHtml === initialHtml) {
-          statusEl.textContent = 'No changes to save.';
-          return;
-        }
-
-        // Never let a save shrink the page down to near-nothing - a real
-        // edit (even deleting a whole section) won't collapse the whole
-        // canvas this far. This is the same protection as the load-time
-        // check above, but also catches content getting wiped out by an
-        // in-editor action (e.g. a delete that cascades further than
-        // intended) after a perfectly good load.
-        if (currentHtml.length < MIN_VALID_HTML_LENGTH) {
-          statusEl.textContent = "That would leave your site almost empty — not saving. Refresh and try again, or use \"Ask for a change\" instead.";
-          return;
-        }
-
-        saveBtn.disabled = true;
-        saveBtn.textContent = 'Saving…';
-        statusEl.textContent = '';
-
-        var fullHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
-          + '<style>' + originalCss + '</style></head><body>'
-          + currentHtml + '</body></html>';
-
-        fetch('/.netlify/functions/visual-edit-save', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sessionId: sessionId, html: fullHtml }),
-        }).then(function(res){
-          if (!res.ok) throw new Error('save failed');
-          return res.json();
-        }).then(function(){
-          initialHtml = currentHtml;
-          statusEl.textContent = 'Saved!';
-          saveBtn.disabled = false;
-          saveBtn.textContent = 'Save changes';
-        }).catch(function(){
-          statusEl.textContent = 'Something went wrong — try again.';
-          saveBtn.disabled = false;
-          saveBtn.textContent = 'Save changes';
-        });
-      });
-    })
-    .catch(function(err){
-      showError(err.message || 'Something went wrong loading your site.');
+      el.appendChild(btn);
+      el.appendChild(input);
     });
+  }
+
+  function injectEditingStyles(doc){
+    var style = doc.createElement('style');
+    style.setAttribute('data-wc-edit-style', '1');
+    style.textContent =
+      '[data-wc-editable]{outline:1px dashed transparent;outline-offset:2px;cursor:text;}' +
+      '[data-wc-editable]:hover{outline-color:rgba(61,220,151,.6);}' +
+      '[data-wc-editable]:focus{outline:2px solid #3DDC97;background:rgba(61,220,151,.08);}' +
+      '[data-wc-photo]{cursor:default;}' +
+      '.wc-edit-photo-btn{position:absolute;top:10px;right:10px;z-index:900;width:36px;height:36px;border-radius:50%;border:none;background:rgba(11,18,32,.82);color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.25);}' +
+      '.wc-edit-photo-btn:disabled{opacity:.6;cursor:not-allowed;}';
+    doc.head.appendChild(style);
+  }
+
+  saveBtn.addEventListener('click', function(){
+    var doc = canvas.contentDocument;
+
+    // Save a cleaned CLONE, not the live document - editing keeps working
+    // uninterrupted even if the save fails or the customer keeps typing
+    // while the request is in flight.
+    var clone = doc.documentElement.cloneNode(true);
+    clone.querySelectorAll('[data-wc-editable]').forEach(function(el){
+      el.removeAttribute('contenteditable');
+      el.removeAttribute('spellcheck');
+      el.removeAttribute('data-wc-editable');
+    });
+    clone.querySelectorAll('.wc-edit-photo-btn, .wc-edit-photo-input').forEach(function(el){ el.remove(); });
+    clone.querySelectorAll('style[data-wc-edit-style]').forEach(function(el){ el.remove(); });
+
+    var html = '<!DOCTYPE html>' + clone.outerHTML;
+
+    // Never let a save shrink the page down to near-nothing - see
+    // MIN_VALID_HTML_LENGTH above.
+    if (html.length < MIN_VALID_HTML_LENGTH) {
+      statusEl.textContent = 'That would leave your site almost empty — not saving.';
+      return;
+    }
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving…';
+    statusEl.textContent = '';
+
+    fetch('/.netlify/functions/visual-edit-save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId: sessionId, html: html }),
+    }).then(function(res){
+      if (!res.ok) throw new Error('save failed');
+      return res.json();
+    }).then(function(){
+      statusEl.textContent = 'Saved!';
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save changes';
+    }).catch(function(){
+      statusEl.textContent = 'Something went wrong — try again.';
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save changes';
+    });
+  });
 })();
 </script>
 </body>
