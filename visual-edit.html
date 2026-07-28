@@ -71,6 +71,11 @@
   var statusEl = document.getElementById('wc-status');
   var saveBtn = document.getElementById('wc-save-btn');
   var closeBtn = document.getElementById('wc-close-btn');
+  // A real generated draft's body markup (header/nav/hero/sections/footer)
+  // is always well over this many characters - used as a floor to detect a
+  // canvas that failed to load/populate rather than a genuinely tiny page.
+  var MIN_VALID_HTML_LENGTH = 200;
+  var canvasLoadBroken = false;
 
   function showError(msg){
     loadingEl.style.display = 'none';
@@ -154,6 +159,20 @@
         canvasDoc.head.appendChild(hintStyle);
 
         initialHtml = editor.getHtml();
+
+        // Guard against a broken/empty canvas load (seen live 2026-07-27:
+        // a draft failed to populate any real components, and a later Save
+        // click - with nothing visibly there to warn otherwise - silently
+        // overwrote a perfectly good Draft HTML with an almost-empty page).
+        // A real generated draft always has real structural markup; if the
+        // canvas loaded to something this small, something went wrong during
+        // parsing/loading, not a legitimately blank site. Refuse to let the
+        // customer save from this state at all rather than risk data loss.
+        if (initialHtml.length < MIN_VALID_HTML_LENGTH) {
+          canvasLoadBroken = true;
+          saveBtn.disabled = true;
+          statusEl.textContent = "Couldn't load your site properly — please refresh, or use \"Ask for a change\" instead.";
+        }
       });
 
       var photoBtn = document.getElementById('wc-photo-btn');
@@ -218,9 +237,25 @@
       });
 
       saveBtn.addEventListener('click', function(){
+        if (canvasLoadBroken) {
+          statusEl.textContent = "Can't save — your site didn't load properly. Please refresh the page first.";
+          return;
+        }
+
         var currentHtml = editor.getHtml();
         if (initialHtml !== null && currentHtml === initialHtml) {
           statusEl.textContent = 'No changes to save.';
+          return;
+        }
+
+        // Never let a save shrink the page down to near-nothing - a real
+        // edit (even deleting a whole section) won't collapse the whole
+        // canvas this far. This is the same protection as the load-time
+        // check above, but also catches content getting wiped out by an
+        // in-editor action (e.g. a delete that cascades further than
+        // intended) after a perfectly good load.
+        if (currentHtml.length < MIN_VALID_HTML_LENGTH) {
+          statusEl.textContent = "That would leave your site almost empty — not saving. Refresh and try again, or use \"Ask for a change\" instead.";
           return;
         }
 
