@@ -230,7 +230,86 @@
 
       el.appendChild(btn);
       el.appendChild(input);
+
+      // "Try another AI photo" - only offered on slots that already got an
+      // AI-generated photo (tracked via data-wc-photo-desc, left by
+      // inject-photos.js with the original prompt so a regenerate can reuse
+      // it). Reuses the exact same rounds-limited regenerate-photo.js /
+      // regenerate-photo-background.js pipeline already wired up in
+      // preview-draft.js's floating widget - this just adds the same
+      // capability directly inside the visual editor.
+      if (el.hasAttribute('data-wc-photo-desc')) {
+        var slotId = el.getAttribute('data-wc-photo');
+        var regenBtn = doc.createElement('button');
+        regenBtn.type = 'button';
+        regenBtn.className = 'wc-edit-photo-btn wc-regen-photo-btn';
+        regenBtn.textContent = '🔄';
+        regenBtn.title = 'Try another AI photo';
+
+        regenBtn.addEventListener('click', function(){
+          // regenerate-photo-background.js writes the new photo straight to
+          // Airtable's Draft HTML server-side, bypassing this page's own
+          // splice-on-save flow entirely - reloading afterward is the only
+          // way to pick that up, which would silently discard any unsaved
+          // text edit. Simplest safe rule: require a clean save first.
+          if (hasEdited) {
+            statusEl.textContent = 'Save your text changes first, then try regenerating this photo.';
+            return;
+          }
+
+          regenBtn.disabled = true;
+          regenBtn.textContent = '⏳';
+          statusEl.textContent = 'Generating a new photo…';
+
+          fetch('/.netlify/functions/regenerate-photo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sessionId: sessionId, slotId: slotId }),
+          }).then(function(res){
+            if (res.status === 403) throw new Error('limit');
+            if (!res.ok) throw new Error('failed');
+            return res.json();
+          }).then(function(){
+            pollUntilPhotoReady(regenBtn);
+          }).catch(function(err){
+            regenBtn.disabled = false;
+            regenBtn.textContent = '🔄';
+            statusEl.textContent = err.message === 'limit'
+              ? "You've used all your free changes."
+              : 'Something went wrong — try again.';
+          });
+        });
+
+        el.appendChild(regenBtn);
+      }
     });
+  }
+
+  function pollUntilPhotoReady(regenBtn){
+    var attempts = 0;
+    var timer = setInterval(function(){
+      attempts++;
+      fetch('/.netlify/functions/order?session_id=' + encodeURIComponent(sessionId))
+        .then(function(res){ return res.ok ? res.json() : null; })
+        .then(function(order){
+          if (order && order.draftStatus !== 'Self-Editing') {
+            clearInterval(timer);
+            statusEl.textContent = 'New photo ready — reloading…';
+            // The new photo (and rounds-used count) were written straight to
+            // Airtable by the background function, not through this page's
+            // own save flow - a reload is the simplest way to pick up the
+            // fresh draft HTML cleanly, safe here since the hasEdited check
+            // above already guaranteed there was nothing unsaved to lose.
+            window.location.reload();
+          } else if (attempts > 40) {
+            clearInterval(timer);
+            regenBtn.disabled = false;
+            regenBtn.textContent = '🔄';
+            statusEl.textContent = 'Taking longer than expected — refresh in a bit to check.';
+          }
+        })
+        .catch(function(){});
+    }, 3000);
   }
 
   function injectEditingStyles(doc){
@@ -241,7 +320,8 @@
       '[data-wc-edit-id]:focus{outline:2px solid #3DDC97;background:rgba(61,220,151,.08);}' +
       '[data-wc-photo]{cursor:default;}' +
       '.wc-edit-photo-btn{position:absolute;top:10px;right:10px;z-index:900;width:36px;height:36px;border-radius:50%;border:none;background:rgba(11,18,32,.82);color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.25);}' +
-      '.wc-edit-photo-btn:disabled{opacity:.6;cursor:not-allowed;}';
+      '.wc-edit-photo-btn:disabled{opacity:.6;cursor:not-allowed;}' +
+      '.wc-regen-photo-btn{right:54px;}';
     doc.head.appendChild(style);
   }
 
