@@ -69,16 +69,22 @@
   // A real generated draft's body markup (header/nav/hero/sections/footer)
   // is always well over this many characters - used as a floor to detect a
   // draft that failed to load/save properly rather than a genuinely tiny
-  // page. Same protection previously added to the old GrapesJS-based editor,
-  // kept here since it's cheap insurance regardless of editor implementation.
+  // page.
   var MIN_VALID_HTML_LENGTH = 200;
 
   // Elements whose text a customer is allowed to click into and edit
-  // directly. Deliberately only "leaf" containers (checked in makeEditable
+  // directly. Deliberately only "leaf" containers (see isLeafEditable
   // below) - never divs/sections/headers themselves - so contenteditable
   // can never let a customer accidentally merge or restructure sections,
   // only change the words inside them.
   var EDITABLE_SELECTOR = 'h1,h2,h3,h4,h5,h6,p,span,a,li,button,label,strong,em,small,figcaption,blockquote';
+
+  // The untouched draft HTML exactly as fetched - kept around so Save can
+  // rebuild the page from THIS, not from the live iframe's DOM. See the
+  // save handler for why.
+  var originalHtml = null;
+
+  var hasEdited = false;
 
   function showError(msg){
     loadingEl.style.display = 'none';
@@ -96,14 +102,6 @@
     window.location.href = '/.netlify/functions/preview-draft?session_id=' + encodeURIComponent(sessionId);
   });
 
-  // Everything below works directly on the real rendered document inside
-  // the iframe - no parsing into an intermediate component model, no
-  // separate stylesheet/HTML round-trip. This deliberately replaces an
-  // earlier GrapesJS-based editor (removed 2026-07-28) that hit three
-  // separate real data-loss/corruption bugs over its lifetime, all rooted
-  // in the same cause: GrapesJS re-serializing the page from its own model
-  // never round-trips perfectly. Editing the live DOM in place and saving
-  // its literal outerHTML has no such round-trip to go wrong.
   fetch('/.netlify/functions/get-draft?session_id=' + encodeURIComponent(sessionId))
     .then(function(res){
       if (!res.ok) throw new Error(res.status === 404 ? 'Your draft isn\'t ready yet.' : 'Failed to load your site.');
@@ -115,12 +113,14 @@
         return;
       }
 
+      originalHtml = data.html;
+
       canvas.addEventListener('load', function onLoad(){
         loadingEl.style.display = 'none';
         canvas.style.display = 'block';
 
         var doc = canvas.contentDocument;
-        makeEditable(doc);
+        tagEditableElements(doc);
         wireUpPhotoSlots(doc);
         injectEditingStyles(doc);
       }, { once: true });
@@ -134,15 +134,31 @@
       showError(err.message || 'Something went wrong loading your site.');
     });
 
-  function makeEditable(doc){
-    var candidates = doc.body.querySelectorAll(EDITABLE_SELECTOR);
-    candidates.forEach(function(el){
+  // A "leaf" is an editable-tag element with no editable-tag descendants of
+  // its own (so editing never reaches into a heading that itself contains,
+  // say, a link) and real text in it. Used identically against both the
+  // live iframe document (to decide what to tag contenteditable) and a
+  // fresh scratch parse of the original HTML at save time (to find the
+  // matching untouched element to write into) - same selector, same
+  // document-order walk, same filters, so the Nth result always refers to
+  // the same logical element in both documents.
+  function getLeafEditables(doc){
+    var out = [];
+    doc.body.querySelectorAll(EDITABLE_SELECTOR).forEach(function(el){
       if (el.closest('[data-wc-photo]')) return; // photo slots handle their own content
-      if (el.querySelector(EDITABLE_SELECTOR)) return; // not a leaf - has editable descendants of its own
+      if (el.querySelector(EDITABLE_SELECTOR)) return; // not a leaf
       if (!el.textContent.trim()) return; // nothing to edit
+      out.push(el);
+    });
+    return out;
+  }
+
+  function tagEditableElements(doc){
+    getLeafEditables(doc).forEach(function(el, i){
       el.setAttribute('contenteditable', 'true');
       el.setAttribute('spellcheck', 'false');
-      el.setAttribute('data-wc-editable', '1');
+      el.setAttribute('data-wc-edit-id', String(i));
+      el.addEventListener('input', function(){ hasEdited = true; });
     });
   }
 
@@ -160,7 +176,6 @@
       var input = doc.createElement('input');
       input.type = 'file';
       input.accept = 'image/*';
-      input.className = 'wc-edit-photo-input';
       input.style.display = 'none';
 
       btn.addEventListener('click', function(){ input.click(); });
@@ -201,6 +216,7 @@
             img.alt = '';
             img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;';
             el.insertBefore(img, el.firstChild);
+            hasEdited = true;
             statusEl.textContent = 'Photo added!';
           }).catch(function(){
             statusEl.textContent = 'Photo upload failed — try again.';
@@ -219,11 +235,10 @@
 
   function injectEditingStyles(doc){
     var style = doc.createElement('style');
-    style.setAttribute('data-wc-edit-style', '1');
     style.textContent =
-      '[data-wc-editable]{outline:1px dashed transparent;outline-offset:2px;cursor:text;}' +
-      '[data-wc-editable]:hover{outline-color:rgba(61,220,151,.6);}' +
-      '[data-wc-editable]:focus{outline:2px solid #3DDC97;background:rgba(61,220,151,.08);}' +
+      '[data-wc-edit-id]{outline:1px dashed transparent;outline-offset:2px;cursor:text;}' +
+      '[data-wc-edit-id]:hover{outline-color:rgba(61,220,151,.6);}' +
+      '[data-wc-edit-id]:focus{outline:2px solid #3DDC97;background:rgba(61,220,151,.08);}' +
       '[data-wc-photo]{cursor:default;}' +
       '.wc-edit-photo-btn{position:absolute;top:10px;right:10px;z-index:900;width:36px;height:36px;border-radius:50%;border:none;background:rgba(11,18,32,.82);color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.25);}' +
       '.wc-edit-photo-btn:disabled{opacity:.6;cursor:not-allowed;}';
@@ -231,24 +246,55 @@
   }
 
   saveBtn.addEventListener('click', function(){
-    var doc = canvas.contentDocument;
+    if (!hasEdited) {
+      statusEl.textContent = 'No changes to save.';
+      return;
+    }
 
-    // Save a cleaned CLONE, not the live document - editing keeps working
-    // uninterrupted even if the save fails or the customer keeps typing
-    // while the request is in flight.
-    var clone = doc.documentElement.cloneNode(true);
-    clone.querySelectorAll('[data-wc-editable]').forEach(function(el){
-      el.removeAttribute('contenteditable');
-      el.removeAttribute('spellcheck');
-      el.removeAttribute('data-wc-editable');
+    var liveDoc = canvas.contentDocument;
+
+    // Rebuild the saved HTML from a FRESH parse of the untouched original
+    // draft, not by serializing the live iframe document. Browser
+    // extensions (Grammarly, password managers, and similar) are known to
+    // inject their own elements/attributes into any page containing
+    // contenteditable regions - confirmed live 2026-07-28, where Grammarly's
+    // own custom elements and marker attributes ended up baked into a saved
+    // draft after nothing more than opening the editor with Grammarly
+    // active. Re-parsing the pristine string (which was never inserted into
+    // a live page an extension could touch) and splicing in only the exact
+    // text/photo changes made here sidesteps this regardless of which
+    // extension a given customer's browser happens to have installed -
+    // there's no live DOM being trusted wholesale in the first place.
+    var scratchDoc = new DOMParser().parseFromString(originalHtml, 'text/html');
+    var scratchEditables = getLeafEditables(scratchDoc);
+
+    liveDoc.querySelectorAll('[data-wc-edit-id]').forEach(function(el){
+      var idx = Number(el.getAttribute('data-wc-edit-id'));
+      if (scratchEditables[idx]) {
+        scratchEditables[idx].innerHTML = el.innerHTML;
+      }
     });
-    clone.querySelectorAll('.wc-edit-photo-btn, .wc-edit-photo-input').forEach(function(el){ el.remove(); });
-    clone.querySelectorAll('style[data-wc-edit-style]').forEach(function(el){ el.remove(); });
 
-    var html = '<!DOCTYPE html>' + clone.outerHTML;
+    liveDoc.querySelectorAll('[data-wc-photo]').forEach(function(el){
+      var img = el.querySelector('img');
+      if (!img) return; // no photo swapped for this slot this session
+      var slotId = el.getAttribute('data-wc-photo');
+      var target = scratchDoc.querySelector('[data-wc-photo="' + slotId + '"]');
+      if (!target) return;
+      var existingImg = target.querySelector('img');
+      if (existingImg) {
+        existingImg.src = img.src;
+      } else {
+        target.insertBefore(scratchDoc.importNode(img, true), target.firstChild);
+      }
+    });
+
+    var html = '<!DOCTYPE html>' + scratchDoc.documentElement.outerHTML;
 
     // Never let a save shrink the page down to near-nothing - see
-    // MIN_VALID_HTML_LENGTH above.
+    // MIN_VALID_HTML_LENGTH above. Very unlikely with the splice approach
+    // above (there's no way to delete a whole section through this editor),
+    // kept as cheap defense-in-depth regardless.
     if (html.length < MIN_VALID_HTML_LENGTH) {
       statusEl.textContent = 'That would leave your site almost empty — not saving.';
       return;
@@ -266,6 +312,8 @@
       if (!res.ok) throw new Error('save failed');
       return res.json();
     }).then(function(){
+      originalHtml = html;
+      hasEdited = false;
       statusEl.textContent = 'Saved!';
       saveBtn.disabled = false;
       saveBtn.textContent = 'Save changes';
