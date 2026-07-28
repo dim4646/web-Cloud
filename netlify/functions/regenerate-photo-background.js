@@ -76,7 +76,15 @@ exports.handler = async (event) => {
     const newAttrs = /background-image\s*:\s*url\(['"]?[^'")]*['"]?\)/i.test(attrs)
       ? attrs.replace(/background-image\s*:\s*url\(['"]?[^'")]*['"]?\)/i, `background-image:url('${proxyUrl}')`)
       : attrs.replace(/style="([^"]*)"/i, `style="$1;background-image:url('${proxyUrl}');background-size:cover;background-position:center;"`);
-    const replacement = `<${tag}${newAttrs}>${innerContent}</${tag}>`;
+    // Drop any <img> already sitting in this slot's inner content (left by
+    // an earlier manual upload via visual-edit.html/visual-upload-photo.js)
+    // - background-image paints behind normal child content, so a stale
+    // foreground <img> would otherwise keep covering the freshly
+    // regenerated photo instead of being replaced by it (found live
+    // 2026-07-28: regenerating after a manual upload just hid the new AI
+    // photo behind the old uploaded one).
+    const cleanedInnerContent = innerContent.replace(/<img\b[^>]*>/gi, '');
+    const replacement = `<${tag}${newAttrs}>${cleanedInnerContent}</${tag}>`;
     const newHtml = currentHtml.replace(fullMatch, replacement);
 
     await updateOrderRecord(record.id, {
