@@ -211,6 +211,15 @@
             return res.json();
           }).then(function(uploaded){
             el.querySelectorAll('img').forEach(function(img){ img.remove(); });
+            // Slots that already had an AI-generated photo carry it as an
+            // inline background-image on this same element (see
+            // inject-photos.js) - clearing it here is what actually replaces
+            // it. Otherwise it stays sitting behind the new <img>, showing
+            // through any transparent/uncovered pixels the new photo has
+            // (e.g. a mockup graphic with a transparent background) - found
+            // live 2026-07-28 via a real upload where the old AI photo was
+            // still visible behind the new one for exactly this reason.
+            el.style.backgroundImage = 'none';
             var img = doc.createElement('img');
             img.src = uploaded.url;
             img.alt = '';
@@ -361,6 +370,13 @@
       var slotId = el.getAttribute('data-wc-photo');
       var target = scratchDoc.querySelector('[data-wc-photo="' + slotId + '"]');
       if (!target) return;
+      // Mirror the live-DOM upload handler's own background-image clear
+      // (see wireUpPhotoSlots above) onto the scratch element too - the
+      // scratch doc is a fresh parse of the ORIGINAL html, so it still has
+      // whatever old AI-generated background-image was there before this
+      // session's upload, and without clearing it here the saved page would
+      // still carry it behind the new <img>, same bug as before.
+      target.style.backgroundImage = 'none';
       var existingImg = target.querySelector('img');
       if (existingImg) {
         existingImg.src = img.src;
