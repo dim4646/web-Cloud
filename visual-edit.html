@@ -72,12 +72,13 @@
   // page.
   var MIN_VALID_HTML_LENGTH = 200;
 
-  // Elements whose text a customer is allowed to click into and edit
-  // directly. Deliberately only "leaf" containers (see isLeafEditable
-  // below) - never divs/sections/headers themselves - so contenteditable
-  // can never let a customer accidentally merge or restructure sections,
-  // only change the words inside them.
-  var EDITABLE_SELECTOR = 'h1,h2,h3,h4,h5,h6,p,span,a,li,button,label,strong,em,small,figcaption,blockquote';
+  // Simple inline text-formatting tags a leaf is still allowed to contain
+  // (e.g. a <div class="value"> wrapping a bare text node plus a <small>)
+  // without disqualifying it - anything else nested inside means the
+  // element is a structural container, not a leaf.
+  var INLINE_TAGS = ['A','EM','STRONG','SMALL','SPAN','B','I','BR','U','MARK','SUB','SUP','Q','CITE','TIME','CODE'];
+  // Never real editable text, regardless of how much text they contain.
+  var SKIP_TAGS = ['SCRIPT','STYLE','SELECT','OPTION','INPUT','TEXTAREA','IFRAME','SVG','PATH','NOSCRIPT'];
 
   // The untouched draft HTML exactly as fetched - kept around so Save can
   // rebuild the page from THIS, not from the live iframe's DOM. See the
@@ -142,15 +143,42 @@
   // matching untouched element to write into) - same selector, same
   // document-order walk, same filters, so the Nth result always refers to
   // the same logical element in both documents.
+  // Structural (tag-agnostic) leaf test, replacing an earlier fixed
+  // tag-name whitelist (h1/p/span/etc.) that missed real text - different
+  // AI-generated design variations use plain <div>s for things like footer
+  // lines, contact labels/values, and testimonial names/locations just as
+  // often as p/span, so a fixed tag list always ends up missing some real
+  // text on some drafts (found live 2026-07-28: whole sections of a real
+  // draft weren't editable at all). A leaf here is any element with real
+  // text whose only child elements (if any) are simple inline formatting
+  // tags that are themselves childless - i.e. nothing that looks like a
+  // layout container.
+  function isEditableCandidate(el){
+    if (SKIP_TAGS.indexOf(el.tagName) !== -1) return false;
+    if (el.closest('[data-wc-photo]')) return false; // photo slots handle their own content
+    if (!el.textContent.trim()) return false; // nothing to edit
+    var children = el.children;
+    for (var i = 0; i < children.length; i++) {
+      var child = children[i];
+      if (INLINE_TAGS.indexOf(child.tagName) === -1) return false; // a real container child - too complex
+      if (child.children.length > 0) return false; // inline child has its own element children - too complex
+    }
+    return true;
+  }
+
   function getLeafEditables(doc){
-    var out = [];
-    doc.body.querySelectorAll(EDITABLE_SELECTOR).forEach(function(el){
-      if (el.closest('[data-wc-photo]')) return; // photo slots handle their own content
-      if (el.querySelector(EDITABLE_SELECTOR)) return; // not a leaf
-      if (!el.textContent.trim()) return; // nothing to edit
-      out.push(el);
+    var candidates = Array.from(doc.body.querySelectorAll('*')).filter(isEditableCandidate);
+    var candidateSet = new Set(candidates);
+    // Keep only the outermost candidate in any nested chain (e.g. an <li>
+    // wrapping a single bare <a> - both would independently qualify, but
+    // nested contenteditable regions are invalid, and editing the whole
+    // <li> as one unit is the more useful behavior anyway).
+    return candidates.filter(function(el){
+      for (var p = el.parentElement; p && p !== doc.body; p = p.parentElement) {
+        if (candidateSet.has(p)) return false;
+      }
+      return true;
     });
-    return out;
   }
 
   function tagEditableElements(doc){
