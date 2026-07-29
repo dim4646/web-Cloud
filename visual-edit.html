@@ -335,6 +335,17 @@
         dragStartX = e.clientX;
         dragStartY = e.clientY;
         dragOrigin = readPhotoState(el);
+        // At exactly 100% zoom, object-fit:cover-style sizing already fills
+        // the frame with almost no slack to pan within, so a drag barely
+        // moves anything and feels broken. Bump to a starting zoom with
+        // real pan room the first time someone drags, rather than requiring
+        // them to find and use the slider first - found live 2026-07-29,
+        // a drag at the default zoom looked like it did nothing.
+        if (dragOrigin.zoom <= 100) {
+          dragOrigin.zoom = 130;
+          zoomSlider.value = '130';
+          applyPhotoState(el, dragOrigin);
+        }
         e.preventDefault();
       });
       doc.addEventListener('mousemove', function(e){
