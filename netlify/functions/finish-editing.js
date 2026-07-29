@@ -47,7 +47,10 @@ exports.handler = async (event) => {
 
   const roundsUsed = record.fields['Self-Serve Rounds Used'] || 0;
   const roundsRemaining = Math.max(0, ROUNDS_LIMIT - roundsUsed);
-  const screenshotUrl = `https://s.wordpress.com/mshots/v1/${encodeURIComponent(finalUrl)}?w=1200`;
+  // mshots (WordPress's free screenshot service) permanently 403s on
+  // *.netlify.app domains specifically (works fine on real custom domains) -
+  // confirmed 2026-07-29. thum.io doesn't block Netlify's own subdomains.
+  const screenshotUrl = `https://image.thum.io/get/width/1200/${finalUrl}`;
 
   const domainCta = record.fields['Package'] === 'Business'
     ? `<p>🌐 Ready for the next step? Get a custom domain of your own (like <i>yourbusiness.com.au</i>) instead of the address above — just reply and tell us the name you have in mind, and we'll check availability and send you a price!</p>`
