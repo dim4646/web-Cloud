@@ -54,7 +54,11 @@ exports.handler = async (event) => {
 
   // Not just a Business-package perk - any customer might want a real domain
   // instead of their *.netlify.app link, so offer it to everyone here.
-  const domainCta = `<p>🌐 Want a custom domain of your own (like <i>yourbusiness.com.au</i>) instead of the address above? Just reply and tell us the name you have in mind, and we'll check availability and send you a price!</p>`;
+  // Deliberately no example domain text here (e.g. "yourbusiness.com.au") -
+  // Gmail and other clients auto-linkify any plausible-looking domain string
+  // even without an <a> tag, and if that string happens to be a real
+  // registered/parked domain, the "example" becomes a live, misleading link.
+  const domainCta = `<p>🌐 Want a custom domain of your own — a proper .com.au address — instead of the address above? Just reply and tell us the name you have in mind, and we'll check availability and send you a price!</p>`;
 
   await sendEmail({
     to: customerEmail,

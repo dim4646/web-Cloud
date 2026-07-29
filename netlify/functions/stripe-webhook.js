@@ -102,9 +102,14 @@ exports.handler = async (event) => {
   // everyone. Wording differs slightly since domain handling is a built-in
   // part of the Business package but an optional add-on for the others.
   if (email) {
+    // Deliberately no example domain text (e.g. "yourbusiness.com.au") -
+    // Gmail and other clients auto-linkify any plausible-looking domain
+    // string even without an <a> tag, and if that string happens to be a
+    // real registered/parked domain, the "example" becomes a live,
+    // misleading link (confirmed live 2026-07-29).
     const domainParagraph = packageName === 'Business'
-      ? `<p>Since you're on the Business package, we handle registering a custom domain for you (like <i>yourbusiness.com.au</i>) — the registration itself is billed separately (typically $20–$80 AUD/year, depending on the name). If you already know the name you'd like, just reply to this email and let us know — we'll check availability and send you a price.</p>`
-      : `<p>By the way — if you'd like a custom domain of your own (like <i>yourbusiness.com.au</i>) instead of the free address your site will launch on, just reply and let us know the name you have in mind. We'll check availability and send you a price (typically $20–$80 AUD/year).</p>`;
+      ? `<p>Since you're on the Business package, we handle registering a custom domain for you (a proper .com.au address) — the registration itself is billed separately (typically $20–$80 AUD/year, depending on the name). If you already know the name you'd like, just reply to this email and let us know — we'll check availability and send you a price.</p>`
+      : `<p>By the way — if you'd like a custom domain of your own (a proper .com.au address) instead of the free address your site will launch on, just reply and let us know the name you have in mind. We'll check availability and send you a price (typically $20–$80 AUD/year).</p>`;
 
     await sendEmail({
       to: email,
