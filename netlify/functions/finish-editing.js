@@ -50,7 +50,13 @@ exports.handler = async (event) => {
   // mshots (WordPress's free screenshot service) permanently 403s on
   // *.netlify.app domains specifically (works fine on real custom domains) -
   // confirmed 2026-07-29. thum.io doesn't block Netlify's own subdomains.
-  const screenshotUrl = `https://image.thum.io/get/width/1200/${finalUrl}`;
+  // thum.io caches screenshots per-URL for 24h, so a bogus query param is
+  // appended to the target URL (harmless - the static site ignores unknown
+  // params) purely to bust that cache: without it, re-sending this email
+  // after the customer edits their site would show the old screenshot from
+  // whenever thum.io first rendered that URL - confirmed live 2026-07-29.
+  const cacheBustedUrl = `${finalUrl}${finalUrl.includes('?') ? '&' : '?'}_t=${Date.now()}`;
+  const screenshotUrl = `https://image.thum.io/get/width/1200/${cacheBustedUrl}`;
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(finalUrl)}`;
 
   // Not just a Business-package perk - any customer might want a real domain

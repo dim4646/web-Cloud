@@ -190,10 +190,40 @@
     });
   }
 
+  // Reads existing inline background-size/-position (falls back to
+  // 100%/50%,50%) so the zoom slider and drag start from whatever the photo
+  // is already showing, whether that came from the AI generator or a prior
+  // upload/reposition - never resets a photo's framing just by opening the
+  // editor.
+  function readPhotoState(el){
+    var size = parseFloat(el.style.backgroundSize) || 100;
+    var pos = /^\s*([\d.]+)%\s+([\d.]+)%/.exec(el.style.backgroundPosition || '');
+    return { zoom: size, x: pos ? parseFloat(pos[1]) : 50, y: pos ? parseFloat(pos[2]) : 50 };
+  }
+
+  function applyPhotoState(el, state){
+    el.style.backgroundSize = state.zoom + '%';
+    el.style.backgroundPosition = state.x + '% ' + state.y + '%';
+  }
+
   function wireUpPhotoSlots(doc){
     doc.querySelectorAll('[data-wc-photo]').forEach(function(el){
       var computed = doc.defaultView.getComputedStyle(el);
       if (computed.position === 'static') el.style.position = 'relative';
+      el.style.overflow = 'hidden';
+
+      // Normalize legacy <img>-based photos (from before pan/zoom existed)
+      // into the same background-image approach AI-generated photos already
+      // use, so dragging/zooming works the same way regardless of how the
+      // photo originally got there.
+      var legacyImg = el.querySelector('img');
+      if (legacyImg) {
+        el.style.backgroundImage = 'url(' + legacyImg.src + ')';
+        if (!el.style.backgroundSize) el.style.backgroundSize = 'cover';
+        if (!el.style.backgroundPosition) el.style.backgroundPosition = 'center';
+        legacyImg.remove();
+      }
+      if (el.style.backgroundSize === 'cover') el.style.backgroundSize = '100%';
 
       var btn = doc.createElement('button');
       btn.type = 'button';
@@ -238,21 +268,17 @@
             if (!res.ok) throw new Error('upload failed');
             return res.json();
           }).then(function(uploaded){
-            el.querySelectorAll('img').forEach(function(img){ img.remove(); });
-            // Slots that already had an AI-generated photo carry it as an
-            // inline background-image on this same element (see
-            // inject-photos.js) - clearing it here is what actually replaces
-            // it. Otherwise it stays sitting behind the new <img>, showing
-            // through any transparent/uncovered pixels the new photo has
-            // (e.g. a mockup graphic with a transparent background) - found
-            // live 2026-07-28 via a real upload where the old AI photo was
-            // still visible behind the new one for exactly this reason.
-            el.style.backgroundImage = 'none';
-            var img = doc.createElement('img');
-            img.src = uploaded.url;
-            img.alt = '';
-            img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;';
-            el.insertBefore(img, el.firstChild);
+            // Uploads use the same background-image approach as AI photos
+            // (see readPhotoState/applyPhotoState above) rather than a
+            // separate <img> - one rendering path means zoom/drag work the
+            // same way regardless of where the photo came from, and setting
+            // backgroundImage here (replacing whatever was there, AI-photo
+            // or previous upload) is what actually clears the old one -
+            // found live 2026-07-28 via a real upload where the old AI photo
+            // stayed visible behind the new one because it wasn't cleared.
+            el.style.backgroundImage = 'url(' + uploaded.url + ')';
+            applyPhotoState(el, { zoom: 100, x: 50, y: 50 });
+            el.setAttribute('data-wc-photo-touched', '1');
             hasEdited = true;
             statusEl.textContent = 'Photo added!';
           }).catch(function(){
@@ -267,6 +293,68 @@
 
       el.appendChild(btn);
       el.appendChild(input);
+
+      // Zoom slider + drag-to-reposition, offered on every photo slot
+      // (AI-generated or uploaded) since both can end up cropped in a way
+      // object-fit:cover doesn't get right on its own - added 2026-07-29
+      // after a regenerated AI photo didn't frame the way the client wanted
+      // and there was no way to adjust it short of regenerating repeatedly.
+      var zoomWrap = doc.createElement('div');
+      zoomWrap.className = 'wc-zoom-wrap';
+      var zoomSlider = doc.createElement('input');
+      zoomSlider.type = 'range';
+      zoomSlider.min = '100';
+      zoomSlider.max = '250';
+      zoomSlider.step = '5';
+      var initialState = readPhotoState(el);
+      zoomSlider.value = String(initialState.zoom);
+      zoomSlider.title = 'Zoom';
+      zoomWrap.appendChild(zoomSlider);
+      el.appendChild(zoomWrap);
+
+      zoomSlider.addEventListener('input', function(){
+        var state = readPhotoState(el);
+        state.zoom = Number(zoomSlider.value);
+        applyPhotoState(el, state);
+        el.setAttribute('data-wc-photo-touched', '1');
+        hasEdited = true;
+      });
+      // Dragging the slider shouldn't also start a reposition-drag on the
+      // photo underneath it.
+      zoomWrap.addEventListener('mousedown', function(e){ e.stopPropagation(); });
+
+      var hint = doc.createElement('div');
+      hint.className = 'wc-photo-hint';
+      hint.textContent = 'Drag to reposition';
+      el.appendChild(hint);
+
+      var dragging = false, dragStartX = 0, dragStartY = 0, dragOrigin = null;
+      el.addEventListener('mousedown', function(e){
+        if (e.target !== el) return; // ignore drags starting on the buttons/slider
+        dragging = true;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        dragOrigin = readPhotoState(el);
+        e.preventDefault();
+      });
+      doc.addEventListener('mousemove', function(e){
+        if (!dragging) return;
+        var rect = el.getBoundingClientRect();
+        var dxPct = ((e.clientX - dragStartX) / rect.width) * 100;
+        var dyPct = ((e.clientY - dragStartY) / rect.height) * 100;
+        var state = {
+          zoom: dragOrigin.zoom,
+          x: Math.max(0, Math.min(100, dragOrigin.x - dxPct)),
+          y: Math.max(0, Math.min(100, dragOrigin.y - dyPct)),
+        };
+        applyPhotoState(el, state);
+      });
+      doc.addEventListener('mouseup', function(){
+        if (!dragging) return;
+        dragging = false;
+        el.setAttribute('data-wc-photo-touched', '1');
+        hasEdited = true;
+      });
 
       // "Try another AI photo" - only offered on slots that already got an
       // AI-generated photo (tracked via data-wc-photo-desc, left by
@@ -355,10 +443,15 @@
       '[data-wc-edit-id]{outline:1px dashed transparent;outline-offset:2px;cursor:text;}' +
       '[data-wc-edit-id]:hover{outline-color:rgba(61,220,151,.6);}' +
       '[data-wc-edit-id]:focus{outline:2px solid #3DDC97;background:rgba(61,220,151,.08);}' +
-      '[data-wc-photo]{cursor:default;}' +
+      '[data-wc-photo]{cursor:grab;}' +
+      '[data-wc-photo]:active{cursor:grabbing;}' +
       '.wc-edit-photo-btn{position:absolute;top:10px;right:10px;z-index:900;width:36px;height:36px;border-radius:50%;border:none;background:rgba(11,18,32,.82);color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.25);}' +
       '.wc-edit-photo-btn:disabled{opacity:.6;cursor:not-allowed;}' +
-      '.wc-regen-photo-btn{right:54px;}';
+      '.wc-regen-photo-btn{right:54px;}' +
+      '.wc-zoom-wrap{position:absolute;left:10px;right:10px;bottom:10px;z-index:900;background:rgba(11,18,32,.72);border-radius:8px;padding:6px 10px;}' +
+      '.wc-zoom-wrap input[type=range]{width:100%;cursor:pointer;}' +
+      '.wc-photo-hint{position:absolute;top:10px;left:10px;z-index:900;background:rgba(11,18,32,.72);color:#fff;font-size:.72rem;padding:4px 9px;border-radius:6px;pointer-events:none;opacity:0;transition:opacity .15s;}' +
+      '[data-wc-photo]:hover .wc-photo-hint{opacity:1;}';
     doc.head.appendChild(style);
   }
 
@@ -393,24 +486,25 @@
     });
 
     liveDoc.querySelectorAll('[data-wc-photo]').forEach(function(el){
-      var img = el.querySelector('img');
-      if (!img) return; // no photo swapped for this slot this session
+      // Only slots actually touched this session (upload, zoom, or drag) -
+      // see wireUpPhotoSlots - get written back; an untouched slot's
+      // background-image/-size/-position stay exactly as they were in the
+      // original draft.
+      if (el.getAttribute('data-wc-photo-touched') !== '1') return;
       var slotId = el.getAttribute('data-wc-photo');
       var target = scratchDoc.querySelector('[data-wc-photo="' + slotId + '"]');
       if (!target) return;
-      // Mirror the live-DOM upload handler's own background-image clear
-      // (see wireUpPhotoSlots above) onto the scratch element too - the
-      // scratch doc is a fresh parse of the ORIGINAL html, so it still has
-      // whatever old AI-generated background-image was there before this
-      // session's upload, and without clearing it here the saved page would
-      // still carry it behind the new <img>, same bug as before.
-      target.style.backgroundImage = 'none';
-      var existingImg = target.querySelector('img');
-      if (existingImg) {
-        existingImg.src = img.src;
-      } else {
-        target.insertBefore(scratchDoc.importNode(img, true), target.firstChild);
-      }
+      target.style.backgroundImage = el.style.backgroundImage;
+      target.style.backgroundSize = el.style.backgroundSize;
+      target.style.backgroundPosition = el.style.backgroundPosition;
+      // The scratch doc is a fresh parse of the ORIGINAL html, so a slot
+      // that used to render via a legacy <img> (see the normalization in
+      // wireUpPhotoSlots) still has that <img> in the scratch copy - remove
+      // it now that this slot renders via background-image instead, same
+      // "clear the old thing so it doesn't show through" reasoning as
+      // clearing backgroundImage was for the reverse direction.
+      var legacyImg = target.querySelector('img');
+      if (legacyImg) legacyImg.remove();
     });
 
     var html = '<!DOCTYPE html>' + scratchDoc.documentElement.outerHTML;
