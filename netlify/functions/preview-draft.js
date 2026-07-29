@@ -28,7 +28,7 @@ function injectPhotoUrls(html, slotUrls) {
   return out;
 }
 
-function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
+function assistantWidget(sessionId, roundsUsed, roundsRemaining, isBusiness, requestedDomain, domainStatus) {
   const hasRounds = roundsRemaining > 0;
   return `
 <style>
@@ -64,11 +64,33 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
   #wc-finish-fab{position:fixed;bottom:134px;right:22px;z-index:2147483000;display:flex;align-items:center;gap:8px;padding:14px 20px;border-radius:999px;border:none;cursor:pointer;background:#0B1220;color:#fff;font:600 14px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.28);}
   #wc-finish-fab:hover{transform:translateY(-2px);}
   #wc-finish-fab:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+  #wc-domain-fab{position:fixed;bottom:190px;right:22px;z-index:2147483000;display:flex;align-items:center;gap:8px;padding:14px 20px;border-radius:999px;border:none;cursor:pointer;background:#4C8DFF;color:#fff;font:600 14px/1 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.28);}
+  #wc-domain-fab:hover{transform:translateY(-2px);}
+  #wc-domain-panel{position:fixed;bottom:190px;right:22px;z-index:2147483000;width:min(340px,calc(100vw - 44px));background:#fff;color:#0B1220;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.35);display:none;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;padding:18px;}
+  #wc-domain-panel.wc-open{display:block;}
+  #wc-domain-panel .wc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  #wc-domain-panel .wc-head strong{font-size:.95rem;}
+  #wc-domain-panel .wc-close{background:none;border:none;font-size:1.2rem;cursor:pointer;color:#8891a3;line-height:1;padding:2px 4px;}
+  #wc-domain-panel .wc-hint{font-size:.8rem;color:#6b7280;margin-bottom:12px;line-height:1.4;}
+  #wc-domain-panel input{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font:inherit;font-size:.88rem;color:#0B1220;background:#f9fafb;box-sizing:border-box;margin-bottom:10px;}
+  #wc-domain-panel button.wc-submit{width:100%;padding:11px;border:none;border-radius:8px;background:#4C8DFF;color:#fff;font-weight:600;font-size:.88rem;cursor:pointer;}
+  #wc-domain-panel button.wc-submit:disabled{opacity:.5;cursor:not-allowed;}
+  #wc-domain-panel .wc-status{font-size:.78rem;margin-top:8px;min-height:1em;}
 </style>
 
 <a id="wc-visual-fab" href="/visual-edit.html?session_id=${sessionId}">✏️ Edit directly</a>
 <button id="wc-rev-fab" type="button">💬 ${hasRounds ? 'Ask for a change' : 'Request a change'}</button>
 <button id="wc-finish-fab" type="button">✅ I'm happy — email me the link</button>
+${isBusiness ? `
+<button id="wc-domain-fab" type="button">🌐 ${domainStatus ? 'Domain requested' : 'Register my domain'}</button>
+<div id="wc-domain-panel">
+  <div class="wc-head"><strong>Register your domain</strong><button class="wc-close" id="wc-domain-close" type="button">&times;</button></div>
+  <div class="wc-hint">Your Business package includes 1 year of domain registration. Tell us the domain name you'd like (e.g. yourbusiness.com.au) and we'll register it for you.</div>
+  <input type="text" id="wc-domain-input" placeholder="yourbusiness.com.au" value="${requestedDomain ? requestedDomain.replace(/"/g, '&quot;') : ''}">
+  <button class="wc-submit" id="wc-domain-submit" type="button">Request this domain</button>
+  <div class="wc-status" id="wc-domain-status">${domainStatus ? 'Requested — we will follow up once it is registered.' : ''}</div>
+</div>
+` : ''}
 
 <div id="wc-rev-panel">
   <div class="wc-head"><strong>${hasRounds ? 'Your WebCloud assistant' : 'Request a change'}</strong><button class="wc-close" id="wc-rev-close" type="button">&times;</button></div>
@@ -379,6 +401,39 @@ function assistantWidget(sessionId, roundsUsed, roundsRemaining) {
   });
   ` : ''}
 
+  ${isBusiness ? `
+  var domainFab = document.getElementById('wc-domain-fab');
+  var domainPanel = document.getElementById('wc-domain-panel');
+  domainFab.addEventListener('click', function(){ domainPanel.classList.toggle('wc-open'); });
+  document.getElementById('wc-domain-close').addEventListener('click', function(){ domainPanel.classList.remove('wc-open'); });
+  document.getElementById('wc-domain-submit').addEventListener('click', function(){
+    var btn = this;
+    var input = document.getElementById('wc-domain-input');
+    var statusEl = document.getElementById('wc-domain-status');
+    var domain = input.value.trim();
+    if (!domain) { statusEl.textContent = 'Please enter a domain name.'; return; }
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    fetch('/.netlify/functions/request-domain', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId: sessionId, domain: domain }),
+    }).then(function(res){
+      if (!res.ok) throw new Error('failed');
+      return res.json();
+    }).then(function(){
+      statusEl.textContent = "Requested — we'll be in touch once it's registered.";
+      domainFab.textContent = '🌐 Domain requested';
+      btn.disabled = false;
+      btn.textContent = 'Request this domain';
+    }).catch(function(){
+      statusEl.textContent = 'Something went wrong — please try again.';
+      btn.disabled = false;
+      btn.textContent = 'Request this domain';
+    });
+  });
+  ` : ''}
+
   document.getElementById('wc-finish-fab').addEventListener('click', function(){
     var btn = this;
     btn.disabled = true;
@@ -438,7 +493,11 @@ exports.handler = async (event) => {
 
   const roundsUsed = record.fields['Self-Serve Rounds Used'] || 0;
   const roundsRemaining = Math.max(0, ROUNDS_LIMIT - roundsUsed);
-  const widget = assistantWidget(sessionId, roundsUsed, roundsRemaining);
+  const isBusiness = record.fields['Package'] === 'Business';
+  const widget = assistantWidget(
+    sessionId, roundsUsed, roundsRemaining,
+    isBusiness, record.fields['Requested Domain'], record.fields['Domain Status']
+  );
   const htmlWithWidget = /<\/body>/i.test(html)
     ? html.replace(/<\/body>/i, `${widget}</body>`)
     : `${html}${widget}`;
