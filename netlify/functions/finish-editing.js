@@ -52,9 +52,9 @@ exports.handler = async (event) => {
   // confirmed 2026-07-29. thum.io doesn't block Netlify's own subdomains.
   const screenshotUrl = `https://image.thum.io/get/width/1200/${finalUrl}`;
 
-  const domainCta = record.fields['Package'] === 'Business'
-    ? `<p>🌐 Ready for the next step? Get a custom domain of your own (like <i>yourbusiness.com.au</i>) instead of the address above — just reply and tell us the name you have in mind, and we'll check availability and send you a price!</p>`
-    : '';
+  // Not just a Business-package perk - any customer might want a real domain
+  // instead of their *.netlify.app link, so offer it to everyone here.
+  const domainCta = `<p>🌐 Want a custom domain of your own (like <i>yourbusiness.com.au</i>) instead of the address above? Just reply and tell us the name you have in mind, and we'll check availability and send you a price!</p>`;
 
   await sendEmail({
     to: customerEmail,
