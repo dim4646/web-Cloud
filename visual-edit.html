@@ -294,75 +294,67 @@
       el.appendChild(btn);
       el.appendChild(input);
 
-      // Zoom slider + drag-to-reposition, offered on every photo slot
+      // Click-to-focus + zoom buttons, offered on every photo slot
       // (AI-generated or uploaded) since both can end up cropped in a way
       // object-fit:cover doesn't get right on its own - added 2026-07-29
       // after a regenerated AI photo didn't frame the way the client wanted
       // and there was no way to adjust it short of regenerating repeatedly.
+      // First tried a drag-to-reposition + range-slider version, but a
+      // small slider thumb is fiddly to grab precisely and a drag at the
+      // default 100% zoom barely moves anything (object-fit:cover already
+      // fills the frame with almost no slack to pan within) - replaced with
+      // one click to set the focus point plus two large +/- zoom buttons,
+      // both big obvious targets instead of small precise ones.
+      function bumpZoomIfFlat(state){
+        // See the note above: 100% zoom has no real pan room, so the first
+        // interaction with a still-untouched photo starts it at a zoom with
+        // actual room to reframe rather than requiring the zoom button to
+        // be found and used first.
+        if (state.zoom <= 100) state.zoom = 130;
+        return state;
+      }
+
       var zoomWrap = doc.createElement('div');
       zoomWrap.className = 'wc-zoom-wrap';
-      var zoomSlider = doc.createElement('input');
-      zoomSlider.type = 'range';
-      zoomSlider.min = '100';
-      zoomSlider.max = '250';
-      zoomSlider.step = '5';
-      var initialState = readPhotoState(el);
-      zoomSlider.value = String(initialState.zoom);
-      zoomSlider.title = 'Zoom';
-      zoomWrap.appendChild(zoomSlider);
+      var zoomOutBtn = doc.createElement('button');
+      zoomOutBtn.type = 'button';
+      zoomOutBtn.className = 'wc-zoom-btn';
+      zoomOutBtn.textContent = '−';
+      zoomOutBtn.title = 'Zoom out';
+      var zoomInBtn = doc.createElement('button');
+      zoomInBtn.type = 'button';
+      zoomInBtn.className = 'wc-zoom-btn';
+      zoomInBtn.textContent = '+';
+      zoomInBtn.title = 'Zoom in';
+      zoomWrap.appendChild(zoomOutBtn);
+      zoomWrap.appendChild(zoomInBtn);
       el.appendChild(zoomWrap);
 
-      zoomSlider.addEventListener('input', function(){
-        var state = readPhotoState(el);
-        state.zoom = Number(zoomSlider.value);
+      function adjustZoom(delta){
+        var state = bumpZoomIfFlat(readPhotoState(el));
+        state.zoom = Math.max(100, Math.min(250, state.zoom + delta));
         applyPhotoState(el, state);
         el.setAttribute('data-wc-photo-touched', '1');
         hasEdited = true;
-      });
-      // Dragging the slider shouldn't also start a reposition-drag on the
-      // photo underneath it.
-      zoomWrap.addEventListener('mousedown', function(e){ e.stopPropagation(); });
+      }
+      zoomOutBtn.addEventListener('click', function(){ adjustZoom(-20); });
+      zoomInBtn.addEventListener('click', function(){ adjustZoom(20); });
+      // Clicking a zoom button shouldn't also register as a click-to-focus
+      // on the photo underneath it.
+      zoomWrap.addEventListener('click', function(e){ e.stopPropagation(); });
 
       var hint = doc.createElement('div');
       hint.className = 'wc-photo-hint';
-      hint.textContent = 'Drag to reposition';
+      hint.textContent = 'Click to focus';
       el.appendChild(hint);
 
-      var dragging = false, dragStartX = 0, dragStartY = 0, dragOrigin = null;
-      el.addEventListener('mousedown', function(e){
-        if (e.target !== el) return; // ignore drags starting on the buttons/slider
-        dragging = true;
-        dragStartX = e.clientX;
-        dragStartY = e.clientY;
-        dragOrigin = readPhotoState(el);
-        // At exactly 100% zoom, object-fit:cover-style sizing already fills
-        // the frame with almost no slack to pan within, so a drag barely
-        // moves anything and feels broken. Bump to a starting zoom with
-        // real pan room the first time someone drags, rather than requiring
-        // them to find and use the slider first - found live 2026-07-29,
-        // a drag at the default zoom looked like it did nothing.
-        if (dragOrigin.zoom <= 100) {
-          dragOrigin.zoom = 130;
-          zoomSlider.value = '130';
-          applyPhotoState(el, dragOrigin);
-        }
-        e.preventDefault();
-      });
-      doc.addEventListener('mousemove', function(e){
-        if (!dragging) return;
+      el.addEventListener('click', function(e){
+        if (e.target !== el) return; // ignore clicks on the buttons/zoom controls
         var rect = el.getBoundingClientRect();
-        var dxPct = ((e.clientX - dragStartX) / rect.width) * 100;
-        var dyPct = ((e.clientY - dragStartY) / rect.height) * 100;
-        var state = {
-          zoom: dragOrigin.zoom,
-          x: Math.max(0, Math.min(100, dragOrigin.x - dxPct)),
-          y: Math.max(0, Math.min(100, dragOrigin.y - dyPct)),
-        };
+        var state = bumpZoomIfFlat(readPhotoState(el));
+        state.x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+        state.y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
         applyPhotoState(el, state);
-      });
-      doc.addEventListener('mouseup', function(){
-        if (!dragging) return;
-        dragging = false;
         el.setAttribute('data-wc-photo-touched', '1');
         hasEdited = true;
       });
@@ -454,13 +446,12 @@
       '[data-wc-edit-id]{outline:1px dashed transparent;outline-offset:2px;cursor:text;}' +
       '[data-wc-edit-id]:hover{outline-color:rgba(61,220,151,.6);}' +
       '[data-wc-edit-id]:focus{outline:2px solid #3DDC97;background:rgba(61,220,151,.08);}' +
-      '[data-wc-photo]{cursor:grab;}' +
-      '[data-wc-photo]:active{cursor:grabbing;}' +
+      '[data-wc-photo]{cursor:crosshair;}' +
       '.wc-edit-photo-btn{position:absolute;top:10px;right:10px;z-index:900;width:36px;height:36px;border-radius:50%;border:none;background:rgba(11,18,32,.82);color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.25);}' +
       '.wc-edit-photo-btn:disabled{opacity:.6;cursor:not-allowed;}' +
       '.wc-regen-photo-btn{right:54px;}' +
-      '.wc-zoom-wrap{position:absolute;left:10px;right:10px;bottom:10px;z-index:900;background:rgba(11,18,32,.72);border-radius:8px;padding:6px 10px;}' +
-      '.wc-zoom-wrap input[type=range]{width:100%;cursor:pointer;}' +
+      '.wc-zoom-wrap{position:absolute;left:10px;bottom:10px;z-index:900;display:flex;gap:8px;}' +
+      '.wc-zoom-btn{width:36px;height:36px;border-radius:50%;border:none;background:rgba(11,18,32,.82);color:#fff;cursor:pointer;font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.25);}' +
       '.wc-photo-hint{position:absolute;top:10px;left:10px;z-index:900;background:rgba(11,18,32,.72);color:#fff;font-size:.72rem;padding:4px 9px;border-radius:6px;pointer-events:none;opacity:0;transition:opacity .15s;}' +
       '[data-wc-photo]:hover .wc-photo-hint{opacity:1;}';
     doc.head.appendChild(style);
