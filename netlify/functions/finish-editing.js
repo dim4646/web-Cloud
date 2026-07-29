@@ -51,6 +51,7 @@ exports.handler = async (event) => {
   // *.netlify.app domains specifically (works fine on real custom domains) -
   // confirmed 2026-07-29. thum.io doesn't block Netlify's own subdomains.
   const screenshotUrl = `https://image.thum.io/get/width/1200/${finalUrl}`;
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(finalUrl)}`;
 
   // Not just a Business-package perk - any customer might want a real domain
   // instead of their *.netlify.app link, so offer it to everyone here.
@@ -71,6 +72,7 @@ exports.handler = async (event) => {
       <p>Here's your permanent link — this is your website's real, final address:</p>
       <p><a href="${finalUrl}">${finalUrl}</a></p>
       <p>Bookmark this page so you don't lose it.</p>
+      <p><img src="${qrCodeUrl}" alt="QR code linking to your site" width="140" height="140" style="border:1px solid #e2e2e2;border-radius:8px;padding:8px;" /><br><span style="font-size:0.85em;color:#5A6478;">Scan to open your site on your phone</span></p>
       <p>You have <b>${roundsRemaining} of ${ROUNDS_LIMIT}</b> free self-serve edits left (colors, fonts, wording, photos) — just open your project page to use them.</p>
       ${domainCta}
       <p>Need anything else, or have a question? Just reply to this email, or head to <a href="${startUrl}">your project page</a> and use the "Want something changed?" box — either way it reaches us directly.</p>

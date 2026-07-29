@@ -196,6 +196,8 @@
     <a href="#" id="draft-link" class="success-link" target="_blank" rel="noopener">View your draft site</a>
     <p class="hint" id="self-serve-hint" style="margin-top:10px;"></p>
     <p class="hint" id="live-site-banner" style="display:none;margin-top:10px;color:var(--accent-dim);font-weight:600;">&#127881; Your site is now live at <a href="#" id="live-site-link" target="_blank" rel="noopener"></a></p>
+    <img id="live-site-qr" alt="QR code linking to your live site" style="display:none;margin-top:14px;width:140px;height:140px;border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--white);">
+    <p class="hint" id="live-site-qr-caption" style="display:none;margin-top:6px;">Scan to open your site on your phone</p>
 
     <div class="card" id="revision-card" style="text-align:left;margin-top:24px;">
       <label for="photoLink">Add or update your photos</label>
@@ -259,6 +261,8 @@
     selfServeHint: document.getElementById('self-serve-hint'),
     liveSiteBanner: document.getElementById('live-site-banner'),
     liveSiteLink: document.getElementById('live-site-link'),
+    liveSiteQr: document.getElementById('live-site-qr'),
+    liveSiteQrCaption: document.getElementById('live-site-qr-caption'),
     revisionCard: document.getElementById('revision-card'),
     revising: document.getElementById('status-revising'),
     pendingReview: document.getElementById('status-pending-review'),
@@ -349,8 +353,13 @@
         el.liveSiteLink.href = order.liveSiteUrl;
         el.liveSiteLink.textContent = order.liveSiteUrl;
         el.liveSiteBanner.style.display = '';
+        el.liveSiteQr.src = 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=' + encodeURIComponent(order.liveSiteUrl);
+        el.liveSiteQr.style.display = '';
+        el.liveSiteQrCaption.style.display = '';
       } else {
         el.liveSiteBanner.style.display = 'none';
+        el.liveSiteQr.style.display = 'none';
+        el.liveSiteQrCaption.style.display = 'none';
       }
       if (typeof order.selfServeRoundsRemaining === 'number' && order.selfServeRoundsRemaining > 0) {
         el.selfServeHint.textContent = `Open your draft — a WebCloud assistant there lets you change colors, fonts, and photos yourself (${order.selfServeRoundsRemaining} of ${order.selfServeRoundsLimit} free changes left).`;
