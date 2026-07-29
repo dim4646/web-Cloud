@@ -1,6 +1,6 @@
 const Stripe = require('stripe');
 const { getEnv } = require('./_lib/env');
-const { sendNotification } = require('./_lib/email');
+const { sendNotification, sendEmail } = require('./_lib/email');
 
 const PRICE_TO_PACKAGE = {
   price_1TphB7JM2u2WIzsFKS2pdpUT: 'Basic',
@@ -94,6 +94,25 @@ exports.handler = async (event) => {
   } catch (err) {
     console.error('Airtable request failed:', err.message);
     return { statusCode: 500, body: 'Airtable request failed' };
+  }
+
+  // Business is the only package that includes domain registration (billed
+  // separately) - ask upfront, right after checkout, rather than waiting
+  // until the site is finished, so we can register it in parallel with the
+  // AI draft/questionnaire process instead of adding it as a delay at the end.
+  if (packageName === 'Business' && email) {
+    await sendEmail({
+      to: email,
+      replyTo: getEnv('RESEND_FROM_EMAIL'),
+      subject: 'Welcome to WebCloud! Quick question about your domain 🌐',
+      html: `
+        <h2>Welcome to WebCloud! 🎉</h2>
+        <p>Thanks so much for signing up, ${customerName} — we're already getting started on your site.</p>
+        <p>Since you're on the Business package, we handle registering a custom domain for you (like <i>yourbusiness.com.au</i>) — the registration itself is billed separately (typically $20–$80 AUD/year, depending on the name). If you already know the name you'd like, just reply to this email and let us know — we'll check availability and send you a price.</p>
+        <p>No rush — you can also decide this later once your draft is ready. We just like to get it sorted early so it's live by the time your site is!</p>
+        <p>— <a href="https://webcloudsolutions.com.au">The WebCloud team</a></p>
+      `,
+    });
   }
 
   await sendNotification(
