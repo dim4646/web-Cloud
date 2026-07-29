@@ -77,6 +77,23 @@ For every spot that is meant to hold a client-supplied photo (profile photo, her
 
 If you include a "Site by WebCloud" (or similar) credit line in the footer, its link must point to https://webcloudsolutions.com.au (with target="_blank" rel="noopener") — never a placeholder like href="#", which looks broken because it goes nowhere.
 
+For the contact section's "Send a Message" form (name/email/message fields), never use action="mailto:..." method="post" — mailto forms don't actually send anything from a web page, they just try to open the visitor's own local email client, which is unreliable (many visitors have none configured) and triggers a browser "not secure" warning. Instead, wire it up exactly like this: give the <form> tag id="wc-contact-form" with no action or method attribute, and its three fields must use name="name", name="email" (type="email"), and name="message" (a textarea) exactly. Then include this exact <script> block immediately before the closing </body> tag, unmodified except for keeping it verbatim:
+<script>
+document.getElementById('wc-contact-form').addEventListener('submit', function(e){
+  e.preventDefault();
+  var form = this, btn = form.querySelector('button[type=submit]'), original = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Sending...';
+  fetch('https://webcloudsolutions.com.au/.netlify/functions/contact-form-submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ sessionId: ${JSON.stringify(sessionId)}, name: form.name.value, email: form.email.value, message: form.message.value })
+  }).then(function(r){ return r.ok; }).then(function(ok){
+    btn.textContent = ok ? 'Message sent ✓' : 'Something went wrong — please try again';
+    if (ok) { form.reset(); } else { btn.disabled = false; }
+  }).catch(function(){ btn.textContent = 'Something went wrong — please try again'; btn.disabled = false; });
+});
+</script>
+
 Respond with ONLY the raw HTML, starting with <!DOCTYPE html> — no markdown code fences, no explanation before or after.`;
     }
 
