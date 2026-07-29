@@ -75,6 +75,8 @@ Contrast rule (check this for every single element before finishing): wherever y
 
 For every spot that is meant to hold a client-supplied photo (profile photo, hero image, project thumbnail, etc.), use a <div> element (never <img> or any other self-closing/void tag) sized and styled the way the photo should appear, and add a data-wc-photo="N" attribute to that div (N starting at 1 and incrementing for each photo slot on the page — e.g. data-wc-photo="1", data-wc-photo="2", ...). Put the placeholder description as the div's own text content (e.g. <div data-wc-photo="1">[PLACEHOLDER: ...]</div>), not in an attribute. This applies whether or not the client provided a photo link. This is a hard requirement, not a style suggestion: the photo is applied later as a CSS background-image on this exact div, so an <img> tag here (which has no closing tag for content to live in) will silently never get a real photo. Every distinct photo-shaped placeholder on the page needs its own numbered div, in the order it appears. Don't add any separate visible caption/label describing what the photo should be (e.g. a nearby "[PLACEHOLDER: photo of X]" text element) — the placeholder text inside the div itself is the only description needed, and once a real photo is filled in, a leftover caption next to it would look broken.
 
+If you include a "Site by WebCloud" (or similar) credit line in the footer, its link must point to https://webcloudsolutions.com.au (with target="_blank" rel="noopener") — never a placeholder like href="#", which looks broken because it goes nowhere.
+
 Respond with ONLY the raw HTML, starting with <!DOCTYPE html> — no markdown code fences, no explanation before or after.`;
     }
 

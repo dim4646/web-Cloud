@@ -70,7 +70,7 @@ exports.handler = async (event) => {
       <p>You have <b>${roundsRemaining} of ${ROUNDS_LIMIT}</b> free self-serve edits left (colors, fonts, wording, photos) — just open your project page to use them.</p>
       ${domainCta}
       <p>Need anything else, or have a question? Just reply to this email, or head to <a href="${startUrl}">your project page</a> and use the "Want something changed?" box — either way it reaches us directly.</p>
-      <p>Thanks again for trusting us with your site!<br>— The WebCloud team</p>
+      <p>Thanks again for trusting us with your site!<br>— <a href="https://webcloudsolutions.com.au">The WebCloud team</a></p>
     `,
   });
 
