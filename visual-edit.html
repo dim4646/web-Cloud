@@ -279,11 +279,10 @@
       el.appendChild(input);
 
       // Resize handle (bottom-right corner, drag to grow/shrink the photo's
-      // own frame) + left/right nudge buttons - added 2026-07-29. Two
-      // earlier attempts (drag+zoom, then click-to-focus+zoom buttons) both
-      // changed what part of a FIXED-size photo shows (cropping/panning
-      // within the frame); what was actually wanted was resizing the frame
-      // itself bigger/smaller and shifting its position left/right.
+      // own frame) + a center drag handle for left/right repositioning -
+      // added 2026-07-29, reworked same day: the resize handle was too
+      // small to notice, and left/right was two click-to-nudge buttons -
+      // replaced with a real grab-and-drag handle, bigger and more direct.
       var resizeHandle = doc.createElement('div');
       resizeHandle.className = 'wc-resize-handle';
       resizeHandle.title = 'Drag to resize';
@@ -316,33 +315,32 @@
         hasEdited = true;
       });
 
-      var nudgeWrap = doc.createElement('div');
-      nudgeWrap.className = 'wc-nudge-wrap';
-      var nudgeLeftBtn = doc.createElement('button');
-      nudgeLeftBtn.type = 'button';
-      nudgeLeftBtn.className = 'wc-nudge-btn';
-      nudgeLeftBtn.textContent = '←';
-      nudgeLeftBtn.title = 'Move left';
-      var nudgeRightBtn = doc.createElement('button');
-      nudgeRightBtn.type = 'button';
-      nudgeRightBtn.className = 'wc-nudge-btn';
-      nudgeRightBtn.textContent = '→';
-      nudgeRightBtn.title = 'Move right';
-      nudgeWrap.appendChild(nudgeLeftBtn);
-      nudgeWrap.appendChild(nudgeRightBtn);
-      el.appendChild(nudgeWrap);
-      // Clicking a nudge button shouldn't also start a resize drag.
-      nudgeWrap.addEventListener('mousedown', function(e){ e.stopPropagation(); });
+      var moveHandle = doc.createElement('div');
+      moveHandle.className = 'wc-move-handle';
+      moveHandle.title = 'Drag left or right';
+      moveHandle.textContent = '↔';
+      el.appendChild(moveHandle);
 
-      function nudge(deltaPx){
-        var current = parseFloat(el.getAttribute('data-wc-photo-offset-x') || '0') + deltaPx;
-        el.setAttribute('data-wc-photo-offset-x', String(current));
-        el.style.transform = 'translateX(' + current + 'px)';
+      var moving = false, moveStartX, moveOriginOffset;
+      moveHandle.addEventListener('mousedown', function(e){
+        moving = true;
+        moveStartX = e.clientX;
+        moveOriginOffset = parseFloat(el.getAttribute('data-wc-photo-offset-x') || '0');
+        e.preventDefault();
+        e.stopPropagation();
+      });
+      doc.addEventListener('mousemove', function(e){
+        if (!moving) return;
+        var offset = moveOriginOffset + (e.clientX - moveStartX);
+        el.setAttribute('data-wc-photo-offset-x', String(offset));
+        el.style.transform = 'translateX(' + offset + 'px)';
+      });
+      doc.addEventListener('mouseup', function(){
+        if (!moving) return;
+        moving = false;
         el.setAttribute('data-wc-photo-touched', '1');
         hasEdited = true;
-      }
-      nudgeLeftBtn.addEventListener('click', function(){ nudge(-20); });
-      nudgeRightBtn.addEventListener('click', function(){ nudge(20); });
+      });
 
       // "Try another AI photo" - only offered on slots that already got an
       // AI-generated photo (tracked via data-wc-photo-desc, left by
@@ -435,9 +433,9 @@
       '.wc-edit-photo-btn{position:absolute;top:10px;right:10px;z-index:900;width:36px;height:36px;border-radius:50%;border:none;background:rgba(11,18,32,.82);color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.25);}' +
       '.wc-edit-photo-btn:disabled{opacity:.6;cursor:not-allowed;}' +
       '.wc-regen-photo-btn{right:54px;}' +
-      '.wc-resize-handle{position:absolute;right:-7px;bottom:-7px;width:18px;height:18px;background:#3DDC97;border:2px solid #0B1220;border-radius:4px;cursor:nwse-resize;z-index:900;}' +
-      '.wc-nudge-wrap{position:absolute;left:10px;bottom:10px;z-index:900;display:flex;gap:8px;}' +
-      '.wc-nudge-btn{width:36px;height:36px;border-radius:50%;border:none;background:rgba(11,18,32,.82);color:#fff;cursor:pointer;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.25);}';
+      '.wc-resize-handle{position:absolute;right:-14px;bottom:-14px;width:32px;height:32px;background:#3DDC97;border:3px solid #0B1220;border-radius:8px;cursor:nwse-resize;z-index:900;box-shadow:0 4px 12px rgba(0,0,0,.3);}' +
+      '.wc-move-handle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:rgba(11,18,32,.82);color:#fff;font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:grab;z-index:900;box-shadow:0 4px 12px rgba(0,0,0,.25);}' +
+      '.wc-move-handle:active{cursor:grabbing;}';
     doc.head.appendChild(style);
   }
 
@@ -472,7 +470,7 @@
     });
 
     liveDoc.querySelectorAll('[data-wc-photo]').forEach(function(el){
-      // Only slots actually touched this session (upload, resize, or nudge)
+      // Only slots actually touched this session (upload, resize, or move)
       // - see wireUpPhotoSlots - get written back; an untouched slot's
       // styling stays exactly as it was in the original draft.
       if (el.getAttribute('data-wc-photo-touched') !== '1') return;
