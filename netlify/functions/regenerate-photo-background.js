@@ -75,7 +75,7 @@ exports.handler = async (event) => {
     // inline style rules on the element untouched.
     const newAttrs = /background-image\s*:\s*url\(['"]?[^'")]*['"]?\)/i.test(attrs)
       ? attrs.replace(/background-image\s*:\s*url\(['"]?[^'")]*['"]?\)/i, `background-image:url('${proxyUrl}')`)
-      : attrs.replace(/style="([^"]*)"/i, `style="$1;background-image:url('${proxyUrl}');background-size:cover;background-position:center;"`);
+      : attrs.replace(/style="([^"]*)"/i, `style="$1;background-image:url('${proxyUrl}');background-size:cover;background-position:center;background-repeat:no-repeat;"`);
     // Drop any <img> already sitting in this slot's inner content (left by
     // an earlier manual upload via visual-edit.html/visual-upload-photo.js)
     // - background-image paints behind normal child content, so a stale

@@ -55,7 +55,7 @@ async function injectGeneratedPhotos(html, record, brandContext) {
         await uploadAttachment(record.id, 'Self-Serve Photos', { contentType, file: base64, filename });
 
         const proxyUrl = `${siteUrl}/.netlify/functions/photo-proxy?session=${encodeURIComponent(sessionId)}&filename=${encodeURIComponent(filename)}`;
-        const bgStyle = `background-image:url('${proxyUrl}');background-size:cover;background-position:center;`;
+        const bgStyle = `background-image:url('${proxyUrl}');background-size:cover;background-position:center;background-repeat:no-repeat;`;
 
         // Keep the original description in a data attribute (not visible,
         // unlike the [PLACEHOLDER] text it replaces) so a later "regenerate
