@@ -1,5 +1,7 @@
 const { findOrderBySessionId } = require('./_lib/airtable');
 const { sendEmail } = require('./_lib/email');
+const { getEnv } = require('./_lib/env');
+const { ROUNDS_LIMIT } = require('./_lib/design-presets');
 
 // Customer-triggered "I'm happy with this" confirmation - the pipeline never
 // otherwise emails the customer their own final link (only Dimos gets
@@ -43,16 +45,24 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'No customer email on file' }) };
   }
 
+  const roundsUsed = record.fields['Self-Serve Rounds Used'] || 0;
+  const roundsRemaining = Math.max(0, ROUNDS_LIMIT - roundsUsed);
+  const screenshotUrl = `https://s.wordpress.com/mshots/v1/${encodeURIComponent(finalUrl)}?w=1200`;
+
   await sendEmail({
     to: customerEmail,
-    subject: `Your website is ready — ${record.fields['Customer Name'] || 'WebCloud'}`,
+    replyTo: getEnv('RESEND_FROM_EMAIL'),
+    subject: `Your website is ready 🎉 — ${record.fields['Customer Name'] || 'WebCloud'}`,
     html: `
-      <h2>Your site is ready 🎉</h2>
+      <h2>Your website is ready! 🎉</h2>
+      <p>Thank you so much for choosing WebCloud — we're excited for you to see it.</p>
+      <p><a href="${finalUrl}"><img src="${screenshotUrl}" alt="Preview of your site" style="max-width:100%;border:1px solid #e2e2e2;border-radius:8px;" /></a></p>
       <p>Here's your permanent link — this is your website's real, final address:</p>
       <p><a href="${finalUrl}">${finalUrl}</a></p>
-      <p>Bookmark this page so you don't lose it. If you want to make more changes later, just come back to this link.</p>
-      <p>Need any further edits, updates, or have a question? Head back to <a href="${startUrl}">your project page</a> and use the "Want something changed?" box — that reaches our team directly.</p>
-      <p>— The WebCloud team</p>
+      <p>Bookmark this page so you don't lose it.</p>
+      <p>You have <b>${roundsRemaining} of ${ROUNDS_LIMIT}</b> free self-serve edits left (colors, fonts, wording, photos) — just open your project page to use them.</p>
+      <p>Need anything else, or have a question? Just reply to this email, or head to <a href="${startUrl}">your project page</a> and use the "Want something changed?" box — either way it reaches us directly.</p>
+      <p>Thanks again for trusting us with your site!<br>— The WebCloud team</p>
     `,
   });
 

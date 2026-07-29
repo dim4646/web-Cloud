@@ -2,7 +2,7 @@ const { getEnv } = require('./env');
 
 // Non-fatal by design: a failed notification email should never block the
 // order/draft/revision flow itself, so callers just await this and move on.
-async function sendEmail({ to, subject, html }) {
+async function sendEmail({ to, subject, html, replyTo }) {
   try {
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -15,6 +15,7 @@ async function sendEmail({ to, subject, html }) {
         to: Array.isArray(to) ? to : [to],
         subject,
         html,
+        ...(replyTo ? { reply_to: replyTo } : {}),
       }),
     });
     if (!res.ok) {
