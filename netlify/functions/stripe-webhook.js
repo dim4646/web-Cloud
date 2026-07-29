@@ -96,11 +96,16 @@ exports.handler = async (event) => {
     return { statusCode: 500, body: 'Airtable request failed' };
   }
 
-  // Business is the only package that includes domain registration (billed
-  // separately) - ask upfront, right after checkout, rather than waiting
-  // until the site is finished, so we can register it in parallel with the
-  // AI draft/questionnaire process instead of adding it as a delay at the end.
-  if (packageName === 'Business' && email) {
+  // Ask about a custom domain upfront, right after checkout, rather than
+  // waiting until the site is finished - not just a Business-package perk
+  // (Basic/Portfolio customers can want a real domain too), so this goes to
+  // everyone. Wording differs slightly since domain handling is a built-in
+  // part of the Business package but an optional add-on for the others.
+  if (email) {
+    const domainParagraph = packageName === 'Business'
+      ? `<p>Since you're on the Business package, we handle registering a custom domain for you (like <i>yourbusiness.com.au</i>) — the registration itself is billed separately (typically $20–$80 AUD/year, depending on the name). If you already know the name you'd like, just reply to this email and let us know — we'll check availability and send you a price.</p>`
+      : `<p>By the way — if you'd like a custom domain of your own (like <i>yourbusiness.com.au</i>) instead of the free address your site will launch on, just reply and let us know the name you have in mind. We'll check availability and send you a price (typically $20–$80 AUD/year).</p>`;
+
     await sendEmail({
       to: email,
       replyTo: getEnv('RESEND_FROM_EMAIL'),
@@ -108,7 +113,7 @@ exports.handler = async (event) => {
       html: `
         <h2>Welcome to WebCloud! 🎉</h2>
         <p>Thanks so much for signing up, ${customerName} — we're already getting started on your site.</p>
-        <p>Since you're on the Business package, we handle registering a custom domain for you (like <i>yourbusiness.com.au</i>) — the registration itself is billed separately (typically $20–$80 AUD/year, depending on the name). If you already know the name you'd like, just reply to this email and let us know — we'll check availability and send you a price.</p>
+        ${domainParagraph}
         <p>No rush — you can also decide this later once your draft is ready. We just like to get it sorted early so it's live by the time your site is!</p>
         <p>— <a href="https://webcloudsolutions.com.au">The WebCloud team</a></p>
       `,
