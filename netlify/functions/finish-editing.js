@@ -49,6 +49,10 @@ exports.handler = async (event) => {
   const roundsRemaining = Math.max(0, ROUNDS_LIMIT - roundsUsed);
   const screenshotUrl = `https://s.wordpress.com/mshots/v1/${encodeURIComponent(finalUrl)}?w=1200`;
 
+  const domainCta = record.fields['Package'] === 'Business'
+    ? `<p>🌐 Ready for the next step? Get a custom domain of your own (like <i>yourbusiness.com.au</i>) instead of the address above — just reply and tell us the name you have in mind, and we'll check availability and send you a price!</p>`
+    : '';
+
   await sendEmail({
     to: customerEmail,
     replyTo: getEnv('RESEND_FROM_EMAIL'),
@@ -61,6 +65,7 @@ exports.handler = async (event) => {
       <p><a href="${finalUrl}">${finalUrl}</a></p>
       <p>Bookmark this page so you don't lose it.</p>
       <p>You have <b>${roundsRemaining} of ${ROUNDS_LIMIT}</b> free self-serve edits left (colors, fonts, wording, photos) — just open your project page to use them.</p>
+      ${domainCta}
       <p>Need anything else, or have a question? Just reply to this email, or head to <a href="${startUrl}">your project page</a> and use the "Want something changed?" box — either way it reaches us directly.</p>
       <p>Thanks again for trusting us with your site!<br>— The WebCloud team</p>
     `,
