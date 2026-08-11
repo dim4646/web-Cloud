@@ -57,27 +57,27 @@
       linear-gradient(180deg,rgba(4,9,18,.22) 0%,rgba(4,9,18,.62) 68%,rgba(4,9,18,.88) 100%),
       url('/assets/network-mesh-bg.svg');
     background-repeat:no-repeat;background-position:50% 45%;background-size:cover;
-    animation:networkDrift 24s ease-in-out infinite alternate;
+    animation:networkDrift 16s ease-in-out infinite alternate;
     will-change:transform,filter;
   }
   .bg-fx::after{
     content:"";position:absolute;inset:-25%;opacity:.26;mix-blend-mode:screen;
     background:linear-gradient(105deg,transparent 35%,rgba(45,226,255,.04) 43%,rgba(94,235,255,.22) 49%,rgba(71,146,255,.07) 55%,transparent 64%);
-    transform:translate3d(-45%,0,0);animation:networkLight 14s ease-in-out infinite;
+    transform:translate3d(-48%,0,0);animation:networkLight 10s ease-in-out infinite;
     will-change:transform,opacity;
   }
   @keyframes networkDrift{
-    0%{transform:scale(1.04) translate3d(-1.5%,-1%,0);filter:saturate(.9) brightness(.84);}
-    50%{filter:saturate(1.08) brightness(1.02);}
-    100%{transform:scale(1.13) translate3d(1.8%,1.2%,0);filter:saturate(1.15) brightness(.92);}
+    0%{transform:scale(1.02) translate3d(-3.5%,-2.5%,0);filter:saturate(.88) brightness(.78);}
+    50%{filter:saturate(1.15) brightness(1.08);}
+    100%{transform:scale(1.18) translate3d(3.5%,2.5%,0);filter:saturate(1.2) brightness(.98);}
   }
   @keyframes networkLight{
-    0%,12%{transform:translate3d(-45%,0,0);opacity:.08;}
-    48%,62%{opacity:.33;}
-    88%,100%{transform:translate3d(45%,0,0);opacity:.08;}
+    0%,10%{transform:translate3d(-48%,0,0);opacity:.08;}
+    46%,64%{opacity:.42;}
+    90%,100%{transform:translate3d(48%,0,0);opacity:.08;}
   }
   @media (max-width:640px){
-    .bg-fx::before{inset:-10%;background-position:58% 42%;animation-duration:28s;}
+    .bg-fx::before{inset:-12%;background-position:58% 42%;animation-duration:19s;}
     .bg-fx::after{opacity:.2;}
   }
 
