@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /start.html
+Disallow: /choose-draft.html
+Disallow: /visual-edit.html
+Disallow: /.netlify/
+
+Sitemap: https://webcloudsolutions.com.au/sitemap.xml
+
