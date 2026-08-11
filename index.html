@@ -49,29 +49,34 @@
   :focus-visible{outline:2px solid var(--sky);outline-offset:3px;}
   @media (prefers-reduced-motion: reduce){ *{animation:none !important;transition:none !important;} }
 
-  /* AMBIENT PULSING ORBS */
+  /* AMBIENT NETWORK-SIGNAL FLOW */
   .bg-fx{position:fixed;inset:0;overflow:hidden;z-index:-1;pointer-events:none;background:linear-gradient(180deg,#080d18 0%,#0a0f1c 48%,#090e19 100%);}
+  .bg-fx::before{
+    content:"";position:absolute;inset:-20%;opacity:.18;
+    background:repeating-linear-gradient(112deg,transparent 0 46px,rgba(91,156,255,.11) 47px,transparent 49px 94px);
+    animation:dataSweep 18s linear infinite;will-change:transform;
+  }
   .bg-fx::after{
-    content:"";position:absolute;inset:0;opacity:.16;
+    content:"";position:absolute;inset:0;opacity:.13;
     background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
     background-size:72px 72px;mask-image:linear-gradient(to bottom,transparent,black 24%,black 76%,transparent);
   }
   .bg-fx span{
-    position:absolute;border-radius:50%;filter:blur(76px);opacity:.22;
-    mix-blend-mode:screen;will-change:transform,opacity;
+    position:absolute;left:-25vw;width:150vw;border-radius:50%;filter:blur(34px);
+    mix-blend-mode:screen;will-change:transform,opacity;background-size:200% 100%;
   }
-  .bg-fx span:nth-child(1){width:440px;height:440px;background:#28e6a0;top:-170px;left:-130px;animation:orbRiseA 15s ease-in-out infinite alternate,orbPulse 7s ease-in-out infinite;}
-  .bg-fx span:nth-child(2){width:390px;height:390px;background:#347dff;top:18%;right:-150px;animation:orbRiseB 18s ease-in-out infinite alternate,orbPulse 9s ease-in-out 1.5s infinite;}
-  .bg-fx span:nth-child(3){width:320px;height:320px;background:#8b5cff;top:48%;left:22%;opacity:.16;animation:orbRiseC 20s ease-in-out infinite alternate,orbPulse 8s ease-in-out 3s infinite;}
-  .bg-fx span:nth-child(4){width:360px;height:360px;background:#18cbd1;bottom:-150px;right:16%;opacity:.18;animation:orbRiseA 17s ease-in-out -4s infinite alternate,orbPulse 10s ease-in-out infinite;}
-  .bg-fx span:nth-child(5){width:250px;height:250px;background:#3ddc97;top:65%;left:-90px;opacity:.14;animation:orbRiseB 14s ease-in-out -6s infinite alternate,orbPulse 6s ease-in-out infinite;}
-  @keyframes orbRiseA{from{transform:translate3d(0,-28px,0) scale(.92);}to{transform:translate3d(70px,105px,0) scale(1.12);}}
-  @keyframes orbRiseB{from{transform:translate3d(0,70px,0) scale(1.08);}to{transform:translate3d(-58px,-72px,0) scale(.94);}}
-  @keyframes orbRiseC{from{transform:translate3d(-35px,72px,0) scale(.9);}to{transform:translate3d(68px,-64px,0) scale(1.15);}}
-  @keyframes orbPulse{0%,100%{opacity:.14;}50%{opacity:.29;}}
+  .bg-fx span:nth-child(1){height:18vh;top:4%;opacity:.25;background:linear-gradient(90deg,transparent 5%,#27e8a1 28%,#347dff 56%,transparent 90%);animation:signalWaveA 13s ease-in-out infinite alternate,signalColour 16s linear infinite;}
+  .bg-fx span:nth-child(2){height:14vh;top:27%;opacity:.19;background:linear-gradient(90deg,transparent 8%,#347dff 32%,#8b5cff 62%,transparent 92%);animation:signalWaveB 17s ease-in-out -4s infinite alternate,signalColour 20s linear infinite reverse;}
+  .bg-fx span:nth-child(3){height:10vh;top:49%;opacity:.16;background:linear-gradient(90deg,transparent 4%,#18cbd1 35%,#3ddc97 66%,transparent 96%);animation:signalWaveA 19s ease-in-out -8s infinite alternate,signalColour 14s linear infinite;}
+  .bg-fx span:nth-child(4){height:16vh;top:69%;opacity:.2;background:linear-gradient(90deg,transparent 7%,#8b5cff 30%,#347dff 58%,#18cbd1 76%,transparent 94%);animation:signalWaveB 15s ease-in-out -2s infinite alternate,signalColour 18s linear infinite reverse;}
+  .bg-fx span:nth-child(5){height:9vh;top:88%;opacity:.15;background:linear-gradient(90deg,transparent 10%,#3ddc97 36%,#18cbd1 62%,transparent 90%);animation:signalWaveA 12s ease-in-out -6s infinite alternate,signalColour 15s linear infinite;}
+  @keyframes signalWaveA{from{transform:translate3d(-4vw,-34px,0) rotate(-5deg) scaleY(.72);}to{transform:translate3d(5vw,48px,0) rotate(4deg) scaleY(1.18);}}
+  @keyframes signalWaveB{from{transform:translate3d(5vw,42px,0) rotate(5deg) scaleY(1.12);}to{transform:translate3d(-5vw,-40px,0) rotate(-4deg) scaleY(.76);}}
+  @keyframes signalColour{to{background-position:200% 0;}}
+  @keyframes dataSweep{to{transform:translate3d(120px,0,0);}}
   @media (max-width:640px){
-    .bg-fx span{filter:blur(64px);}
-    .bg-fx span:nth-child(3),.bg-fx span:nth-child(5){display:none;}
+    .bg-fx span{filter:blur(28px);left:-45vw;width:190vw;}
+    .bg-fx span:nth-child(5){display:none;}
   }
 
   /* HEADER */
