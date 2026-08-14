@@ -220,6 +220,23 @@
   .plan-note{font-size:.76rem;color:var(--muted);text-align:center;margin-top:10px;}
   .plan-footnote{font-size:.72rem;color:var(--muted);margin-top:10px;line-height:1.4;}
 
+  /* PORTFOLIO */
+  .work-list{display:grid;gap:24px;}
+  .work-card{
+    display:grid;grid-template-columns:1fr;gap:24px;align-items:center;
+    padding:30px;background:linear-gradient(135deg,rgba(91,156,255,.10),rgba(61,220,151,.07));
+    border:1px solid var(--line);border-radius:20px;
+  }
+  @media (min-width:760px){ .work-card{grid-template-columns:minmax(320px,.9fr) 1.1fr;padding:38px;} }
+  .work-image{
+    width:100%;height:220px;border-radius:16px;object-fit:cover;object-position:top center;
+    border:1px solid var(--line-dark);background:var(--navy);
+  }
+  @media (min-width:760px){ .work-image{height:220px;} }
+  .work-type{font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sky);margin-bottom:8px;}
+  .work-card h3{font-size:clamp(1.4rem,3vw,1.9rem);margin-bottom:10px;}
+  .work-card p{color:var(--muted);max-width:62ch;margin-bottom:20px;}
+
   /* CONTACT */
   .contact-box{
     background:linear-gradient(135deg,var(--navy-2),var(--navy));color:var(--ink);border-radius:22px;
@@ -362,6 +379,7 @@
       <a href="#services">Services</a>
       <a href="#how">How it works</a>
       <a href="#pricing">Pricing</a>
+      <a href="#portfolio">Our Work</a>
       <a href="#why">Why Us</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -373,6 +391,7 @@
       <a href="#services">Services</a>
       <a href="#how">How it works</a>
       <a href="#pricing">Pricing</a>
+      <a href="#portfolio">Our Work</a>
       <a href="#why">Why Us</a>
       <a href="#contact">Contact</a>
       <div class="nav-loc-mobile">Gold Coast, QLD</div>
@@ -597,6 +616,48 @@
             A custom-designed site built around your business — with unlimited visual editing whenever you want changes.
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section" id="portfolio">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-tag">Our Work</div>
+        <h2>Websites built for real businesses</h2>
+        <p>A selection of projects designed, developed and delivered by Web &amp; Cloud Solutions.</p>
+      </div>
+      <div class="work-list">
+        <article class="work-card">
+          <img class="work-image" src="/assets/prosecure-homepage.jpg" alt="Pro Secure Technology website homepage" loading="lazy">
+          <div>
+            <div class="work-type">Business Website</div>
+            <h3>Pro Secure Technology</h3>
+            <p>A professional online presence for security technology services, presenting CCTV, access control, intercom and integrated security solutions in a clear, accessible format.</p>
+            <a class="btn btn-ghost" href="https://prosecuretechnology.com.au/" target="_blank" rel="noopener noreferrer" aria-label="Visit Pro Secure Technology website (opens in a new tab)">Visit website ↗</a>
+          </div>
+        </article>
+
+        <article class="work-card">
+          <img class="work-image" src="/assets/energyaura-homepage.jpg" alt="EnergyAura website homepage" loading="lazy">
+          <div>
+            <div class="work-type">Wellness Website</div>
+            <h3>EnergyAura</h3>
+            <p>An immersive website for body and chakra energy scans on the Gold Coast, designed around a premium visual experience and a clear path for visitors to learn more.</p>
+            <a class="btn btn-ghost" href="https://wc-test-mode-a34ebf.netlify.app/" target="_blank" rel="noopener noreferrer" aria-label="Visit EnergyAura website (opens in a new tab)">Visit website ↗</a>
+          </div>
+        </article>
+
+        <article class="work-card">
+          <img class="work-image" src="/assets/dimokritos-portfolio-homepage.jpg" alt="Dimokritos Kallionakis professional portfolio homepage" loading="lazy">
+          <div>
+            <div class="work-type">Professional Portfolio</div>
+            <h3>Dimokritos Kallionakis</h3>
+            <p>A professional portfolio presenting senior security systems experience, technical skills, certifications and selected projects in a polished, accessible format.</p>
+            <a class="btn btn-ghost" href="https://dimosk.netlify.app/" target="_blank" rel="noopener noreferrer" aria-label="Visit Dimokritos Kallionakis portfolio (opens in a new tab)">Visit website ↗</a>
+          </div>
+        </article>
       </div>
     </div>
   </section>
