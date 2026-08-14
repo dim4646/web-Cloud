@@ -226,12 +226,12 @@
     padding:30px;background:linear-gradient(135deg,rgba(91,156,255,.10),rgba(61,220,151,.07));
     border:1px solid var(--line);border-radius:20px;
   }
-  @media (min-width:760px){ .work-card{grid-template-columns:180px 1fr;padding:38px;} }
+  @media (min-width:760px){ .work-card{grid-template-columns:minmax(320px,.9fr) 1.1fr;padding:38px;} }
   .work-image{
-    width:100%;height:180px;border-radius:16px;object-fit:cover;object-position:center;
+    width:100%;height:220px;border-radius:16px;object-fit:cover;object-position:top center;
     border:1px solid var(--line-dark);background:var(--navy);
   }
-  @media (min-width:760px){ .work-image{height:180px;} }
+  @media (min-width:760px){ .work-image{height:220px;} }
   .work-type{font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sky);margin-bottom:8px;}
   .work-card h3{font-size:clamp(1.4rem,3vw,1.9rem);margin-bottom:10px;}
   .work-card p{color:var(--muted);max-width:62ch;margin-bottom:20px;}
@@ -628,7 +628,7 @@
         <p>A selection of projects designed, developed and delivered by Web &amp; Cloud Solutions.</p>
       </div>
       <article class="work-card">
-        <img class="work-image" src="https://prosecuretechnology.com.au/images/cctv-camera.webp" alt="CCTV surveillance camera installation by Pro Secure Technology" loading="lazy">
+        <img class="work-image" src="/assets/prosecure-homepage.jpg" alt="Pro Secure Technology website homepage" loading="lazy">
         <div>
           <div class="work-type">Business Website</div>
           <h3>Pro Secure Technology</h3>
