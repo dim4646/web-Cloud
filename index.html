@@ -264,11 +264,14 @@
 
   .contact-form{display:grid;gap:14px;}
   .contact-form label{font-size:.82rem;font-weight:600;color:rgba(255,255,255,.78);}
-  .contact-form input,.contact-form textarea{
+  .contact-form .optional{font-weight:400;color:rgba(255,255,255,.45);}
+  .contact-form input,.contact-form select,.contact-form textarea{
     width:100%;margin-top:6px;padding:12px 13px;border-radius:10px;
     border:1px solid var(--line-dark);background:rgba(255,255,255,.06);
     color:var(--ink);font:inherit;
   }
+  .contact-form select{appearance:auto;color:rgba(255,255,255,.9);}
+  .contact-form select option{color:var(--ink);background:var(--navy-2);}
   .contact-form textarea{min-height:110px;resize:vertical;}
   .contact-form input::placeholder,.contact-form textarea::placeholder{color:rgba(255,255,255,.38);}
   .contact-form .consent{display:flex;gap:9px;align-items:flex-start;font-size:.76rem;font-weight:400;color:rgba(255,255,255,.62);}
@@ -682,14 +685,26 @@
         <form class="contact-form" name="website-enquiry" method="POST" action="/thank-you" data-netlify="true" netlify-honeypot="bot-field">
           <input type="hidden" name="form-name" value="website-enquiry">
           <p class="honeypot"><label>Leave this field empty <input type="text" name="bot-field"></label></p>
-          <label>Name
+          <label>Full name
             <input id="contact-name" name="name" type="text" autocomplete="name" required placeholder="Your name">
           </label>
-          <label>Email
+          <label>Email address
             <input id="contact-email" name="email" type="email" autocomplete="email" required placeholder="you@example.com">
           </label>
-          <label>How can we help?
-            <textarea id="contact-message" name="message" required placeholder="Tell us briefly what you need"></textarea>
+          <label>Phone <span class="optional">(optional)</span>
+            <input id="contact-phone" name="phone" type="tel" autocomplete="tel" placeholder="Your phone number">
+          </label>
+          <label>I'm interested in
+            <select id="contact-interest" name="interest" required>
+              <option value="" disabled selected>Select an option</option>
+              <option value="Portfolio">Portfolio</option>
+              <option value="Basic Plan">Basic Plan</option>
+              <option value="Business Plan">Business Plan</option>
+              <option value="Support">Support</option>
+            </select>
+          </label>
+          <label>Message <span class="optional">(optional)</span>
+            <textarea id="contact-message" name="message" placeholder="Tell us briefly what you need"></textarea>
           </label>
           <label class="consent"><input type="checkbox" name="privacy-consent" value="accepted" required><span>I agree that my details may be used to respond to this enquiry, as described in the <a href="/privacy">Privacy Policy</a>.</span></label>
           <button class="btn btn-accent btn-block" type="submit">Send enquiry</button>
