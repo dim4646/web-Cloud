@@ -83,13 +83,13 @@
   <div class="card" id="form-card">
     <form id="questionnaire-form">
       <div class="field">
-        <label for="projectName">Business / project name</label>
+        <label for="projectName" id="projectName-label">Business / project name</label>
         <input type="text" id="projectName" name="projectName" required>
       </div>
 
       <div class="field">
         <label for="pages">Which pages do you need?</label>
-        <div class="hint">e.g. Home, About, Services, Gallery, Contact</div>
+        <div class="hint" id="pages-hint">e.g. Home, About, Services, Gallery, Contact</div>
         <input type="text" id="pages" name="pages" required>
       </div>
 
@@ -317,6 +317,16 @@
         if (required) required.required = false;
       }
     });
+
+    const projectNameLabel = document.getElementById('projectName-label');
+    const pagesHint = document.getElementById('pages-hint');
+    if (pkg === 'Portfolio') {
+      projectNameLabel.textContent = 'Your name / project name';
+      pagesHint.textContent = 'e.g. Home, About, Work, Contact';
+    } else {
+      projectNameLabel.textContent = 'Business / project name';
+      pagesHint.textContent = 'e.g. Home, About, Services, Gallery, Contact';
+    }
   }
 
   function renderOrder(order) {
