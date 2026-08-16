@@ -1,6 +1,7 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const { findOrderBySessionId, updateOrderRecord } = require('./_lib/airtable');
 const { getEnv } = require('./_lib/env');
+const { sendNotification } = require('./_lib/email');
 
 const DESIGN_TOKENS = `
 Brand: WebCloud (Gold Coast web design / hosting / private cloud company)
@@ -147,6 +148,23 @@ Respond with ONLY the raw HTML, starting with <!DOCTYPE html> — no markdown co
       if (record) {
         await updateOrderRecord(record.id, { 'Draft Status': 'Failed', 'Revision Request': `DEBUG: ${err.message}\n${err.stack || ''}`.slice(0, 9000) });
       }
+      // The customer's page just tells them "we'll follow up with you
+      // directly" - that promise is only true if someone here actually
+      // finds out, since nothing else surfaces a Failed draft status.
+      await sendNotification(
+        `Draft generation FAILED: ${record?.fields['Customer Name'] || 'customer'}`,
+        `
+          <h2>Draft generation failed</h2>
+          <p>The customer has already paid and is waiting - please follow up with them directly.</p>
+          <table cellpadding="8" style="border-collapse:collapse">
+            <tr><td><strong>Customer</strong></td><td>${record?.fields['Customer Name'] || 'Unknown'}</td></tr>
+            <tr><td><strong>Email</strong></td><td>${record?.fields['Email'] || 'Unknown'}</td></tr>
+            <tr><td><strong>Package</strong></td><td>${record?.fields['Package'] || 'Unknown'}</td></tr>
+            <tr><td><strong>Session ID</strong></td><td>${sessionId}</td></tr>
+          </table>
+          <p><strong>Error:</strong> ${err.message}</p>
+        `
+      );
     } catch (innerErr) {
       console.error('Failed to record draft failure:', innerErr.message);
     }
