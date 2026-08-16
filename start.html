@@ -72,6 +72,21 @@
     display:inline-block;margin-top:16px;padding:12px 22px;border-radius:10px;
     background:var(--accent);color:var(--navy);font-weight:600;text-decoration:none;
   }
+  .section-heading{
+    font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--accent-dim);margin-bottom:14px;
+  }
+  .project-row{
+    border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:14px;background:var(--paper);
+  }
+  .project-row-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+  .project-row-head strong{font-size:.85rem;}
+  .remove-project-btn{background:none;border:none;color:#B3261E;font-size:.8rem;cursor:pointer;padding:0;}
+  .btn-add{
+    width:auto;display:inline-flex;padding:10px 18px;font-size:.85rem;
+    background:transparent;color:var(--navy);border:1px dashed var(--line);
+  }
+  input[type=file]{width:100%;font-size:.88rem;color:var(--muted);}
 </style>
 </head>
 <body>
@@ -82,6 +97,11 @@
 
   <div class="card" id="form-card">
     <form id="questionnaire-form">
+      <div class="field" data-packages="Portfolio">
+        <label for="fullName">Full name</label>
+        <input type="text" id="fullName" name="fullName">
+      </div>
+
       <div class="field">
         <label for="projectName" id="projectName-label">Business / project name</label>
         <input type="text" id="projectName" name="projectName" required>
@@ -94,9 +114,29 @@
       </div>
 
       <div class="field">
-        <label for="style">Colours / style preference</label>
-        <div class="hint">Colours you like, a mood (bold, minimal, playful...), or a link to a site you like</div>
+        <label for="style" id="style-label">Colours / style preference</label>
+        <div class="hint" id="style-hint">Colours you like, a mood (bold, minimal, playful...), or a link to a site you like</div>
         <textarea id="style" name="style"></textarea>
+      </div>
+
+      <div class="field" data-packages="Portfolio">
+        <label>What style do you want your portfolio to have?</label>
+        <div class="radio-row">
+          <label><input type="radio" name="styleChoice" value="Modern" checked> Modern</label>
+          <label><input type="radio" name="styleChoice" value="Minimal"> Minimal</label>
+          <label><input type="radio" name="styleChoice" value="Premium"> Premium</label>
+          <label><input type="radio" name="styleChoice" value="Dark"> Dark</label>
+          <label><input type="radio" name="styleChoice" value="Light"> Light</label>
+          <label><input type="radio" name="styleChoice" value="Creative"> Creative</label>
+          <label><input type="radio" name="styleChoice" value="Professional"> Professional</label>
+          <label><input type="radio" name="styleChoice" value="Not sure"> Not sure</label>
+        </div>
+      </div>
+
+      <div class="field" data-packages="Portfolio">
+        <label for="inspirationLink">A portfolio or website you like (optional)</label>
+        <div class="hint">Paste a link if you have one in mind</div>
+        <input type="text" id="inspirationLink" name="inspirationLink">
       </div>
 
       <div class="field">
@@ -136,18 +176,101 @@
       </div>
 
       <div class="field" data-packages="Portfolio">
-        <label for="role">Your role / headline</label>
+        <label for="role">Professional title / role</label>
         <div class="hint">e.g. "Freelance Photographer", "UX Designer", "Illustrator"</div>
         <input type="text" id="role" name="role">
       </div>
 
       <div class="field" data-packages="Portfolio">
-        <label for="portfolioLinks">Links to your work</label>
-        <div class="hint">Portfolio pieces, LinkedIn, GitHub, Behance, CV/resume — one per line</div>
-        <textarea id="portfolioLinks" name="portfolioLinks"></textarea>
+        <label for="whatYouDo">What do you do?</label>
+        <input type="text" id="whatYouDo" name="whatYouDo">
       </div>
 
-      <div class="field">
+      <div class="field" data-packages="Portfolio">
+        <label for="shortBio">Short bio</label>
+        <div class="hint">A couple of sentences about you</div>
+        <textarea id="shortBio" name="shortBio"></textarea>
+      </div>
+
+      <div class="field" data-packages="Portfolio">
+        <label for="keySkills">Key skills / services</label>
+        <div class="hint">One per line, or comma-separated</div>
+        <textarea id="keySkills" name="keySkills"></textarea>
+      </div>
+
+      <div class="field" data-packages="Portfolio">
+        <label for="mainMessage">Main message</label>
+        <div class="hint">What should someone understand about you at a glance when they see your portfolio?</div>
+        <input type="text" id="mainMessage" name="mainMessage">
+      </div>
+
+      <div class="field" data-packages="Portfolio">
+        <div class="section-heading">Your projects</div>
+        <label>Showcase your work</label>
+        <div class="hint">Add each project below — you can add more anytime</div>
+        <div id="projects-container"></div>
+        <button type="button" class="btn btn-add" id="add-project-btn">+ Add another project</button>
+      </div>
+
+      <div class="field" data-packages="Portfolio">
+        <label for="personalPhoto">Personal photo or logo (optional)</label>
+        <input type="file" id="personalPhoto" accept="image/*">
+      </div>
+
+      <div class="field" data-packages="Portfolio">
+        <div class="section-heading">Social links (optional)</div>
+        <label for="linkedin">LinkedIn</label>
+        <input type="text" id="linkedin" name="linkedin">
+      </div>
+
+      <div class="field" data-packages="Portfolio">
+        <label for="github">GitHub</label>
+        <input type="text" id="github" name="github">
+      </div>
+
+      <div class="field" data-packages="Portfolio">
+        <label for="instagram">Instagram</label>
+        <input type="text" id="instagram" name="instagram">
+      </div>
+
+      <div class="field" data-packages="Portfolio">
+        <label for="behance">Behance</label>
+        <input type="text" id="behance" name="behance">
+      </div>
+
+      <div class="field" data-packages="Portfolio">
+        <label for="dribbble">Dribbble</label>
+        <input type="text" id="dribbble" name="dribbble">
+      </div>
+
+      <div class="field" data-packages="Portfolio">
+        <label for="otherSocial">Other (optional)</label>
+        <input type="text" id="otherSocial" name="otherSocial">
+      </div>
+
+      <div class="field" data-packages="Portfolio">
+        <div class="section-heading">Contact</div>
+        <label>Do you want a "Contact Me" button?</label>
+        <div class="radio-row">
+          <label><input type="radio" name="wantContactButton" value="Yes" checked> Yes</label>
+          <label><input type="radio" name="wantContactButton" value="No"> No</label>
+        </div>
+      </div>
+
+      <div class="field" data-packages="Portfolio">
+        <label>Show your phone number on the site?</label>
+        <div class="radio-row">
+          <label><input type="radio" name="showPhoneOnSite" value="Yes"> Yes</label>
+          <label><input type="radio" name="showPhoneOnSite" value="No" checked> No</label>
+        </div>
+      </div>
+
+      <div class="field" data-packages="Portfolio">
+        <label for="whatsappLink">WhatsApp or other contact link (optional)</label>
+        <input type="text" id="whatsappLink" name="whatsappLink">
+      </div>
+
+      <div class="field" data-packages="Basic,Business">
         <label for="socialLinks">Social media links (optional)</label>
         <div class="hint">Instagram, Facebook, LinkedIn, etc. — one per line</div>
         <textarea id="socialLinks" name="socialLinks"></textarea>
@@ -305,8 +428,72 @@
   }
 
   let pollTimer = null;
+  let currentPackage = null;
+
+  const projectsContainer = document.getElementById('projects-container');
+  const addProjectBtn = document.getElementById('add-project-btn');
+  let projectCount = 0;
+
+  function renumberProjects() {
+    projectsContainer.querySelectorAll('.project-row-head strong').forEach(function (label, i) {
+      label.textContent = 'Project ' + (i + 1);
+    });
+  }
+
+  function addProjectRow() {
+    if (projectsContainer.children.length >= 8) return;
+    projectCount += 1;
+    const row = document.createElement('div');
+    row.className = 'project-row';
+    row.innerHTML =
+      '<div class="project-row-head">' +
+        '<strong>Project ' + projectCount + '</strong>' +
+        '<button type="button" class="remove-project-btn">Remove</button>' +
+      '</div>' +
+      '<div class="field">' +
+        '<label>Project title</label>' +
+        '<input type="text" class="project-title">' +
+      '</div>' +
+      '<div class="field">' +
+        '<label>Short description</label>' +
+        '<textarea class="project-description" style="min-height:60px;"></textarea>' +
+      '</div>' +
+      '<div class="field">' +
+        '<label>Image / screenshot (optional)</label>' +
+        '<input type="file" class="project-image" accept="image/*">' +
+      '</div>' +
+      '<div class="field" style="margin-bottom:0;">' +
+        '<label>Link (optional)</label>' +
+        '<input type="text" class="project-link" placeholder="https://...">' +
+      '</div>';
+    row.querySelector('.remove-project-btn').addEventListener('click', function () {
+      row.remove();
+      renumberProjects();
+    });
+    projectsContainer.appendChild(row);
+  }
+
+  addProjectBtn.addEventListener('click', addProjectRow);
+
+  async function uploadImage(file) {
+    const base64 = await new Promise(function (resolve, reject) {
+      const reader = new FileReader();
+      reader.onload = function () { resolve(reader.result.split(',')[1]); };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+    const res = await fetch('/.netlify/functions/visual-upload-photo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId, contentType: file.type, base64, filename: file.name }),
+    });
+    if (!res.ok) throw new Error('Photo upload failed');
+    const data = await res.json();
+    return data.url;
+  }
 
   function applyPackageVisibility(pkg) {
+    currentPackage = pkg;
     document.querySelectorAll('#form-card [data-packages]').forEach(function (field) {
       const list = field.getAttribute('data-packages').split(',').map(function (s) { return s.trim(); });
       const required = field.querySelector('[required]');
@@ -320,12 +507,19 @@
 
     const projectNameLabel = document.getElementById('projectName-label');
     const pagesHint = document.getElementById('pages-hint');
+    const styleLabel = document.getElementById('style-label');
+    const styleHint = document.getElementById('style-hint');
     if (pkg === 'Portfolio') {
       projectNameLabel.textContent = 'Your name / project name';
       pagesHint.textContent = 'e.g. Home, About, Work, Contact';
+      styleLabel.textContent = 'Preferred colours (optional)';
+      styleHint.textContent = "Colours you'd like — e.g. navy & gold, pastel tones, black & white";
+      if (projectsContainer.children.length === 0) addProjectRow();
     } else {
       projectNameLabel.textContent = 'Business / project name';
       pagesHint.textContent = 'e.g. Home, About, Services, Gallery, Contact';
+      styleLabel.textContent = 'Colours / style preference';
+      styleHint.textContent = 'Colours you like, a mood (bold, minimal, playful...), or a link to a site you like';
     }
   }
 
@@ -473,6 +667,32 @@
     const answers = Object.fromEntries(formData.entries());
 
     try {
+      if (currentPackage === 'Portfolio') {
+        const personalPhotoFile = document.getElementById('personalPhoto').files[0];
+        if (personalPhotoFile) {
+          el.submitBtn.textContent = 'Uploading photos...';
+          answers.personalPhotoUrl = await uploadImage(personalPhotoFile);
+        }
+
+        const projects = [];
+        for (const row of projectsContainer.querySelectorAll('.project-row')) {
+          const title = row.querySelector('.project-title').value.trim();
+          const description = row.querySelector('.project-description').value.trim();
+          const link = row.querySelector('.project-link').value.trim();
+          const imageFile = row.querySelector('.project-image').files[0];
+          if (!title && !description && !link && !imageFile) continue;
+
+          let imageUrl = '';
+          if (imageFile) {
+            el.submitBtn.textContent = 'Uploading photos...';
+            imageUrl = await uploadImage(imageFile);
+          }
+          projects.push({ title, description, link, imageUrl });
+        }
+        answers.projects = projects;
+        el.submitBtn.textContent = 'Submitting...';
+      }
+
       const res = await fetch('/.netlify/functions/submit-questionnaire', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

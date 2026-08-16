@@ -53,9 +53,15 @@ exports.handler = async (event) => {
 
 This is a PERSONAL PORTFOLIO site for an individual, not a business. Treat it accordingly:
 - Use "About Me" framing, not "About Us"/"Our story".
-- Use the client's "role" answer (their headline/profession) prominently in the hero.
-- Replace any business-style sections (services/menu, opening hours, physical address) with a "Work" or "Projects" section, and turn each entry in "portfolioLinks" into a linked item there (or in the contact/footer area) rather than inventing project descriptions.
-- Skip opening hours and physical address entirely — they don't apply here.` : '';
+- Use the client's "role" and "whatYouDo" answers prominently in the hero, and their "mainMessage" answer (if given) as the core takeaway the hero copy should communicate.
+- Use "shortBio" for the About section body text, and turn "keySkills" into a skills/services list.
+- If "personalPhotoUrl" is provided, it's a real, already-uploaded photo URL — use it directly (e.g. as a CSS background-image or <img src>) for the hero/about photo slot, and do NOT create a data-wc-photo placeholder div for that slot. If "personalPhotoUrl" is empty, use a data-wc-photo="1" placeholder div there instead, per the numbering rule below.
+- Build a "Work" or "Projects" section from the "projects" array (each entry has title, description, link, imageUrl). For each project: if its "imageUrl" is non-empty, use it directly as a real image; if empty, give that project its own numbered data-wc-photo="N" placeholder div instead (continuing the numbering sequence after the personal photo slot, if that also used a placeholder). If a project has a non-empty "link", make its title or a "View project" button link to it (target="_blank" rel="noopener"). Never invent project descriptions beyond what's given.
+- Replace any business-style sections (services/menu, opening hours, physical address) with the Projects/Work section above.
+- Skip opening hours and physical address entirely — they don't apply here.
+- The client picked "styleChoice" as their preferred visual style (Modern/Minimal/Premium/Dark/Light/Creative/Professional/Not sure) — lean into that keyword for the overall design on top of the base design tokens below (ignore it if it's "Not sure"). Their "style" answer (if any) is a colour preference specifically.
+- Build a small set of social links (from whichever of "linkedin", "github", "instagram", "behance", "dribbble", "otherSocial" are non-empty) in the footer or contact area — skip any that are blank.
+- Only include a contact CTA/button if "wantContactButton" is "Yes". Only show a phone number if "showPhoneOnSite" is "Yes" AND a phone number was actually provided. If "whatsappLink" is non-empty, include it as a contact option.` : '';
 
     function buildPrompt(variationGuidance) {
       return `You are a web designer building a FIRST-DRAFT single-page website for a client of a web design agency called WebCloud.
