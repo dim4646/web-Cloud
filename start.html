@@ -228,6 +228,8 @@
 
   <div class="status" id="status-failed">
     <p>Something went wrong generating the draft. No worries — we'll follow up with you directly.</p>
+    <p class="hint" style="margin-top:10px;">Need it sooner? Email us and mention your order.</p>
+    <a href="mailto:info@webcloudsolutions.com.au?subject=Draft%20issue%20with%20my%20order" class="success-link">Email info@webcloudsolutions.com.au</a>
   </div>
 
   <div class="status" id="status-loading">
@@ -236,7 +238,10 @@
   </div>
 
   <div class="status" id="status-not-found">
-    <p>We couldn't find that order. Please check the link from your payment confirmation, or contact us directly.</p>
+    <p>We're having trouble loading your order — this looks like an issue on our end, not something you've done wrong.</p>
+    <p class="hint" style="margin-top:10px;">Please check your inbox for our order confirmation email, then email us and let us know — someone from our team will get back to you shortly to sort it out.</p>
+    <p class="hint" id="not-found-ref" style="margin-top:6px;"></p>
+    <a href="mailto:info@webcloudsolutions.com.au?subject=Order%20link%20not%20working" id="not-found-mailto" class="success-link">Email info@webcloudsolutions.com.au</a>
   </div>
 </div>
 
@@ -254,6 +259,8 @@
     formError: document.getElementById('form-error'),
     loading: document.getElementById('status-loading'),
     notFound: document.getElementById('status-not-found'),
+    notFoundRef: document.getElementById('not-found-ref'),
+    notFoundMailto: document.getElementById('not-found-mailto'),
     generating: document.getElementById('status-generating'),
     ready: document.getElementById('status-ready'),
     failed: document.getElementById('status-failed'),
@@ -283,9 +290,17 @@
   function show(elem) { elem.style.display = ''; elem.classList.add('visible'); }
   function hide(elem) { elem.style.display = 'none'; elem.classList.remove('visible'); }
 
-  if (!sessionId) {
+  function showNotFound() {
     hide(el.formCard);
+    if (sessionId) {
+      el.notFoundRef.textContent = `Reference: ${sessionId}`;
+      el.notFoundMailto.href = `mailto:info@webcloudsolutions.com.au?subject=${encodeURIComponent('Order link not working')}&body=${encodeURIComponent('Reference: ' + sessionId)}`;
+    }
     show(el.notFound);
+  }
+
+  if (!sessionId) {
+    showNotFound();
     return;
   }
 
@@ -402,15 +417,13 @@
       const res = await fetch(`/.netlify/functions/order?session_id=${encodeURIComponent(sessionId)}`);
       hide(el.loading);
       if (!res.ok) {
-        hide(el.formCard);
-        show(el.notFound);
+        showNotFound();
         return;
       }
       renderOrder(await res.json());
     } catch (err) {
       hide(el.loading);
-      hide(el.formCard);
-      show(el.notFound);
+      showNotFound();
     }
   }
 
