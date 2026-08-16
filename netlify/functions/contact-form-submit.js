@@ -36,7 +36,7 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: CORS_HEADERS, body: JSON.stringify({ error: 'Invalid JSON' }) };
   }
 
-  const { sessionId, name, email, message } = body;
+  const { sessionId, name, email, message, phone, service } = body;
   if (!sessionId || !message) {
     return { statusCode: 400, headers: CORS_HEADERS, body: JSON.stringify({ error: 'Missing sessionId or message' }) };
   }
@@ -63,6 +63,8 @@ exports.handler = async (event) => {
         <h2>New message from your website's contact form</h2>
         <p><strong>Name:</strong> ${escapeHtml(name) || '(not provided)'}</p>
         <p><strong>Email:</strong> ${escapeHtml(email) || '(not provided)'}</p>
+        ${phone ? `<p><strong>Phone:</strong> ${escapeHtml(phone)}</p>` : ''}
+        ${service ? `<p><strong>Service:</strong> ${escapeHtml(service)}</p>` : ''}
         <p><strong>Message:</strong></p>
         <p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>
       `,

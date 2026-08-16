@@ -63,13 +63,37 @@ This is a PERSONAL PORTFOLIO site for an individual, not a business. Treat it ac
 - Build a small set of social links (from whichever of "linkedin", "github", "instagram", "behance", "dribbble", "otherSocial" are non-empty) in the footer or contact area — skip any that are blank.
 - Only include a contact CTA/button if "wantContactButton" is "Yes". Only show a phone number if "showPhoneOnSite" is "Yes" AND a phone number was actually provided. If "whatsappLink" is non-empty, include it as a contact option.` : '';
 
+    const basicGuidance = packageName === 'Basic' ? `
+
+This is a single-page BASIC package site (up to 4 sections). Use the client's structured answers:
+- Use "whatBusinessDoesBasic" for the About/intro copy and "servicesOfferedBasic" for the services list — don't invent services beyond what's given.
+- "websiteGoalBasic" tells you the primary conversion goal (e.g. get more customers, get phone calls) — make the hero copy and main CTA reflect it.
+- "sectionsBasic" is the array of sections the client actually chose (e.g. Hero, About, Services, Gallery, Testimonials, Contact) — build exactly those sections, in that rough order, and skip any not listed.
+- "contentStatusBasic" tells you how much real copy to expect: if it's "I need help writing it", write professional placeholder copy in their voice rather than leaving it blank; if they said they'll provide it or have some, use what's in their other answers and mark clearly missing pieces as [PLACEHOLDER: ...].
+- "logoPhotosBasic" tells you whether to expect real photos — if "No" or "I will provide them later", every photo slot should be a numbered data-wc-photo="N" placeholder as usual.
+- "styleChoiceBasic" is their preferred style keyword (Modern/Minimal/Professional/Premium/Dark/Light/Creative/Not sure) — lean into it for the overall design (ignore if "Not sure"). The separate "style" answer (if given) is their colour preference.
+- "contactDetailsBasic" lists which contact details to actually surface (Email/Phone/Address / Location/Social media links) — only show the ones listed, using the real values from "email"/"phone"/"address"/"socialLinks".` : '';
+
+    const businessGuidance = packageName === 'Business' ? `
+
+This is a multi-page-feeling BUSINESS package site (up to 4-5 sections/pages, single scrolling page with anchored nav). Use the client's structured answers:
+- Use "whatBusinessDoesBusiness" for the About copy, "mainServicesBusiness" for the services list, and "idealCustomersBusiness" to inform the tone/framing (who the copy should speak to). "topServiceBusiness" is the one service to feature most prominently.
+- "websiteGoalBusiness" is the primary conversion goal — make the hero copy and main CTA reflect it.
+- "pagesBusiness" is the array of pages/sections the client actually chose (e.g. Home, About, Services, Projects / Gallery, Contact) — build exactly those, skip any not listed.
+- "contentStatusBusiness" tells you how much real copy to expect — same placeholder rules as above when they need help writing it.
+- "styleChoiceBusiness" is their preferred style keyword (Modern/Professional/Premium/Minimal/Luxury/Dark/Light/Creative/Not sure) — lean into it (ignore if "Not sure").
+- "contactDetailsBusiness" lists which contact details to surface (Email/Phone/Address/Social media/WhatsApp) — only show the ones listed.
+- Build the "Send a Message" contact form fields to match "contactFormFieldsBusiness" (a subset of Name/Email/Phone/Service/Message) rather than always using all three of name/email/message — still follow the exact wiring script given below, just add/omit the extra fields' <input>/<select> elements as listed (keep name="name"/"email"/"message" for those three if included; a "Service" field can use name="service" as a text input or select built from "mainServicesBusiness").
+- "domainStatusBusiness" plus "domainExistingBusiness"/"domainWantedBusiness" are about domain registration, not the draft itself — don't reference them in the page content.
+- "serviceAreaBusiness" is the geographic area they serve — mention it naturally in the hero/about/contact copy if given. "googleSearchTermsBusiness" hints at their target keywords — let it inform your section headings/copy naturally, don't just dump it as visible text.` : '';
+
     function buildPrompt(variationGuidance) {
       return `You are a web designer building a FIRST-DRAFT single-page website for a client of a web design agency called WebCloud.
 
 Client's package: ${packageName || 'Basic'}
 Client's answers to our project questionnaire (JSON):
 ${JSON.stringify(answers, null, 2)}
-${portfolioGuidance}
+${portfolioGuidance}${basicGuidance}${businessGuidance}
 
 Design system to loosely draw from (this is WebCloud's own brand, not necessarily the client's — use it as a starting point and adapt colors/tone to fit the client's business if their answers suggest a different vibe):
 ${DESIGN_TOKENS}
@@ -84,7 +108,7 @@ For every spot that is meant to hold a client-supplied photo (profile photo, her
 
 If you include a "Site by WebCloud" (or similar) credit line in the footer, its link must point to https://webcloudsolutions.com.au (with target="_blank" rel="noopener") — never a placeholder like href="#", which looks broken because it goes nowhere.
 
-For the contact section's "Send a Message" form (name/email/message fields), never use action="mailto:..." method="post" — mailto forms don't actually send anything from a web page, they just try to open the visitor's own local email client, which is unreliable (many visitors have none configured) and triggers a browser "not secure" warning. Instead, wire it up exactly like this: give the <form> tag id="wc-contact-form" with no action or method attribute, and its three fields must use name="name", name="email" (type="email"), and name="message" (a textarea) exactly. Then include this exact <script> block immediately before the closing </body> tag, unmodified except for keeping it verbatim:
+For the contact section's "Send a Message" form, never use action="mailto:..." method="post" — mailto forms don't actually send anything from a web page, they just try to open the visitor's own local email client, which is unreliable (many visitors have none configured) and triggers a browser "not secure" warning. Instead, wire it up exactly like this: give the <form> tag id="wc-contact-form" with no action or method attribute. Its name/email/message fields must use name="name", name="email" (type="email"), and name="message" (a textarea) exactly — these three are always required. You may optionally also include a phone field (name="phone") and/or a service field (name="service", a text input or a <select> built from the client's services) if the client's answers call for them (e.g. Business's "contactFormFieldsBusiness"); omit either one entirely from the form if not needed, the script below already handles both being present or absent. Then include this exact <script> block immediately before the closing </body> tag, unmodified except for keeping it verbatim:
 <script>
 document.getElementById('wc-contact-form').addEventListener('submit', function(e){
   e.preventDefault();
@@ -93,7 +117,14 @@ document.getElementById('wc-contact-form').addEventListener('submit', function(e
   fetch('https://webcloudsolutions.com.au/.netlify/functions/contact-form-submit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ sessionId: ${JSON.stringify(sessionId)}, name: form.name.value, email: form.email.value, message: form.message.value })
+    body: JSON.stringify({
+      sessionId: ${JSON.stringify(sessionId)},
+      name: form.name.value,
+      email: form.email.value,
+      message: form.message.value,
+      phone: form.phone ? form.phone.value : undefined,
+      service: form.service ? form.service.value : undefined
+    })
   }).then(function(r){ return r.ok; }).then(function(ok){
     btn.textContent = ok ? 'Message sent ✓' : 'Something went wrong — please try again';
     if (ok) { form.reset(); } else { btn.disabled = false; }
