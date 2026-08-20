@@ -528,6 +528,7 @@ summary:focus-visible,
 }
 .split-media img{
   width: 100%;
+  height: auto;
   aspect-ratio: 5/4;
   object-fit: cover;
 }
