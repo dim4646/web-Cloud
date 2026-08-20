@@ -203,12 +203,18 @@
 /* Graceful fallback for hotlinked photos that fail to load (network issues, dead links) */
 (function () {
   var PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 400 300%27%3E%3Crect width=%27400%27 height=%27300%27 fill=%27%23d8d2c5%27/%3E%3Cpath d=%27M120 190l50-60 40 45 30-35 60 70H120z%27 fill=%27%23b3ab9a%27/%3E%3Ccircle cx=%27150%27 cy=%27110%27 r=%2720%27 fill=%27%23b3ab9a%27/%3E%3C/svg%3E";
+  function applyFallback(img) {
+    if (img.dataset.fallbackApplied) return;
+    img.dataset.fallbackApplied = "true";
+    img.src = PLACEHOLDER;
+    img.style.objectFit = "cover";
+  }
   document.querySelectorAll("img").forEach(function (img) {
-    img.addEventListener("error", function () {
-      if (img.dataset.fallbackApplied) return;
-      img.dataset.fallbackApplied = "true";
-      img.src = PLACEHOLDER;
-      img.style.objectFit = "cover";
-    }, { once: true });
+    // Image already finished loading (successfully or not) by the time this runs
+    if (img.complete) {
+      if (img.naturalWidth === 0) applyFallback(img);
+      return;
+    }
+    img.addEventListener("error", function () { applyFallback(img); }, { once: true });
   });
 })();
