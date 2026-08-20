@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /demos/forge-fitness/
+
+Sitemap: https://webcloudsolutions.com.au/demos/forge-fitness/sitemap.xml

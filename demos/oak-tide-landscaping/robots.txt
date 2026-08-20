@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /demos/oak-tide-landscaping/
+
+Sitemap: https://webcloudsolutions.com.au/demos/oak-tide-landscaping/sitemap.xml

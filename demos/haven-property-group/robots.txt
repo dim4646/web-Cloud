@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /demos/haven-property-group/
+
+Sitemap: https://webcloudsolutions.com.au/demos/haven-property-group/sitemap.xml

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Luma Beauty Studio mark">
+  <rect width="64" height="64" rx="14" fill="#2b2622"/>
+  <path d="M20 16 C20 34 20 40 32 40 C40 40 44 36 44 30" fill="none" stroke="#e9d6ce" stroke-width="3.4" stroke-linecap="round"/>
+  <circle cx="44" cy="30" r="3.4" fill="#a9765f"/>
+</svg>

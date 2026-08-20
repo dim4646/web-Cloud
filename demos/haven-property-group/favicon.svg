@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Haven Property Group mark">
+  <rect width="64" height="64" fill="#201e1a"/>
+  <path d="M10 34 L32 14 L54 34" fill="none" stroke="#f7f4ee" stroke-width="4" stroke-linecap="square" stroke-linejoin="miter"/>
+  <rect x="18" y="34" width="28" height="18" fill="none" stroke="#f7f4ee" stroke-width="4"/>
+  <rect x="29" y="40" width="6" height="12" fill="#5c6b52"/>
+</svg>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /demos/north-co-plumbing/
+
+Sitemap: https://webcloudsolutions.com.au/demos/north-co-plumbing/sitemap.xml

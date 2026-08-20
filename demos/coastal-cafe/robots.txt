@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /demos/coastal-cafe/
+
+Sitemap: https://webcloudsolutions.com.au/demos/coastal-cafe/sitemap.xml
