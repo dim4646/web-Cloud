@@ -66,11 +66,13 @@ a {
   --moss-700: #33452f;
   --moss-600: #44593c;
   --moss-500: #5a7049;
+  --clay-700: #8f4224;
   --clay-600: #a8552f;
   --clay-500: #c1653a;
   --clay-400: #d68a5c;
   --gold-500: #c1943f;
   --gold-400: #d4ab5e;
+  --gold-700: #8a5f1f;
   --sand-50: #fdfaf4;
   --sand-100: #f7f0e2;
   --sand-200: #efe3cc;
@@ -234,11 +236,11 @@ section {
 .btn:hover { transform: translateY(-2px); }
 
 .btn-primary {
-  background: var(--clay-500);
+  background: var(--clay-600);
   color: var(--sand-50);
   box-shadow: var(--shadow-card);
 }
-.btn-primary:hover { background: var(--clay-600); }
+.btn-primary:hover { background: var(--clay-700); }
 
 .btn-ghost {
   background: transparent;
@@ -555,7 +557,7 @@ section {
 .service-card .num {
   font-family: var(--font-display);
   font-size: 0.9rem;
-  color: var(--clay-500);
+  color: var(--clay-600);
   font-weight: 700;
   letter-spacing: 0.06em;
 }
@@ -954,7 +956,7 @@ section {
 }
 
 .stars {
-  color: var(--gold-500);
+  color: var(--gold-700);
   letter-spacing: 0.15em;
   font-size: 1.05rem;
 }
