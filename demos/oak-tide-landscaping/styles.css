@@ -1071,7 +1071,7 @@ section {
   content: "+";
   font-family: var(--font-display);
   font-size: 1.3rem;
-  color: var(--clay-500);
+  color: var(--clay-600);
   flex-shrink: 0;
 }
 
