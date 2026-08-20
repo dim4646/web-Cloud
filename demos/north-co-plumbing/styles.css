@@ -1005,7 +1005,7 @@ img { object-fit: cover; }
 .footer-legal-links { display: flex; gap: 1.25rem; flex-wrap: wrap; }
 .footer-legal-links a { color: var(--gray-300); text-decoration: none; }
 .footer-legal-links a:hover { color: var(--yellow-400); }
-.footer-demo-note { color: var(--gray-600); font-size: 0.78rem; margin-top: 0.5rem; }
+.footer-demo-note { color: var(--gray-500); font-size: 0.78rem; margin-top: 0.5rem; }
 
 /* ---------- Sticky mobile call bar ---------- */
 .mobile-call-bar {
