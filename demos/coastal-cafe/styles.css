@@ -613,10 +613,12 @@ section{ position: relative; }
 }
 .story-collage{
   position: relative;
-  min-height: 22rem;
+  aspect-ratio: 1 / 0.88;
+  min-height: 16rem;
 }
 .story-collage img{
   position: absolute;
+  height: auto;
   object-fit: cover;
   box-shadow: var(--shadow-soft);
 }
