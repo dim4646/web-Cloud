@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /demos/luma-beauty-studio/
+
+Sitemap: https://webcloudsolutions.com.au/demos/luma-beauty-studio/sitemap.xml
