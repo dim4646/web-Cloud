@@ -1,0 +1,2060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coastal Café | Coffee &amp; Breakfast Gold Coast</title>
+<meta name="description" content="Fresh coffee, breakfast and relaxed coastal dining on the Gold Coast.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://webcloudsolutions.com.au/demos/coastal-cafe/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Coastal Café">
+<meta property="og:title" content="Coastal Café | Coffee &amp; Breakfast Gold Coast">
+<meta property="og:description" content="Fresh coffee, breakfast and relaxed coastal dining on the Gold Coast.">
+<meta property="og:url" content="https://webcloudsolutions.com.au/demos/coastal-cafe/">
+<meta property="og:image" content="https://webcloudsolutions.com.au/demos/coastal-cafe/images/hero-exterior.webp">
+<meta property="og:locale" content="en_AU">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Coastal Café | Coffee &amp; Breakfast Gold Coast">
+<meta name="twitter:description" content="Fresh coffee, breakfast and relaxed coastal dining on the Gold Coast.">
+<meta name="twitter:image" content="https://webcloudsolutions.com.au/demos/coastal-cafe/images/hero-exterior.webp">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   Coastal Café — stylesheet
+   Warm, premium coastal hospitality design. Hand-written CSS, no framework.
+   ========================================================================== */
+
+/* ---------- Design tokens ---------- */
+:root{
+  /* palette */
+  --cream:        #FBF4E9;
+  --cream-deep:   #F4E9D8;
+  --sand:         #EFE1CB;
+  --sand-line:    #E2D2B4;
+  --ink:          #2C2319;
+  --ink-soft:     #5B4F41;
+  --ink-faint:    #8A7B68;
+  --white:        #FFFFFF;
+
+  --terracotta:      #C1592F;
+  --terracotta-deep: #9C441F; /* used for text/links on light bg — AA contrast */
+  --terracotta-tint: #F0DACB;
+
+  --ocean:        #2C6864;
+  --ocean-deep:   #1E4A47;
+  --ocean-tint:   #DCEAE7;
+
+  --gold:         #C9922E;
+
+  --shadow-soft: 0 20px 45px -25px rgba(44, 35, 25, 0.45);
+  --shadow-card: 0 14px 30px -18px rgba(44, 35, 25, 0.35);
+
+  --radius-lg: 2rem;
+  --radius-md: 1.25rem;
+  --radius-sm: 0.65rem;
+  --radius-blob: 63% 37% 41% 59% / 47% 41% 59% 53%;
+
+  --container: 74rem;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+
+  --font-display: "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-body: "Work Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  --dur: 0.5s;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after{ box-sizing: border-box; }
+html{
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior: auto; }
+  *, *::before, *::after{
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+body{
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+img{ max-width: 100%; display: block; }
+a{ color: inherit; }
+h1, h2, h3, h4{
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.08;
+  margin: 0 0 0.6em;
+  color: var(--ink);
+}
+p{ margin: 0 0 1em; }
+ul{ margin: 0; padding: 0; list-style: none; }
+button{ font: inherit; }
+input, textarea, select{ font: inherit; }
+table{ border-collapse: collapse; width: 100%; }
+
+/* ---------- Focus states (a11y) ---------- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible{
+  outline: 3px solid var(--ocean);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- Skip link ---------- */
+.skip-link{
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  background: var(--ink);
+  color: var(--cream);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-sm);
+  z-index: 1000;
+  transition: top 0.25s var(--ease);
+  text-decoration: none;
+  font-weight: 600;
+}
+.skip-link:focus{ top: 1rem; }
+
+/* ---------- Layout helpers ---------- */
+.wrap{
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+section{ position: relative; }
+.section-pad{ padding-block: clamp(3.5rem, 8vw, 7rem); }
+.section-head{
+  max-width: 42rem;
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+.section-head.center{ margin-inline: auto; text-align: center; }
+.eyebrow{
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  color: var(--terracotta-deep);
+  margin-bottom: 0.9em;
+}
+.eyebrow::before{
+  content: "";
+  width: 1.6em;
+  height: 2px;
+  background: var(--terracotta);
+  display: inline-block;
+}
+.section-head h2{
+  font-size: clamp(2rem, 4.4vw, 3.1rem);
+}
+.lede{
+  font-size: 1.1rem;
+  color: var(--ink-soft);
+  max-width: 40ch;
+}
+.center .lede{ margin-inline: auto; }
+
+/* ---------- Buttons ---------- */
+.btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.95em 1.9em;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.98rem;
+  text-decoration: none;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), background var(--dur) var(--ease), color var(--dur) var(--ease);
+  white-space: nowrap;
+}
+.btn:hover{ transform: translateY(-2px); }
+.btn-primary{
+  background: var(--terracotta-deep);
+  color: var(--white);
+  box-shadow: var(--shadow-card);
+}
+.btn-primary:hover{ background: var(--terracotta); }
+.btn-ghost{
+  background: rgba(255,255,255,0.08);
+  border-color: currentColor;
+  color: var(--white);
+}
+.btn-ghost:hover{ background: rgba(255,255,255,0.18); }
+.btn-outline{
+  background: transparent;
+  border-color: var(--ocean);
+  color: var(--ocean-deep);
+}
+.btn-outline:hover{ background: var(--ocean); color: var(--white); }
+.btn-block{ width: 100%; justify-content: center; }
+
+/* ==========================================================================
+   Header / Nav
+   ========================================================================== */
+.site-header{
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  background: rgba(251, 244, 233, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.site-header.is-scrolled{
+  border-bottom-color: var(--sand-line);
+  box-shadow: 0 8px 24px -18px rgba(44,35,25,0.4);
+}
+.header-inner{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.9rem;
+}
+.brand{
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--ink);
+}
+.brand-mark{ width: 2.35rem; height: 2.35rem; flex-shrink: 0; }
+.brand-word{
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.brand-word em{
+  font-style: italic;
+  color: var(--terracotta-deep);
+}
+
+.nav-toggle{
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 2.75rem;
+  height: 2.75rem;
+  background: transparent;
+  border: 1px solid var(--sand-line);
+  border-radius: 999px;
+  cursor: pointer;
+  z-index: 600;
+  position: relative;
+}
+.nav-toggle span{
+  width: 1.15rem;
+  height: 2px;
+  background: var(--ink);
+  border-radius: 2px;
+  transition: transform 0.35s var(--ease), opacity 0.25s var(--ease);
+}
+.nav-toggle[aria-expanded="true"] span:nth-child(1){ transform: translateY(6.5px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] span:nth-child(2){ opacity: 0; }
+.nav-toggle[aria-expanded="true"] span:nth-child(3){ transform: translateY(-6.5px) rotate(-45deg); }
+
+.site-nav{
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(20rem, 86vw);
+  background: var(--ink);
+  color: var(--cream);
+  padding: 6rem 2rem 2rem;
+  transform: translateX(100%);
+  transition: transform 0.45s var(--ease);
+  z-index: 550;
+  overflow-y: auto;
+}
+.site-nav.is-open{ transform: translateX(0); }
+.nav-list{
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 2rem;
+}
+.nav-list a{
+  display: block;
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  padding: 0.5rem 0;
+  color: var(--cream);
+  border-bottom: 1px solid rgba(251,244,233,0.12);
+}
+.nav-list a:hover{ color: var(--gold); }
+.nav-cta{ margin-top: 0.5rem; }
+.nav-scrim{
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 16, 11, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease);
+  z-index: 540;
+}
+.nav-scrim.is-open{ opacity: 1; pointer-events: auto; }
+.no-scroll{ overflow: hidden; }
+
+@media (min-width: 68rem){
+  .nav-toggle{ display: none; }
+  .site-nav{
+    position: static;
+    width: auto;
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    transform: none;
+    overflow: visible;
+  }
+  .nav-list{
+    flex-direction: row;
+    align-items: center;
+    gap: 1.9rem;
+    margin-bottom: 0;
+  }
+  .nav-list a{
+    font-family: var(--font-body);
+    font-size: 0.96rem;
+    font-weight: 600;
+    padding: 0.3rem 0;
+    color: var(--ink-soft);
+    border-bottom: none;
+    position: relative;
+  }
+  .nav-list a::after{
+    content: "";
+    position: absolute;
+    left: 0; right: 100%;
+    bottom: -4px;
+    height: 2px;
+    background: var(--terracotta);
+    transition: right 0.3s var(--ease);
+  }
+  .nav-list a:hover{ color: var(--ink); }
+  .nav-list a:hover::after{ right: 0; }
+  .nav-cta{ margin-top: 0; }
+  .nav-scrim{ display: none; }
+  .header-inner{ padding-block: 1.1rem; }
+}
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+.hero{
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  color: var(--white);
+  overflow: hidden;
+}
+.hero-media{
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.hero-media img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 62%;
+}
+.hero-media::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(0deg, rgba(24,17,10,0.82) 0%, rgba(24,17,10,0.38) 46%, rgba(24,17,10,0.28) 100%);
+}
+.hero-inner{
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding-block: clamp(6rem, 16vw, 8rem) clamp(3.5rem, 8vw, 5.5rem);
+}
+.hero-eyebrow{
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--cream);
+  margin-bottom: 1.4rem;
+}
+.hero-eyebrow::before{
+  content: "";
+  width: 2em;
+  height: 2px;
+  background: var(--gold);
+}
+.hero h1{
+  font-size: clamp(2.5rem, 7vw, 4.8rem);
+  max-width: 20ch;
+  color: var(--white);
+  margin-bottom: 0.5em;
+}
+.hero h1 em{ font-style: italic; color: #F3D9A6; }
+.hero-sub{
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
+  max-width: 42ch;
+  color: rgba(255,255,255,0.92);
+  margin-bottom: 2.2rem;
+}
+.hero-ctas{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.hero-scroll{
+  position: absolute;
+  right: clamp(1.25rem, 4vw, 3rem);
+  bottom: 2rem;
+  z-index: 1;
+  display: none;
+  align-items: center;
+  gap: 0.6rem;
+  color: rgba(255,255,255,0.85);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.hero-scroll svg{ animation: bob 2.2s ease-in-out infinite; }
+@keyframes bob{
+  0%, 100%{ transform: translateY(0); }
+  50%{ transform: translateY(6px); }
+}
+@media (min-width: 46rem){
+  .hero-scroll{ display: inline-flex; }
+}
+
+/* ==========================================================================
+   Scroll reveal
+   ========================================================================== */
+.reveal{
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+}
+.reveal.is-visible{ opacity: 1; transform: none; }
+.reveal-delay-1{ transition-delay: 0.1s; }
+.reveal-delay-2{ transition-delay: 0.22s; }
+.reveal-delay-3{ transition-delay: 0.34s; }
+
+/* ==========================================================================
+   Marquee strip
+   ========================================================================== */
+.strip{
+  background: var(--ink);
+  color: var(--cream);
+  padding-block: 0.85rem;
+  overflow: hidden;
+}
+.strip-track{
+  display: flex;
+  gap: 3rem;
+  white-space: nowrap;
+  width: max-content;
+  animation: scroll-strip 34s linear infinite;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.05rem;
+}
+.strip-track span{ opacity: 0.85; }
+.strip-track span::after{ content: "•"; margin-left: 3rem; color: var(--gold); }
+@keyframes scroll-strip{
+  from{ transform: translateX(0); }
+  to{ transform: translateX(-50%); }
+}
+
+/* ==========================================================================
+   Menu
+   ========================================================================== */
+.menu-section{ background: var(--cream); }
+.menu-layout{
+  display: grid;
+  gap: 2.5rem;
+}
+@media (min-width: 60rem){
+  .menu-layout{
+    grid-template-columns: 15rem 1fr;
+    gap: 3.5rem;
+    align-items: start;
+  }
+}
+.menu-jump{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+}
+@media (min-width: 60rem){
+  .menu-jump{
+    flex-direction: column;
+    position: sticky;
+    top: 6.5rem;
+    margin-bottom: 0;
+  }
+}
+.menu-jump a{
+  display: inline-block;
+  padding: 0.55em 1.1em;
+  border-radius: 999px;
+  border: 1px solid var(--sand-line);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.menu-jump a:hover{
+  background: var(--terracotta-deep);
+  border-color: var(--terracotta-deep);
+  color: var(--white);
+}
+
+.menu-groups{ display: flex; flex-direction: column; gap: clamp(2.5rem, 5vw, 4rem); }
+.menu-group{ scroll-margin-top: 6rem; }
+.menu-group-head{
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 1.4rem;
+  border-bottom: 2px solid var(--sand-line);
+  padding-bottom: 0.6rem;
+}
+.menu-group-head h3{
+  font-size: 1.5rem;
+  margin: 0;
+}
+.menu-group-head span{
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+}
+.menu-items{
+  display: grid;
+  gap: 1.3rem 2.5rem;
+}
+@media (min-width: 40rem){
+  .menu-items{ grid-template-columns: 1fr 1fr; }
+}
+.menu-item{
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+.menu-item-name{
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.menu-item-leader{
+  flex: 1;
+  border-bottom: 2px dotted var(--sand-line);
+  translate: 0 -0.35em;
+  min-width: 0.75rem;
+}
+.menu-item-price{
+  font-weight: 700;
+  color: var(--terracotta-deep);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.menu-item-desc{
+  flex-basis: 100%;
+  margin: -0.6rem 0 0;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+.menu-note{
+  margin-top: 2.5rem;
+  color: var(--ink-faint);
+  font-size: 0.9rem;
+}
+
+.menu-photos{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin: 3rem 0;
+}
+.menu-photos figure{ margin: 0; }
+.menu-photos img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  aspect-ratio: 4/5;
+  box-shadow: var(--shadow-card);
+}
+
+/* ==========================================================================
+   Our Story
+   ========================================================================== */
+.story-section{ background: var(--sand); overflow: hidden; }
+.story-grid{
+  display: grid;
+  gap: 3rem;
+}
+@media (min-width: 62rem){
+  .story-grid{
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 4rem;
+  }
+}
+.story-collage{
+  position: relative;
+  aspect-ratio: 1 / 0.88;
+  min-height: 16rem;
+}
+.story-collage img{
+  position: absolute;
+  height: auto;
+  object-fit: cover;
+  box-shadow: var(--shadow-soft);
+}
+.story-img-a{
+  width: 68%;
+  aspect-ratio: 4/5;
+  border-radius: var(--radius-lg);
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+.story-img-b{
+  width: 52%;
+  aspect-ratio: 1/1;
+  border-radius: var(--radius-blob);
+  bottom: 0;
+  right: 0;
+  z-index: 2;
+  border: 8px solid var(--sand);
+}
+.story-badge{
+  position: absolute;
+  top: -1.5rem;
+  right: 8%;
+  z-index: 3;
+  background: var(--terracotta-deep);
+  color: var(--white);
+  border-radius: 999px;
+  width: 6.5rem;
+  height: 6.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  line-height: 1.2;
+  box-shadow: var(--shadow-card);
+  transform: rotate(-8deg);
+}
+.story-copy h2{ font-size: clamp(2rem, 4.2vw, 2.9rem); }
+.story-copy p{ color: var(--ink-soft); font-size: 1.05rem; }
+.story-quote{
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.35rem;
+  color: var(--ink);
+  border-left: 3px solid var(--terracotta);
+  padding-left: 1.2rem;
+  margin: 1.6rem 0;
+}
+.story-stats{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.75rem 2.5rem;
+  margin-top: 2rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--sand-line);
+}
+.story-stat strong{
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--ocean-deep);
+}
+.story-stat span{
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+}
+
+/* FAQ */
+.faq-list{ display: flex; flex-direction: column; gap: 0.9rem; max-width: 46rem; }
+.faq-item{
+  background: var(--white);
+  border: 1px solid var(--sand-line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.faq-item summary{
+  cursor: pointer;
+  list-style: none;
+  padding: 1.1rem 1.4rem;
+  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.faq-item summary::-webkit-details-marker{ display: none; }
+.faq-item summary::after{
+  content: "+";
+  font-size: 1.4rem;
+  color: var(--terracotta-deep);
+  transition: transform 0.3s var(--ease);
+  flex-shrink: 0;
+}
+.faq-item[open] summary::after{ transform: rotate(45deg); }
+.faq-item p{
+  padding: 0 1.4rem 1.2rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* ==========================================================================
+   Gallery
+   ========================================================================== */
+.gallery-section{ background: var(--cream); }
+.gallery-head{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: clamp(2rem, 5vw, 3rem);
+}
+.gallery-handle{
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--ocean-deep);
+  border: 1px solid var(--ocean);
+  padding: 0.6em 1.2em;
+  border-radius: 999px;
+}
+.gallery-handle:hover{ background: var(--ocean); color: var(--white); }
+.gallery-grid{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.9rem;
+}
+@media (min-width: 40rem){
+  .gallery-grid{ grid-template-columns: repeat(3, 1fr); }
+}
+.gallery-grid li{ margin: 0; border-radius: var(--radius-md); overflow: hidden; }
+.gallery-item{
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 0;
+  cursor: zoom-in;
+  background: none;
+  aspect-ratio: 1/1;
+}
+.gallery-item img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease);
+}
+.gallery-item:hover img{ transform: scale(1.06); }
+.gallery-item::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(24,17,10,0.55), rgba(24,17,10,0) 55%);
+  opacity: 0;
+  transition: opacity 0.35s var(--ease);
+}
+.gallery-item:hover::after,
+.gallery-item:focus-visible::after{ opacity: 1; }
+.gallery-item .cap{
+  position: absolute;
+  left: 0.9rem;
+  bottom: 0.7rem;
+  color: var(--white);
+  font-size: 0.82rem;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+}
+.gallery-item:hover .cap,
+.gallery-item:focus-visible .cap{ opacity: 1; transform: none; }
+
+/* Lightbox */
+.lightbox{
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(18, 13, 9, 0.88);
+  padding: 1.5rem;
+}
+.lightbox.is-open{ display: flex; }
+.lightbox-inner{
+  position: relative;
+  max-width: 60rem;
+  width: 100%;
+}
+.lightbox-inner img{
+  width: 100%;
+  max-height: 82svh;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+}
+.lightbox-close{
+  position: absolute;
+  top: -3rem;
+  right: 0;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.4);
+  color: var(--white);
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 999px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  line-height: 1;
+}
+.lightbox-cap{
+  color: var(--cream);
+  text-align: center;
+  margin-top: 1rem;
+  font-family: var(--font-display);
+  font-style: italic;
+}
+
+/* ==========================================================================
+   Location / Hours
+   ========================================================================== */
+.location-section{ background: var(--ink); color: var(--cream); }
+.location-section .eyebrow{ color: var(--gold); }
+.location-section .eyebrow::before{ background: var(--gold); }
+.location-section h2{ color: var(--cream); }
+.location-section .lede{ color: rgba(251,244,233,0.75); }
+.location-grid{
+  display: grid;
+  gap: 3rem;
+}
+@media (min-width: 60rem){
+  .location-grid{ grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+}
+.location-detail{ display: flex; gap: 1rem; margin-bottom: 1.6rem; }
+.location-detail svg{ flex-shrink: 0; margin-top: 0.2rem; color: var(--gold); }
+.location-detail h3{
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  margin: 0 0 0.3em;
+}
+.location-detail a, .location-detail p{
+  color: var(--cream);
+  margin: 0;
+  text-decoration: none;
+  font-size: 1.05rem;
+}
+.location-detail a:hover{ color: var(--gold); text-decoration: underline; }
+
+.hours-table{ margin: 1.6rem 0 2rem; font-size: 0.98rem; }
+.hours-table th, .hours-table td{
+  text-align: left;
+  padding: 0.55rem 0.4rem;
+  border-bottom: 1px solid rgba(251,244,233,0.14);
+}
+.hours-table th{
+  font-weight: 500;
+  color: rgba(251,244,233,0.7);
+}
+.hours-table td{ font-weight: 600; text-align: right; }
+.hours-table caption{
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  margin-bottom: 0.6rem;
+  color: var(--cream);
+}
+
+.map-frame{
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+  border: 6px solid rgba(251,244,233,0.08);
+  aspect-ratio: 4/3;
+}
+.map-frame iframe{ width: 100%; height: 100%; border: 0; display: block; }
+.map-frame-static{
+  position: relative;
+  display: block;
+  text-decoration: none;
+}
+.map-frame-static svg{ width: 100%; height: 100%; display: block; }
+.map-frame-cta{
+  position: absolute;
+  left: 50%;
+  bottom: 1.1rem;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  background: var(--ink);
+  color: var(--cream);
+  padding: 0.7em 1.3em;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  box-shadow: var(--shadow-card);
+  transition: transform var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.map-frame-static:hover .map-frame-cta{ transform: translateX(-50%) translateY(-2px); background: var(--terracotta-deep); }
+.map-link{
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 1rem;
+  color: var(--gold);
+  text-decoration: none;
+  font-weight: 600;
+}
+.map-link:hover{ text-decoration: underline; }
+
+.location-section .faq-item{
+  background: rgba(251,244,233,0.05);
+  border-color: rgba(251,244,233,0.16);
+}
+.location-section .faq-item summary{ color: var(--cream); }
+.location-section .faq-item p{ color: rgba(251,244,233,0.75); }
+
+/* ==========================================================================
+   Contact
+   ========================================================================== */
+.contact-section{ background: var(--cream); }
+.contact-grid{
+  display: grid;
+  gap: 3rem;
+}
+@media (min-width: 60rem){
+  .contact-grid{ grid-template-columns: 0.85fr 1.15fr; gap: 4rem; }
+}
+.contact-intro p{ color: var(--ink-soft); font-size: 1.05rem; }
+.social-list{
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1.8rem;
+}
+.social-list a{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 999px;
+  background: var(--sand);
+  border: 1px solid var(--sand-line);
+  color: var(--ink);
+  text-decoration: none;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.social-list a:hover{ background: var(--terracotta-deep); color: var(--white); }
+
+.contact-form{
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.5rem, 4vw, 2.75rem);
+  box-shadow: var(--shadow-card);
+}
+.form-row{ margin-bottom: 1.4rem; }
+.form-row-split{
+  display: grid;
+  gap: 1.4rem;
+}
+@media (min-width: 34rem){
+  .form-row-split{ grid-template-columns: 1fr 1fr; }
+}
+.form-row label{
+  display: block;
+  font-weight: 600;
+  font-size: 0.92rem;
+  margin-bottom: 0.45rem;
+}
+.form-row .req{ color: var(--terracotta-deep); }
+.form-row input,
+.form-row textarea{
+  width: 100%;
+  padding: 0.85em 1em;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--sand-line);
+  background: var(--cream);
+  color: var(--ink);
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.form-row input:focus,
+.form-row textarea:focus{
+  border-color: var(--ocean);
+  outline: none;
+  box-shadow: 0 0 0 4px var(--ocean-tint);
+}
+.form-row textarea{ min-height: 8.5rem; resize: vertical; }
+.form-row input[aria-invalid="true"],
+.form-row textarea[aria-invalid="true"]{
+  border-color: var(--terracotta-deep);
+  background: var(--terracotta-tint);
+}
+.field-error{
+  display: block;
+  color: var(--terracotta-deep);
+  font-size: 0.85rem;
+  margin-top: 0.4rem;
+  min-height: 1.1em;
+}
+.form-status{
+  border-radius: var(--radius-sm);
+  padding: 1em 1.2em;
+  margin-top: 1.2rem;
+  font-weight: 600;
+  display: none;
+}
+.form-status.is-visible{ display: block; }
+.form-status.is-success{
+  display: block;
+  background: var(--ocean-tint);
+  color: var(--ocean-deep);
+  border: 1px solid var(--ocean);
+}
+.form-status.is-error{
+  display: block;
+  background: var(--terracotta-tint);
+  color: var(--terracotta-deep);
+  border: 1px solid var(--terracotta-deep);
+}
+.form-note{
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+  margin-top: 1rem;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.site-footer{
+  background: var(--ink);
+  color: rgba(251,244,233,0.78);
+  padding-block: clamp(3rem, 6vw, 4.5rem) 1.6rem;
+}
+.footer-grid{
+  display: grid;
+  gap: 2.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid rgba(251,244,233,0.12);
+}
+@media (min-width: 50rem){
+  .footer-grid{ grid-template-columns: 1.3fr 1fr 1fr 1fr; }
+}
+.footer-brand .brand{ color: var(--cream); margin-bottom: 0.9rem; }
+.footer-brand p{ max-width: 26ch; font-size: 0.92rem; }
+.footer-col h4{
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cream);
+  margin-bottom: 0.9rem;
+}
+.footer-col ul{ display: flex; flex-direction: column; gap: 0.55rem; }
+.footer-col a{
+  text-decoration: none;
+  color: rgba(251,244,233,0.78);
+  font-size: 0.94rem;
+}
+.footer-col a:hover{ color: var(--gold); text-decoration: underline; }
+.footer-bottom{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding-top: 1.6rem;
+  font-size: 0.82rem;
+  color: rgba(251,244,233,0.55);
+}
+.footer-demo-note{
+  font-size: 0.78rem;
+  color: rgba(251,244,233,0.45);
+  margin-top: 0.6rem;
+  max-width: 60ch;
+}
+
+/* ==========================================================================
+   Simple pages (privacy / terms / 404)
+   ========================================================================== */
+.legal-hero{
+  background: var(--sand);
+  padding-block: clamp(4.5rem, 10vw, 6.5rem) 3rem;
+  text-align: center;
+}
+.legal-hero .eyebrow{ justify-content: center; }
+.legal-hero h1{ font-size: clamp(2.1rem, 5vw, 3rem); }
+.legal-content{
+  max-width: 48rem;
+  margin-inline: auto;
+  padding-block: clamp(2.5rem, 6vw, 4rem) 5rem;
+}
+.legal-content h2{
+  font-size: 1.5rem;
+  margin-top: 2.2rem;
+}
+.legal-content p, .legal-content li{
+  color: var(--ink-soft);
+  font-size: 1.02rem;
+}
+.legal-content ul{ padding-left: 1.4rem; list-style: disc; margin-bottom: 1em; }
+.legal-content li{ margin-bottom: 0.4em; }
+.legal-updated{
+  color: var(--ink-faint);
+  font-size: 0.9rem;
+}
+
+.notfound{
+  min-height: 80svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-block: 6rem;
+  background:
+    radial-gradient(circle at 20% 20%, var(--terracotta-tint), transparent 45%),
+    radial-gradient(circle at 80% 80%, var(--ocean-tint), transparent 45%),
+    var(--cream);
+}
+.notfound-inner{ max-width: 34rem; }
+.notfound-code{
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 14vw, 7rem);
+  color: var(--terracotta-deep);
+  margin-bottom: 0;
+  line-height: 1;
+}
+.notfound h1{ font-size: clamp(1.6rem, 4vw, 2.2rem); }
+.notfound p{ color: var(--ink-soft); margin-bottom: 2rem; }
+
+/* ---------- Visually hidden ---------- */
+.visually-hidden{
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+</style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CafeOrCoffeeShop",
+  "name": "Coastal Café",
+  "image": "https://webcloudsolutions.com.au/demos/coastal-cafe/images/hero-exterior.webp",
+  "url": "https://webcloudsolutions.com.au/demos/coastal-cafe/",
+  "telephone": "+61-7-5500-0101",
+  "email": "hello@coastalcafe.example",
+  "priceRange": "$$",
+  "servesCuisine": ["Café", "Breakfast", "Brunch", "Coffee"],
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "14 Marine Parade",
+    "addressLocality": "Burleigh Heads",
+    "addressRegion": "QLD",
+    "postalCode": "4220",
+    "addressCountry": "AU"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": -28.1038,
+    "longitude": 153.4479
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "06:30",
+      "closes": "14:30"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Saturday", "Sunday"],
+      "opens": "06:00",
+      "closes": "15:00"
+    }
+  ],
+  "sameAs": [
+    "https://www.instagram.com/coastalcafe.example",
+    "https://www.facebook.com/coastalcafe.example"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Do you take bookings?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Walk-ins are always welcome. For groups of six or more, email hello@coastalcafe.example or call (07) 5500 0101 and we'll set a table aside for you."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are Coastal Café's opening hours?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We're open Monday to Friday from 6:30am to 2:30pm, and Saturday to Sunday from 6:00am to 3:00pm."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you cater for dietary requirements?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — gluten-free, dairy-free and plant-based options are available across our breakfast and brunch menu. Just ask our team."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there parking near the café?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Free street parking is available along Marine Parade, with a public car park two minutes' walk away on Goodwin Terrace."
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="wrap header-inner">
+    <a class="brand" href="#home" aria-label="Coastal Café — home">
+      <svg class="brand-mark" viewBox="0 0 48 48" role="img" aria-hidden="true">
+        <circle cx="24" cy="24" r="23" fill="#C1592F"></circle>
+        <path d="M14 21h16.5a3.5 3.5 0 0 1 0 7H30" fill="none" stroke="#FBF4E9" stroke-width="2.4" stroke-linecap="round"></path>
+        <path d="M14 21v7a6 6 0 0 0 6 6h3a6 6 0 0 0 6-6v-1" fill="none" stroke="#FBF4E9" stroke-width="2.4" stroke-linecap="round"></path>
+        <path d="M17 14c0-2 2-2 2-4M22 14c0-2 2-2 2-4M27 14c0-2 2-2 2-4" fill="none" stroke="#F3D9A6" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M9 36c3-2 6-2 9 0s6 2 9 0 6-2 9 0" fill="none" stroke="#F3D9A6" stroke-width="2" stroke-linecap="round"></path>
+      </svg>
+      <span class="brand-word">Coastal <em>Café</em></span>
+    </a>
+
+    <button class="nav-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="site-nav">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <ul class="nav-list">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#story">Our Story</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#location">Location &amp; Hours</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <a class="btn btn-primary nav-cta" href="tel:+61755000101" aria-label="Call Coastal Café on (07) 5500 0101">
+        Call (07) 5500 0101
+      </a>
+    </nav>
+  </div>
+  <div class="nav-scrim"></div>
+<main id="main">
+
+  <!-- ============================= HERO ============================= -->
+  <section id="home" class="hero">
+    <div class="hero-media">
+      <img
+        src="images/hero-exterior.webp"
+        alt="Coastal Café's beachfront deck under palm trees with diners enjoying coffee and breakfast, ocean and Gold Coast skyline in the background"
+        fetchpriority="high"
+        width="2000" height="1116">
+    </div>
+    <div class="wrap hero-inner">
+      <p class="hero-eyebrow">Burleigh Heads · Gold Coast</p>
+      <h1>Good Coffee. Fresh Food. <em>Coastal Mornings.</em></h1>
+      <p class="hero-sub">Locally roasted coffee, fresh seasonal food and relaxed mornings by the coast.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#menu">View Our Menu</a>
+        <a class="btn btn-ghost" href="#location">Find Us</a>
+      </div>
+    </div>
+    <a class="hero-scroll" href="#menu" aria-label="Scroll to menu">
+      Scroll
+      <svg width="16" height="24" viewBox="0 0 16 24" fill="none" aria-hidden="true"><rect x="1" y="1" width="14" height="22" rx="7" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="7" r="1.6" fill="currentColor"/></svg>
+    </a>
+  </section>
+
+  <div class="strip" aria-hidden="true">
+    <div class="strip-track">
+      <span>Locally Roasted Coffee</span>
+      <span>Fresh Seasonal Food</span>
+      <span>Open Every Morning</span>
+      <span>Steps From The Sand</span>
+      <span>Locally Roasted Coffee</span>
+      <span>Fresh Seasonal Food</span>
+      <span>Open Every Morning</span>
+      <span>Steps From The Sand</span>
+    </div>
+  </div>
+
+  <!-- ============================= MENU ============================= -->
+  <section id="menu" class="menu-section section-pad">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">The Menu</p>
+        <h2>Made for slow, sunlit mornings</h2>
+        <p class="lede">Seasonal, coastal-inspired plates and coffee roasted just up the road — built for lingering over.</p>
+      </div>
+
+      <div class="menu-layout">
+        <nav class="menu-jump reveal" aria-label="Menu categories">
+          <a href="#cat-coffee">Coffee &amp; Drinks</a>
+          <a href="#cat-breakfast">Breakfast</a>
+          <a href="#cat-brunch">All-Day Brunch</a>
+          <a href="#cat-sweets">Sweets &amp; Bakes</a>
+        </nav>
+
+        <div>
+          <ul class="menu-photos reveal">
+            <li>
+              <figure>
+                <img src="images/menu-latte.webp" alt="Flat white with fern-pattern latte art on a café table overlooking the beach" loading="lazy" width="2000" height="1493">
+              </figure>
+            </li>
+            <li>
+              <figure>
+                <img src="images/menu-avo-toast.webp" alt="Smashed avocado toast with poached eggs, feta and edible flowers, beach and skyline in the background" loading="lazy" width="2000" height="1493">
+              </figure>
+            </li>
+          </ul>
+
+          <div class="menu-groups">
+            <div class="menu-group" id="cat-coffee">
+              <div class="menu-group-head">
+                <h3>Coffee &amp; Drinks</h3>
+                <span>House-roasted, Gold Coast</span>
+              </div>
+              <div class="menu-items">
+                <div class="menu-item"><span class="menu-item-name">Espresso</span><span class="menu-item-leader"></span><span class="menu-item-price">$4.50</span></div>
+                <div class="menu-item"><span class="menu-item-name">Flat White</span><span class="menu-item-leader"></span><span class="menu-item-price">$5.00</span></div>
+                <div class="menu-item"><span class="menu-item-name">Latte</span><span class="menu-item-leader"></span><span class="menu-item-price">$5.00</span></div>
+                <div class="menu-item"><span class="menu-item-name">Cappuccino</span><span class="menu-item-leader"></span><span class="menu-item-price">$5.00</span></div>
+                <div class="menu-item"><span class="menu-item-name">Mocha</span><span class="menu-item-leader"></span><span class="menu-item-price">$5.50</span></div>
+                <div class="menu-item"><span class="menu-item-name">Chai Latte</span><span class="menu-item-leader"></span><span class="menu-item-price">$5.50</span></div>
+                <div class="menu-item"><span class="menu-item-name">Iced Long Black</span><span class="menu-item-leader"></span><span class="menu-item-price">$6.00</span></div>
+                <div class="menu-item"><span class="menu-item-name">Iced Matcha</span><span class="menu-item-leader"></span><span class="menu-item-price">$6.50</span></div>
+                <div class="menu-item"><span class="menu-item-name">Fresh Orange Juice</span><span class="menu-item-leader"></span><span class="menu-item-price">$7.50</span></div>
+              </div>
+            </div>
+
+            <div class="menu-group" id="cat-breakfast">
+              <div class="menu-group-head">
+                <h3>Breakfast</h3>
+                <span>Served until 11:30am</span>
+              </div>
+              <div class="menu-items">
+                <div class="menu-item"><span class="menu-item-name">Smashed Avocado</span><span class="menu-item-leader"></span><span class="menu-item-price">$19</span></div>
+                <div class="menu-item-desc">Sourdough, whipped feta, chilli oil, radish</div>
+                <div class="menu-item"><span class="menu-item-name">The Big Coastal</span><span class="menu-item-leader"></span><span class="menu-item-price">$24</span></div>
+                <div class="menu-item-desc">Eggs, bacon, grilled tomato, greens, sourdough</div>
+                <div class="menu-item"><span class="menu-item-name">Açaí Bowl</span><span class="menu-item-leader"></span><span class="menu-item-price">$18</span></div>
+                <div class="menu-item-desc">Granola, banana, seasonal fruit, coconut</div>
+                <div class="menu-item"><span class="menu-item-name">Buttermilk Pancakes</span><span class="menu-item-leader"></span><span class="menu-item-price">$20</span></div>
+                <div class="menu-item-desc">Whipped mascarpone, maple, berries</div>
+                <div class="menu-item"><span class="menu-item-name">House Granola</span><span class="menu-item-leader"></span><span class="menu-item-price">$15</span></div>
+                <div class="menu-item-desc">Coconut yoghurt, stewed fruit, honey</div>
+                <div class="menu-item"><span class="menu-item-name">Soft Scrambled Eggs</span><span class="menu-item-leader"></span><span class="menu-item-price">$17</span></div>
+                <div class="menu-item-desc">Sourdough, herb butter, chives</div>
+              </div>
+            </div>
+
+            <div class="menu-group" id="cat-brunch">
+              <div class="menu-group-head">
+                <h3>All-Day Brunch</h3>
+                <span>From 11:30am</span>
+              </div>
+              <div class="menu-items">
+                <div class="menu-item"><span class="menu-item-name">Baja Fish Tacos</span><span class="menu-item-leader"></span><span class="menu-item-price">$22</span></div>
+                <div class="menu-item"><span class="menu-item-name">Superfood Salad</span><span class="menu-item-leader"></span><span class="menu-item-price">$21</span></div>
+                <div class="menu-item"><span class="menu-item-name">Grilled Haloumi Stack</span><span class="menu-item-leader"></span><span class="menu-item-price">$19</span></div>
+                <div class="menu-item"><span class="menu-item-name">Reef &amp; Beef Burger</span><span class="menu-item-leader"></span><span class="menu-item-price">$23</span></div>
+                <div class="menu-item"><span class="menu-item-name">Poke Bowl</span><span class="menu-item-leader"></span><span class="menu-item-price">$24</span></div>
+                <div class="menu-item"><span class="menu-item-name">Soup of the Day</span><span class="menu-item-leader"></span><span class="menu-item-price">$16</span></div>
+              </div>
+            </div>
+
+            <div class="menu-group" id="cat-sweets">
+              <div class="menu-group-head">
+                <h3>Sweets &amp; Bakes</h3>
+                <span>Baked daily in-house</span>
+              </div>
+              <div class="menu-items">
+                <div class="menu-item"><span class="menu-item-name">Banana Bread</span><span class="menu-item-leader"></span><span class="menu-item-price">$9</span></div>
+                <div class="menu-item"><span class="menu-item-name">Cinnamon Scroll</span><span class="menu-item-leader"></span><span class="menu-item-price">$7.50</span></div>
+                <div class="menu-item"><span class="menu-item-name">Seasonal Muffin</span><span class="menu-item-leader"></span><span class="menu-item-price">$6.50</span></div>
+                <div class="menu-item"><span class="menu-item-name">Coconut Slice</span><span class="menu-item-leader"></span><span class="menu-item-price">$8</span></div>
+              </div>
+            </div>
+          </div>
+
+          <p class="menu-note">Prices in AUD. Menu is seasonal and may change. Gluten-free and dairy-free options available on request — see our FAQs under Location &amp; Hours.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= OUR STORY ============================= -->
+  <section id="story" class="story-section section-pad">
+    <div class="wrap">
+      <div class="story-grid">
+        <div class="story-collage reveal">
+          <img class="story-img-a" src="images/story-nook.jpg" alt="Cosy beachside reading nook with cushions, a blanket and a flat white, ocean visible through the window" loading="lazy" width="1024" height="1024">
+          <img class="story-img-b" src="images/story-beans.webp" alt="Close-up of freshly roasted coffee beans" loading="lazy" width="1000" height="1000">
+          <span class="story-badge">Since 2016</span>
+        </div>
+
+        <div class="story-copy">
+          <p class="eyebrow">Our Story</p>
+          <h2>Family-run, coast-raised, coffee-obsessed</h2>
+          <p>Coastal Café started as a single espresso machine on a Burleigh Heads verandah, pouring flat whites for surfers on their way in from the water. A decade on, we're still doing mornings the same unhurried way — good coffee, honest food, and a room that smells like fresh bread and sea salt.</p>
+          <p class="story-quote">"We roast small batches a few streets from here, and change the menu with what's in season. It's café food the way we'd want to eat it ourselves."</p>
+          <p>Everything on the menu is made in-house each morning, from the granola to the sourdough. We work with growers and roasters across South East Queensland wherever we can, because it tastes better and it keeps things close to home.</p>
+          <div class="story-stats">
+            <div class="story-stat"><strong>2016</strong><span>Family owned since</span></div>
+            <div class="story-stat"><strong>100%</strong><span>Gold Coast roasted</span></div>
+            <div class="story-stat"><strong>7</strong><span>Mornings a week</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= GALLERY ============================= -->
+  <section id="gallery" class="gallery-section section-pad">
+    <div class="wrap">
+      <div class="gallery-head reveal">
+        <div class="section-head" style="margin-bottom:0;">
+          <p class="eyebrow">Gallery</p>
+          <h2>Follow our mornings</h2>
+          <p class="lede">A few frames from the pass, the counter and the tables out front.</p>
+        </div>
+        <a class="gallery-handle" href="https://www.instagram.com/coastalcafe.example" target="_blank" rel="noopener" aria-label="Coastal Café on Instagram, opens in a new tab">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor"/></svg>
+          @coastalcafe.example
+        </a>
+      </div>
+
+      <ul class="gallery-grid reveal">
+        <li>
+          <button class="gallery-item" type="button" data-caption="Iced matcha and iced long black, beachside">
+            <img src="images/gallery-drinks.webp" alt="Iced matcha and iced long black on a marble table with the beach and Burleigh Headland in the background" loading="lazy" width="2000" height="1493">
+            <span class="cap">Iced &amp; ready for summer</span>
+          </button>
+        </li>
+        <li>
+          <button class="gallery-item" type="button" data-caption="Açaí bowl with fresh fruit, beachside">
+            <img src="images/gallery-acai.jpg" alt="Açaí bowl topped with strawberries, kiwi, blueberries and granola on a table overlooking the beach" loading="lazy" width="2000" height="2000">
+            <span class="cap">Weekend spread</span>
+          </button>
+        </li>
+        <li>
+          <button class="gallery-item" type="button" data-caption="Pouring latte art with an ocean view">
+            <img src="images/gallery-latte-pour.jpg" alt="Barista pouring latte art into a cup with the ocean visible through the window behind" loading="lazy" width="2000" height="2000">
+            <span class="cap">First pour</span>
+          </button>
+        </li>
+        <li>
+          <button class="gallery-item" type="button" data-caption="Two minutes from the sand">
+            <img src="images/gallery-deck.png" alt="Café deck with beachside seating under umbrellas, palm trees and the ocean at Burleigh Heads" loading="lazy" width="853" height="1024">
+            <span class="cap">Two minutes from the sand</span>
+          </button>
+        </li>
+        <li>
+          <button class="gallery-item" type="button" data-caption="Fresh from the oven, every morning">
+            <img src="images/gallery-pastries.jpg" alt="Fresh croissants, pain au chocolat and berry danishes on a plate with the Gold Coast skyline behind" loading="lazy" width="2000" height="2000">
+            <span class="cap">Fresh from the oven</span>
+          </button>
+        </li>
+        <li>
+          <button class="gallery-item" type="button" data-caption="Shared plates for slow mornings">
+            <img src="images/gallery-sharing-board.jpg" alt="Wooden sharing board with sourdough, salmon, poached eggs, burrata, avocado and dips, beach in the background" loading="lazy" width="2000" height="1493">
+            <span class="cap">Shared plates</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================= LOCATION / HOURS ============================= -->
+  <section id="location" class="location-section section-pad">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Location &amp; Hours</p>
+        <h2>Come sit with us</h2>
+        <p class="lede">Right on Marine Parade, two minutes from the sand — easy to find, easy to stay a while.</p>
+      </div>
+
+      <div class="location-grid">
+        <div class="reveal">
+          <div class="location-detail">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-7.58 7-12.5A7 7 0 0 0 5 9.5C5 14.42 12 22 12 22Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="9.5" r="2.5" stroke="currentColor" stroke-width="1.6"/></svg>
+            <div>
+              <h3>Address</h3>
+              <p>14 Marine Parade, Burleigh Heads, QLD 4220, Australia</p>
+            </div>
+          </div>
+          <div class="location-detail">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5c0-1 1-2 2-2h2l2 5-2 1.5c1 2.5 3 4.5 5.5 5.5L15 13l5 2v2c0 1-1 2-2 2C10.5 19 4 12.5 4 5Z" stroke="currentColor" stroke-width="1.6"/></svg>
+            <div>
+              <h3>Phone</h3>
+              <a href="tel:+61755000101">(07) 5500 0101</a>
+            </div>
+          </div>
+          <div class="location-detail">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="1.6"/></svg>
+            <div>
+              <h3>Email</h3>
+              <a href="mailto:hello@coastalcafe.example">hello@coastalcafe.example</a>
+            </div>
+          </div>
+
+          <table class="hours-table">
+            <caption>Opening Hours</caption>
+            <tbody>
+              <tr><th scope="row">Monday – Friday</th><td>6:30am – 2:30pm</td></tr>
+              <tr><th scope="row">Saturday – Sunday</th><td>6:00am – 3:00pm</td></tr>
+              <tr><th scope="row">Public Holidays</th><td>7:00am – 2:00pm</td></tr>
+            </tbody>
+          </table>
+
+          <div class="faq-list">
+            <details class="faq-item">
+              <summary>Do you take bookings?</summary>
+              <p>Walk-ins are always welcome. For groups of six or more, email <a href="mailto:hello@coastalcafe.example">hello@coastalcafe.example</a> or call ahead and we'll set a table aside for you.</p>
+            </details>
+            <details class="faq-item">
+              <summary>Do you cater for dietary requirements?</summary>
+              <p>Yes — gluten-free, dairy-free and plant-based options are available across our breakfast and brunch menu. Just ask our team.</p>
+            </details>
+            <details class="faq-item">
+              <summary>Is there parking near the café?</summary>
+              <p>Free street parking is available along Marine Parade, with a public car park two minutes' walk away on Goodwin Terrace.</p>
+            </details>
+          </div>
+        </div>
+
+        <div class="reveal">
+          <a class="map-frame map-frame-static" href="https://www.google.com/maps/search/?api=1&query=14+Marine+Parade,+Burleigh+Heads+QLD+4220,+Australia" target="_blank" rel="noopener" aria-label="Open Coastal Café's location on Marine Parade, Burleigh Heads in Google Maps">
+            <svg viewBox="0 0 400 300" role="img" aria-hidden="true">
+              <rect width="400" height="300" fill="#DCEAE7"></rect>
+              <path d="M0 210 Q100 170 200 205 T400 195 V300 H0 Z" fill="#C9DDD8"></path>
+              <path d="M0 0 H400 V150 Q300 120 200 148 T0 130 Z" fill="#EFE1CB"></path>
+              <path d="M40 40 H160 V130 H40 Z" fill="#F4E9D8" stroke="#E2D2B4" stroke-width="2"></path>
+              <path d="M240 30 H340 V110 H240 Z" fill="#F4E9D8" stroke="#E2D2B4" stroke-width="2"></path>
+              <path d="M0 150 Q100 178 200 152 T400 160" fill="none" stroke="#FBF4E9" stroke-width="10" stroke-linecap="round"></path>
+              <circle cx="200" cy="150" r="14" fill="#9C441F"></circle>
+              <path d="M200 150 a14 14 0 1 1 0.01 0" fill="#9C441F"></path>
+              <path d="M200 122c-16 0-28 12-28 27 0 20 28 45 28 45s28-25 28-45c0-15-12-27-28-27z" fill="#9C441F"></path>
+              <circle cx="200" cy="149" r="10" fill="#FBF4E9"></circle>
+            </svg>
+            <span class="map-frame-cta">
+              Open in Google Maps
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 17 17 7M17 7H9M17 7v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </a>
+          <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=14+Marine+Parade,+Burleigh+Heads+QLD+4220,+Australia" target="_blank" rel="noopener">
+            View on Google Maps
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 17 17 7M17 7H9M17 7v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= CONTACT ============================= -->
+  <section id="contact" class="contact-section section-pad">
+    <div class="wrap">
+      <div class="contact-grid">
+        <div class="contact-intro reveal">
+          <p class="eyebrow">Contact</p>
+          <h2>Say hello</h2>
+          <p>Questions about the menu, group bookings, or catering for your next event? Send us a message and we'll get back to you within one business day — or call us direct.</p>
+          <a class="btn btn-outline" href="tel:+61755000101" aria-label="Call Coastal Café on (07) 5500 0101">Call (07) 5500 0101</a>
+          <ul class="social-list" aria-label="Coastal Café on social media">
+            <li>
+              <a href="https://www.instagram.com/coastalcafe.example" target="_blank" rel="noopener" aria-label="Coastal Café on Instagram, opens in a new tab">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor"/></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.facebook.com/coastalcafe.example" target="_blank" rel="noopener" aria-label="Coastal Café on Facebook, opens in a new tab">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 9h3V6h-3c-2 0-3.5 1.5-3.5 3.5V11H8v3h2.5v6H14v-6h2.6L17 11h-3V9.8c0-.5.3-.8.8-.8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <form class="contact-form reveal" id="enquiry-form" novalidate aria-describedby="form-status">
+          <h3 class="visually-hidden">Enquiry form</h3>
+          <div class="form-row-split">
+            <div class="form-row">
+              <label for="cf-name">Full name <span class="req">*</span></label>
+              <input type="text" id="cf-name" name="name" autocomplete="name" required aria-describedby="cf-name-error">
+              <span class="field-error" id="cf-name-error" role="alert"></span>
+            </div>
+            <div class="form-row">
+              <label for="cf-email">Email <span class="req">*</span></label>
+              <input type="email" id="cf-email" name="email" autocomplete="email" required aria-describedby="cf-email-error">
+              <span class="field-error" id="cf-email-error" role="alert"></span>
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="cf-phone">Phone (optional)</label>
+            <input type="tel" id="cf-phone" name="phone" autocomplete="tel" aria-describedby="cf-phone-error">
+            <span class="field-error" id="cf-phone-error" role="alert"></span>
+          </div>
+          <div class="form-row">
+            <label for="cf-message">Message <span class="req">*</span></label>
+            <textarea id="cf-message" name="message" required aria-describedby="cf-message-error" placeholder="Tell us about your enquiry — group bookings, catering, feedback…"></textarea>
+            <span class="field-error" id="cf-message-error" role="alert"></span>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit">Send Enquiry</button>
+          <div class="form-status" id="form-status" role="alert" aria-live="polite"></div>
+          <p class="form-note">This is a demo form for a fictional business — no messages are sent or stored.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="#home" aria-label="Coastal Café — home">
+          <svg class="brand-mark" viewBox="0 0 48 48" role="img" aria-hidden="true">
+            <circle cx="24" cy="24" r="23" fill="#C1592F"></circle>
+            <path d="M14 21h16.5a3.5 3.5 0 0 1 0 7H30" fill="none" stroke="#FBF4E9" stroke-width="2.4" stroke-linecap="round"></path>
+            <path d="M14 21v7a6 6 0 0 0 6 6h3a6 6 0 0 0 6-6v-1" fill="none" stroke="#FBF4E9" stroke-width="2.4" stroke-linecap="round"></path>
+            <path d="M9 36c3-2 6-2 9 0s6 2 9 0 6-2 9 0" fill="none" stroke="#F3D9A6" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+          <span class="brand-word">Coastal <em>Café</em></span>
+        </a>
+        <p>Locally roasted coffee, fresh seasonal food and relaxed mornings by the coast — Burleigh Heads, Gold Coast.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#menu">Menu</a></li>
+          <li><a href="#story">Our Story</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Visit</h4>
+        <ul>
+          <li><a href="#location">Location &amp; Hours</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="tel:+61755000101">(07) 5500 0101</a></li>
+          <li><a href="mailto:hello@coastalcafe.example">hello@coastalcafe.example</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#" onclick="return false;" aria-disabled="true" title="Preview only">Privacy Policy</a></li>
+          <li><a href="#" onclick="return false;" aria-disabled="true" title="Preview only">Terms of Use</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; <span id="current-year">2026</span> Coastal Café. All rights reserved.</p>
+      <p>14 Marine Parade, Burleigh Heads QLD 4220</p>
+    </div>
+    <p class="footer-demo-note">Demo website by Web &amp; Cloud Solutions — for portfolio illustration only, not a real business.</p>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" type="button" aria-label="Close image">&times;</button>
+    <img src="" alt="">
+    <p class="lightbox-cap"></p>
+  </div>
+</div>
+
+<script>
+/* ==========================================================================
+   Coastal Café — site scripts
+   Vanilla JS. No dependencies, no build step.
+   ========================================================================== */
+(function () {
+  "use strict";
+
+  var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ------------------------------------------------------------------
+     Sticky header shadow
+     ------------------------------------------------------------------ */
+  var header = document.querySelector(".site-header");
+  if (header) {
+    var onScroll = function () {
+      header.classList.toggle("is-scrolled", window.scrollY > 8);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  }
+
+  /* ------------------------------------------------------------------
+     Mobile nav toggle
+     ------------------------------------------------------------------ */
+  var navToggle = document.querySelector(".nav-toggle");
+  var siteNav = document.getElementById("site-nav");
+  var navScrim = document.querySelector(".nav-scrim");
+
+  function closeNav() {
+    if (!navToggle || !siteNav) return;
+    navToggle.setAttribute("aria-expanded", "false");
+    siteNav.classList.remove("is-open");
+    if (navScrim) navScrim.classList.remove("is-open");
+    document.body.classList.remove("no-scroll");
+  }
+
+  function openNav() {
+    if (!navToggle || !siteNav) return;
+    navToggle.setAttribute("aria-expanded", "true");
+    siteNav.classList.add("is-open");
+    if (navScrim) navScrim.classList.add("is-open");
+    document.body.classList.add("no-scroll");
+  }
+
+  if (navToggle && siteNav) {
+    navToggle.addEventListener("click", function () {
+      var isOpen = navToggle.getAttribute("aria-expanded") === "true";
+      if (isOpen) {
+        closeNav();
+      } else {
+        openNav();
+      }
+    });
+
+    siteNav.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", closeNav);
+    });
+
+    if (navScrim) navScrim.addEventListener("click", closeNav);
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") closeNav();
+    });
+
+    var navMediaQuery = window.matchMedia("(min-width: 68rem)");
+    var handleNavBreakpoint = function () {
+      if (navMediaQuery.matches) closeNav();
+    };
+    if (navMediaQuery.addEventListener) {
+      navMediaQuery.addEventListener("change", handleNavBreakpoint);
+    }
+  }
+
+  /* ------------------------------------------------------------------
+     Scroll-reveal animations
+     ------------------------------------------------------------------ */
+  var revealEls = document.querySelectorAll(".reveal");
+  if (revealEls.length) {
+    if (prefersReducedMotion || !("IntersectionObserver" in window)) {
+      revealEls.forEach(function (el) {
+        el.classList.add("is-visible");
+      });
+    } else {
+      var revealObserver = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15, rootMargin: "0px 0px -8% 0px" }
+      );
+      revealEls.forEach(function (el) {
+        revealObserver.observe(el);
+      });
+    }
+  }
+
+  /* ------------------------------------------------------------------
+     Gallery lightbox
+     ------------------------------------------------------------------ */
+  var galleryButtons = document.querySelectorAll(".gallery-item");
+  var lightbox = document.getElementById("lightbox");
+
+  if (galleryButtons.length && lightbox) {
+    var lightboxImg = lightbox.querySelector("img");
+    var lightboxCap = lightbox.querySelector(".lightbox-cap");
+    var lightboxClose = lightbox.querySelector(".lightbox-close");
+    var lastFocused = null;
+
+    function openLightbox(button) {
+      var img = button.querySelector("img");
+      if (!img || !lightboxImg) return;
+      lastFocused = button;
+      lightboxImg.src = img.currentSrc || img.src;
+      lightboxImg.alt = img.alt || "";
+      if (lightboxCap) {
+        lightboxCap.textContent = button.getAttribute("data-caption") || "";
+      }
+      lightbox.classList.add("is-open");
+      document.body.classList.add("no-scroll");
+      if (lightboxClose) lightboxClose.focus();
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove("is-open");
+      document.body.classList.remove("no-scroll");
+      if (lightboxImg) lightboxImg.src = "";
+      if (lastFocused) lastFocused.focus();
+    }
+
+    galleryButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        openLightbox(button);
+      });
+    });
+
+    if (lightboxClose) lightboxClose.addEventListener("click", closeLightbox);
+
+    lightbox.addEventListener("click", function (event) {
+      if (event.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && lightbox.classList.contains("is-open")) {
+        closeLightbox();
+      }
+    });
+  }
+
+  /* ------------------------------------------------------------------
+     Contact form validation
+     ------------------------------------------------------------------ */
+  var form = document.getElementById("enquiry-form");
+  if (form) {
+    var status = document.getElementById("form-status");
+    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    var fields = {
+      name: {
+        el: document.getElementById("cf-name"),
+        error: document.getElementById("cf-name-error"),
+        validate: function (value) {
+          return value.trim().length > 1 ? "" : "Please enter your full name.";
+        }
+      },
+      email: {
+        el: document.getElementById("cf-email"),
+        error: document.getElementById("cf-email-error"),
+        validate: function (value) {
+          if (!value.trim()) return "Please enter your email address.";
+          return emailPattern.test(value.trim()) ? "" : "Please enter a valid email address.";
+        }
+      },
+      phone: {
+        el: document.getElementById("cf-phone"),
+        error: document.getElementById("cf-phone-error"),
+        validate: function (value) {
+          if (!value.trim()) return "";
+          return /^[0-9+()\s-]{6,20}$/.test(value.trim()) ? "" : "Please enter a valid phone number.";
+        }
+      },
+      message: {
+        el: document.getElementById("cf-message"),
+        error: document.getElementById("cf-message-error"),
+        validate: function (value) {
+          return value.trim().length > 9 ? "" : "Tell us a little more (at least 10 characters).";
+        }
+      }
+    };
+
+    function showFieldError(field, message) {
+      if (!field.el || !field.error) return;
+      field.error.textContent = message;
+      if (message) {
+        field.el.setAttribute("aria-invalid", "true");
+      } else {
+        field.el.removeAttribute("aria-invalid");
+      }
+    }
+
+    function validateField(key) {
+      var field = fields[key];
+      if (!field.el) return true;
+      var message = field.validate(field.el.value);
+      showFieldError(field, message);
+      return message === "";
+    }
+
+    Object.keys(fields).forEach(function (key) {
+      var field = fields[key];
+      if (!field.el) return;
+      field.el.addEventListener("blur", function () {
+        validateField(key);
+      });
+      field.el.addEventListener("input", function () {
+        if (field.el.getAttribute("aria-invalid") === "true") {
+          validateField(key);
+        }
+      });
+    });
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      var isValid = true;
+      Object.keys(fields).forEach(function (key) {
+        var fieldValid = validateField(key);
+        if (!fieldValid) isValid = false;
+      });
+
+      if (!status) return;
+
+      if (!isValid) {
+        status.textContent = "Please fix the highlighted fields and try again.";
+        status.className = "form-status is-error";
+        var firstInvalid = form.querySelector('[aria-invalid="true"]');
+        if (firstInvalid) firstInvalid.focus();
+        return;
+      }
+
+      // Demo site only — no backend. Simulate a successful enquiry.
+      status.textContent = "Thanks! Your enquiry has been received — we'll reply within one business day.";
+      status.className = "form-status is-success";
+      form.reset();
+      Object.keys(fields).forEach(function (key) {
+        showFieldError(fields[key], "");
+      });
+    });
+  }
+
+  /* ------------------------------------------------------------------
+     Broken-image safety net (defensive — keeps layout tidy if a
+     hotlinked photo ever fails to load)
+     ------------------------------------------------------------------ */
+  var fallbackSrc =
+    "data:image/svg+xml;charset=UTF-8," +
+    encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">' +
+      '<rect width="800" height="600" fill="#EFE1CB"/>' +
+      '<circle cx="400" cy="260" r="70" fill="none" stroke="#C1592F" stroke-width="10"/>' +
+      '<path d="M470 240h40a30 30 0 0 1 0 60h-40" fill="none" stroke="#C1592F" stroke-width="10"/>' +
+      '<path d="M340 190c0-20 20-20 20-40M400 190c0-20 20-20 20-40M460 190c0-20 20-20 20-40" fill="none" stroke="#C1592F" stroke-width="8" stroke-linecap="round"/>' +
+      '<text x="400" y="400" font-family="Georgia, serif" font-size="22" fill="#5B4F41" text-anchor="middle">Coastal Café</text>' +
+      "</svg>"
+    );
+
+  document.querySelectorAll("img").forEach(function (img) {
+    img.addEventListener(
+      "error",
+      function () {
+        if (img.src !== fallbackSrc) {
+          img.src = fallbackSrc;
+          img.classList.add("img-fallback");
+        }
+      },
+      { once: true }
+    );
+  });
+
+  /* ------------------------------------------------------------------
+     Footer year
+     ------------------------------------------------------------------ */
+  var yearEl = document.getElementById("current-year");
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+})();
+
+/* Graceful fallback for hotlinked photos that fail to load (network issues, dead links) */
+(function () {
+  var PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 400 300%27%3E%3Crect width=%27400%27 height=%27300%27 fill=%27%23d8d2c5%27/%3E%3Cpath d=%27M120 190l50-60 40 45 30-35 60 70H120z%27 fill=%27%23b3ab9a%27/%3E%3Ccircle cx=%27150%27 cy=%27110%27 r=%2720%27 fill=%27%23b3ab9a%27/%3E%3C/svg%3E";
+  function applyFallback(img) {
+    if (img.dataset.fallbackApplied) return;
+    img.dataset.fallbackApplied = "true";
+    img.src = PLACEHOLDER;
+    img.style.objectFit = "cover";
+  }
+  document.querySelectorAll("img").forEach(function (img) {
+    // Image already finished loading (successfully or not) by the time this runs
+    if (img.complete) {
+      if (img.naturalWidth === 0) applyFallback(img);
+      return;
+    }
+    img.addEventListener("error", function () { applyFallback(img); }, { once: true });
+  });
+})();
+
+</script>
+
+
+</body>
+</html>
