@@ -1,0 +1,2141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local Plumber Gold Coast | North &amp; Co Plumbing</title>
+<meta name="description" content="Reliable plumbing, blocked drain, hot water and repair services across the Gold Coast.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://webcloudsolutions.com.au/demos/north-co-plumbing/">
+<style>
+/* ==========================================================================
+   North & Co Plumbing — demo website styles
+   Hand-written CSS, mobile-first, no framework.
+   ========================================================================== */
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html, body, h1, h2, h3, h4, p, figure, blockquote, dl, dd, ul, ol { margin: 0; }
+ul[class], ol[class] { padding: 0; list-style: none; }
+img, picture { max-width: 100%; display: block; }
+input, button, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: inherit; }
+html:focus-within { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+/* ---------- Brand tokens ---------- */
+:root {
+  --navy-950: #071322;
+  --navy-900: #0B1E33;
+  --navy-800: #122A45;
+  --navy-700: #1B3B5C;
+  --navy-600: #274F79;
+  --blue-500: #2E75C6;
+
+  --orange-800: #7A2807;
+  --orange-700: #9C3609;
+  --orange-600: #BE4310;
+  --orange-500: #E0600F;
+
+  --yellow-400: #FDC332;
+
+  --white: #FFFFFF;
+  --gray-50:  #F5F7FA;
+  --gray-100: #EAEEF3;
+  --gray-200: #DCE2EA;
+  --gray-300: #C2CAD6;
+  --gray-600: #4D5A6C;
+  --gray-500: #8B96A8;
+  --gray-700: #364252;
+  --gray-800: #1E2733;
+  --gray-900: #12181F;
+
+  --success-bg: #E6F5EC;
+  --success-text: #14622F;
+  --error-bg: #FCEAE8;
+  --error-text: #9C1C0F;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --shadow-sm: 0 1px 3px rgba(7, 19, 34, 0.14);
+  --shadow-md: 0 8px 24px rgba(7, 19, 34, 0.16);
+  --shadow-lg: 0 16px 40px rgba(7, 19, 34, 0.22);
+
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-head: "Segoe UI", Arial, "Helvetica Neue", sans-serif;
+
+  --container-w: 1200px;
+  --mobile-bar-h: 60px;
+}
+
+/* ---------- Base ---------- */
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font-body);
+  color: var(--gray-800);
+  background: var(--white);
+  line-height: 1.55;
+  font-size: 16px;
+  padding-bottom: var(--mobile-bar-h);
+}
+@media (min-width: 900px) {
+  body { padding-bottom: 0; }
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-head);
+  color: var(--navy-900);
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+p { color: var(--gray-700); }
+
+.container {
+  width: 100%;
+  max-width: var(--container-w);
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+@media (min-width: 768px) {
+  .container { padding-inline: 2rem; }
+}
+
+section { padding-block: 3.25rem; }
+@media (min-width: 768px) { section { padding-block: 5rem; } }
+
+img { object-fit: cover; }
+
+/* ---------- Accessibility helpers ---------- */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -60px;
+  background: var(--orange-700);
+  color: var(--white);
+  padding: 0.7rem 1.1rem;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  z-index: 1000;
+  transition: top 0.15s ease;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+:focus-visible {
+  outline: 3px solid var(--yellow-400);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: var(--radius-sm);
+  font-weight: 800;
+  font-size: 1rem;
+  text-decoration: none;
+  border: 2px solid transparent;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease, color 0.12s ease;
+  line-height: 1.2;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+
+.btn-primary {
+  background: var(--orange-600);
+  color: var(--white);
+  box-shadow: var(--shadow-sm);
+}
+.btn-primary:hover { background: var(--orange-700); box-shadow: var(--shadow-md); }
+
+.btn-secondary {
+  background: var(--white);
+  color: var(--navy-900);
+  border-color: var(--navy-900);
+}
+.btn-secondary:hover { background: var(--navy-900); color: var(--white); }
+
+.btn-outline-light {
+  background: transparent;
+  color: var(--white);
+  border-color: var(--white);
+}
+.btn-outline-light:hover { background: var(--white); color: var(--navy-900); }
+
+.btn-block { width: 100%; }
+.btn-lg { padding: 1rem 1.75rem; font-size: 1.05rem; }
+
+/* ---------- Header / Nav ---------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  background: var(--navy-900);
+  color: var(--white);
+  box-shadow: var(--shadow-sm);
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 0.85rem;
+  gap: 1rem;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--white);
+  font-family: var(--font-head);
+  font-weight: 900;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+.brand-sub {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--yellow-400);
+}
+
+.nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-radius: var(--radius-sm);
+  width: 44px;
+  height: 44px;
+  color: var(--white);
+}
+.nav-toggle:hover { border-color: var(--white); }
+.nav-toggle svg { width: 22px; height: 22px; }
+
+.primary-nav {
+  position: fixed;
+  inset: 0 0 0 auto;
+  top: 0;
+  height: 100%;
+  width: min(320px, 85vw);
+  background: var(--navy-950);
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+  overflow-y: auto;
+  padding: 1.25rem 1.5rem 2rem;
+  z-index: 600;
+}
+.primary-nav.is-open { transform: translateX(0); }
+
+.nav-close {
+  background: transparent;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-radius: var(--radius-sm);
+  width: 40px;
+  height: 40px;
+  color: var(--white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+.nav-close svg { width: 18px; height: 18px; }
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.nav-list a {
+  display: block;
+  padding: 0.75rem 0.25rem;
+  color: var(--white);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.05rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.nav-list a:hover { color: var(--yellow-400); }
+
+.nav-cta {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.nav-scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 19, 34, 0.55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: 550;
+}
+.nav-scrim.is-visible { opacity: 1; pointer-events: auto; }
+
+.header-call {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .nav-toggle, .nav-close, .nav-scrim { display: none; }
+  .primary-nav {
+    position: static;
+    height: auto;
+    width: auto;
+    background: transparent;
+    transform: none;
+    overflow: visible;
+    padding: 0;
+  }
+  .nav-list {
+    flex-direction: row;
+    align-items: center;
+    gap: 1.6rem;
+  }
+  .nav-list a {
+    padding: 0.4rem 0.1rem;
+    border-bottom: none;
+    font-size: 0.95rem;
+  }
+  .nav-cta { margin-top: 0; flex-direction: row; }
+  .header-call {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 800;
+    border: 2px solid rgba(255,255,255,0.4);
+    padding: 0.5rem 0.9rem;
+    border-radius: var(--radius-sm);
+  }
+  .header-call:hover { border-color: var(--yellow-400); color: var(--yellow-400); }
+  .header-call svg { width: 18px; height: 18px; }
+}
+
+/* ---------- Trust bar ---------- */
+.trust-bar {
+  background: var(--navy-800);
+  color: var(--gray-200);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.trust-bar .container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  padding-block: 0.55rem;
+  justify-content: center;
+}
+.trust-bar li { display: flex; align-items: center; gap: 0.4rem; }
+.trust-bar svg { width: 15px; height: 15px; color: var(--yellow-400); flex-shrink: 0; }
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative;
+  color: var(--white);
+  overflow: hidden;
+  padding-block: 3.5rem;
+}
+.hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hero-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(7,19,34,0.88) 0%, rgba(7,19,34,0.82) 45%, rgba(11,30,51,0.94) 100%);
+}
+.hero .container {
+  position: relative;
+  z-index: 1;
+}
+.hero-content { max-width: 640px; }
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: var(--yellow-400);
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  margin-bottom: 1.25rem;
+}
+.hero h1 {
+  color: var(--white);
+  font-size: clamp(2.1rem, 6vw, 3.4rem);
+  margin-bottom: 1rem;
+}
+.hero-sub {
+  color: var(--gray-100);
+  font-size: 1.1rem;
+  max-width: 55ch;
+  margin-bottom: 1.75rem;
+}
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-bottom: 2rem;
+}
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gray-100);
+}
+.hero-badges li { display: flex; align-items: center; gap: 0.4rem; }
+.hero-badges svg { width: 17px; height: 17px; color: var(--yellow-400); flex-shrink: 0; }
+
+/* ---------- Section headings ---------- */
+.section-head {
+  max-width: 720px;
+  margin-bottom: 2.25rem;
+}
+.section-head.center { margin-inline: auto; text-align: center; }
+.eyebrow {
+  display: inline-block;
+  color: var(--orange-700);
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+.section-head h2 {
+  font-size: clamp(1.6rem, 4vw, 2.3rem);
+  margin-bottom: 0.75rem;
+}
+.section-head p { font-size: 1.05rem; }
+
+.bg-light { background: var(--gray-50); }
+.bg-navy { background: var(--navy-900); color: var(--white); }
+.bg-navy h2, .bg-navy h3 { color: var(--white); }
+.bg-navy p { color: var(--gray-200); }
+
+/* ---------- Services ---------- */
+.services-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+@media (min-width: 640px) {
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .services-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.service-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.service-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+.service-card-media { position: relative; aspect-ratio: 4 / 3; background: var(--gray-100); }
+.service-card-media img { width: 100%; height: 100%; }
+.service-card-tag {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  background: var(--orange-600);
+  color: var(--white);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+}
+.service-card-body { padding: 1.4rem 1.4rem 1.6rem; display: flex; flex-direction: column; flex: 1; }
+.service-card-body h3 { font-size: 1.15rem; margin-bottom: 0.5rem; }
+.service-card-body p { font-size: 0.95rem; margin-bottom: 1rem; flex: 1; }
+.service-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--navy-900);
+  font-weight: 800;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+.service-card-link svg { width: 16px; height: 16px; transition: transform 0.15s ease; }
+.service-card-link:hover svg { transform: translateX(3px); }
+
+/* ---------- Emergency section ---------- */
+.emergency {
+  background: linear-gradient(135deg, var(--orange-800) 0%, var(--orange-700) 55%, var(--orange-800) 100%);
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+.emergency::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.06) 0 14px, transparent 14px 28px);
+  pointer-events: none;
+}
+.emergency .container { position: relative; }
+.emergency-grid {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .emergency-grid { grid-template-columns: 1.1fr 0.9fr; gap: 3rem; }
+}
+.emergency-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--navy-950);
+  color: var(--white);
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  margin-bottom: 1.1rem;
+}
+.emergency-badge svg { width: 16px; height: 16px; color: var(--yellow-400); }
+.emergency h2 { color: var(--white); font-size: clamp(1.7rem, 4.5vw, 2.5rem); margin-bottom: 0.9rem; }
+.emergency p { color: rgba(255,255,255,0.94); font-size: 1.05rem; }
+.emergency-list { margin-top: 1.25rem; display: grid; gap: 0.6rem; }
+.emergency-list li { display: flex; gap: 0.55rem; align-items: flex-start; font-weight: 600; }
+.emergency-list svg { width: 19px; height: 19px; flex-shrink: 0; margin-top: 0.15rem; }
+.emergency-actions { margin-top: 1.75rem; display: flex; flex-wrap: wrap; gap: 0.85rem; }
+.emergency-card {
+  background: var(--white);
+  color: var(--navy-900);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+.emergency-card .phone-big {
+  display: block;
+  font-size: clamp(1.6rem, 5vw, 2.1rem);
+  font-weight: 900;
+  color: var(--orange-700);
+  text-decoration: none;
+  margin-block: 0.5rem 1rem;
+}
+.emergency-card .phone-big:hover { text-decoration: underline; }
+.emergency-card p { color: var(--gray-700); font-size: 0.92rem; }
+
+/* ---------- About ---------- */
+.about-grid {
+  display: grid;
+  gap: 2.5rem;
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .about-grid { grid-template-columns: 1fr 1fr; gap: 3.5rem; }
+}
+.about-media {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  aspect-ratio: 4 / 3;
+}
+.about-media img { width: 100%; height: 100%; }
+.about-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-top: 1.75rem;
+}
+.stat-block { border-left: 4px solid var(--orange-600); padding-left: 0.85rem; }
+.stat-num { display: block; font-size: 1.7rem; font-weight: 900; color: var(--navy-900); line-height: 1; }
+.stat-label { font-size: 0.85rem; color: var(--gray-600); font-weight: 600; }
+.about-credentials { margin-top: 1.75rem; display: flex; flex-wrap: wrap; gap: 0.7rem; }
+.credential-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  color: var(--navy-900);
+  font-weight: 700;
+  font-size: 0.82rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+}
+.credential-chip svg { width: 15px; height: 15px; color: var(--orange-700); }
+
+/* ---------- Service Areas ---------- */
+.areas-grid {
+  display: grid;
+  gap: 2.5rem;
+}
+@media (min-width: 900px) {
+  .areas-grid { grid-template-columns: 1fr 1fr; align-items: start; }
+}
+.areas-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem 1rem;
+}
+@media (min-width: 480px) {
+  .areas-list { grid-template-columns: repeat(3, 1fr); }
+}
+.areas-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--navy-900);
+  padding: 0.5rem 0.1rem;
+  border-bottom: 1px solid var(--gray-200);
+}
+.areas-list svg { width: 15px; height: 15px; color: var(--orange-700); flex-shrink: 0; }
+
+.map-panel {
+  background: var(--navy-900);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.map-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.map-pin-wrap { position: relative; z-index: 1; }
+.map-pin {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: var(--orange-500);
+  border: 2px solid var(--white);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 0 0 4px rgba(241,105,15,0.25);
+}
+.map-caption {
+  position: relative;
+  z-index: 1;
+  background: rgba(11,30,51,0.9);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  max-width: 320px;
+}
+.map-caption h3 { color: var(--white); font-size: 1.05rem; margin-bottom: 0.4rem; }
+.map-caption p { color: var(--gray-200); font-size: 0.88rem; margin-bottom: 0; }
+
+/* ---------- Reviews ---------- */
+.reviews-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 2.25rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+}
+.reviews-score { font-size: 2.2rem; font-weight: 900; color: var(--navy-900); }
+.stars { display: inline-flex; gap: 0.15rem; }
+.stars svg { width: 20px; height: 20px; color: var(--yellow-400); }
+.reviews-count { color: var(--gray-600); font-weight: 600; font-size: 0.9rem; }
+
+.reviews-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+@media (min-width: 768px) {
+  .reviews-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.review-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.review-card .stars svg { width: 16px; height: 16px; }
+.review-card blockquote { font-size: 0.96rem; color: var(--gray-700); flex: 1; }
+.review-author { font-weight: 800; color: var(--navy-900); font-size: 0.9rem; }
+.review-meta { font-size: 0.8rem; color: var(--gray-600); }
+
+/* ---------- Gallery ---------- */
+.gallery-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+@media (min-width: 768px) {
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+}
+.ba-slider {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  touch-action: pan-y;
+  user-select: none;
+}
+.ba-slider img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.ba-after { z-index: 1; }
+.ba-before-wrap {
+  position: absolute;
+  inset: 0;
+  width: 50%;
+  overflow: hidden;
+  z-index: 2;
+}
+.ba-before-wrap img {
+  width: var(--ba-img-w, 100%);
+  height: 100%;
+  max-width: none;
+}
+.ba-label {
+  position: absolute;
+  top: 0.75rem;
+  z-index: 3;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  color: var(--white);
+}
+.ba-label.before-label { left: 0.75rem; background: var(--navy-900); }
+.ba-label.after-label { right: 0.75rem; background: var(--orange-600); }
+.ba-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  z-index: 4;
+  transform: translateX(-50%);
+}
+.ba-handle::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; left: 50%;
+  width: 3px;
+  background: var(--white);
+  transform: translateX(-50%);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.2);
+}
+.ba-range {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+  z-index: 5;
+}
+.ba-thumb {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+  pointer-events: none;
+}
+.ba-thumb svg { width: 20px; height: 20px; color: var(--navy-900); }
+.gallery-caption { margin-top: 0.65rem; font-size: 0.88rem; color: var(--gray-600); font-weight: 600; text-align: center; }
+
+/* ---------- FAQ ---------- */
+.faq-list { max-width: 780px; margin-inline: auto; display: grid; gap: 0.85rem; }
+.faq-item {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.faq-question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: transparent;
+  border: none;
+  padding: 1.1rem 1.25rem;
+  text-align: left;
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--navy-900);
+}
+.faq-question .plus {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--orange-600);
+  color: var(--orange-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.faq-question .plus::before, .faq-question .plus::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+}
+.faq-question .plus::before { width: 12px; height: 2px; }
+.faq-question .plus::after { width: 2px; height: 12px; transition: transform 0.2s ease; }
+.faq-item.is-open .faq-question .plus::after { transform: rotate(90deg); }
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+}
+.faq-answer-inner { padding: 0 1.25rem 1.25rem; }
+.faq-answer-inner p { font-size: 0.95rem; }
+.faq-item.is-open .faq-answer { max-height: 400px; }
+
+/* ---------- Contact ---------- */
+.contact-grid {
+  display: grid;
+  gap: 2.5rem;
+}
+@media (min-width: 960px) {
+  .contact-grid { grid-template-columns: 1fr 1.1fr; gap: 3.5rem; }
+}
+.contact-info-list { display: grid; gap: 1.1rem; margin-top: 1.5rem; }
+.contact-info-item { display: flex; gap: 0.85rem; align-items: flex-start; }
+.contact-info-item .icon-badge {
+  width: 42px; height: 42px; flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: var(--navy-900);
+  color: var(--yellow-400);
+  display: flex; align-items: center; justify-content: center;
+}
+.contact-info-item .icon-badge svg { width: 20px; height: 20px; }
+.contact-info-item h3 { font-size: 1rem; margin-bottom: 0.15rem; }
+.contact-info-item p, .contact-info-item a { font-size: 0.92rem; color: var(--gray-700); text-decoration: none; }
+.contact-info-item a:hover { color: var(--orange-700); text-decoration: underline; }
+
+.quote-form {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-md);
+}
+.form-row { display: grid; gap: 1rem; margin-bottom: 1rem; }
+@media (min-width: 560px) {
+  .form-row.two-col { grid-template-columns: 1fr 1fr; }
+}
+.field label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--navy-900);
+  margin-bottom: 0.35rem;
+}
+.field .required { color: var(--orange-700); }
+.field input, .field select, .field textarea {
+  width: 100%;
+  border: 1.5px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  padding: 0.7rem 0.85rem;
+  font-size: 0.95rem;
+  background: var(--white);
+  color: var(--gray-800);
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: var(--navy-700);
+}
+.field textarea { min-height: 110px; resize: vertical; }
+.field.has-error input, .field.has-error select, .field.has-error textarea {
+  border-color: var(--error-text);
+}
+.field-error {
+  color: var(--error-text);
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-top: 0.35rem;
+  display: none;
+}
+.field.has-error .field-error { display: block; }
+.field-hint { font-size: 0.8rem; color: var(--gray-600); margin-top: 0.3rem; }
+
+.consent-row { display: flex; align-items: flex-start; gap: 0.6rem; margin-bottom: 1.25rem; }
+.consent-row input { width: 18px; height: 18px; margin-top: 0.2rem; flex-shrink: 0; }
+.consent-row label { font-size: 0.85rem; color: var(--gray-700); }
+
+.form-status {
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1rem;
+  font-weight: 700;
+  font-size: 0.92rem;
+  margin-bottom: 1.1rem;
+  display: none;
+}
+.form-status.is-success { display: block; background: var(--success-bg); color: var(--success-text); }
+.form-status.is-error { display: block; background: var(--error-bg); color: var(--error-text); }
+
+/* ---------- Footer ---------- */
+.site-footer {
+  background: var(--navy-950);
+  color: var(--gray-300);
+  padding-block: 3rem 1.5rem;
+}
+.footer-grid {
+  display: grid;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+@media (min-width: 768px) {
+  .footer-grid { grid-template-columns: 1.3fr 1fr 1fr 1fr; }
+}
+.footer-brand .brand { color: var(--white); margin-bottom: 0.75rem; }
+.footer-brand p { color: var(--gray-300); font-size: 0.9rem; max-width: 32ch; }
+.footer-social { display: flex; gap: 0.6rem; margin-top: 1rem; }
+.footer-social a {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  color: var(--white);
+  text-decoration: none;
+}
+.footer-social a:hover { background: var(--orange-600); border-color: var(--orange-600); }
+.footer-social svg { width: 16px; height: 16px; }
+
+.footer-col h3 {
+  color: var(--white);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 1rem;
+}
+.footer-col ul { display: grid; gap: 0.6rem; }
+.footer-col a { color: var(--gray-300); text-decoration: none; font-size: 0.9rem; }
+.footer-col a:hover { color: var(--yellow-400); }
+
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.12);
+  padding-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  font-size: 0.8rem;
+  color: var(--gray-300);
+}
+@media (min-width: 768px) {
+  .footer-bottom { flex-direction: row; justify-content: space-between; align-items: center; }
+}
+.footer-legal-links { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+.footer-legal-links a { color: var(--gray-300); text-decoration: none; }
+.footer-legal-links a:hover { color: var(--yellow-400); }
+.footer-demo-note { color: var(--gray-500); font-size: 0.78rem; margin-top: 0.5rem; }
+
+/* ---------- Sticky mobile call bar ---------- */
+.mobile-call-bar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 700;
+  display: flex;
+  height: var(--mobile-bar-h);
+  background: var(--navy-950);
+  border-top: 2px solid var(--orange-600);
+}
+.mobile-call-bar a {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+.mobile-call-bar svg { width: 19px; height: 19px; flex-shrink: 0; }
+.mobile-call-bar .call-action {
+  background: var(--orange-600);
+  color: var(--white);
+}
+.mobile-call-bar .quote-action {
+  background: var(--navy-800);
+  color: var(--white);
+  border-left: 1px solid rgba(255,255,255,0.12);
+}
+@media (min-width: 900px) {
+  .mobile-call-bar { display: none; }
+}
+
+/* ---------- Simple pages (privacy/terms/404) ---------- */
+.simple-page {
+  padding-block: 3rem 4rem;
+}
+.simple-page h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); margin-bottom: 0.5rem; }
+.simple-page .updated { color: var(--gray-600); font-size: 0.9rem; margin-bottom: 2rem; }
+.simple-page h2 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.6rem; }
+.simple-page p, .simple-page li { color: var(--gray-700); font-size: 0.98rem; margin-bottom: 0.85rem; }
+.simple-page ul { list-style: disc; padding-left: 1.4rem; }
+.simple-page ul li { margin-bottom: 0.4rem; }
+.simple-page a { color: var(--navy-700); font-weight: 700; }
+
+.error-page {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  padding-block: 4rem;
+  background: var(--navy-900);
+  color: var(--white);
+}
+.error-page .container { text-align: center; }
+.error-code {
+  font-size: clamp(4rem, 16vw, 8rem);
+  font-weight: 900;
+  color: var(--orange-500);
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+.error-page h1 { color: var(--white); font-size: clamp(1.5rem, 4vw, 2.2rem); margin-bottom: 0.85rem; }
+.error-page p { color: var(--gray-200); max-width: 46ch; margin-inline: auto; margin-bottom: 1.75rem; }
+.error-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.85rem; }
+
+</style>
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="North &amp; Co Plumbing">
+<meta property="og:title" content="Local Plumber Gold Coast | North &amp; Co Plumbing">
+<meta property="og:description" content="Reliable plumbing, blocked drain, hot water and repair services across the Gold Coast.">
+<meta property="og:url" content="https://webcloudsolutions.com.au/demos/north-co-plumbing/">
+<meta property="og:image" content="https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?auto=format&amp;fit=crop&amp;w=1600&amp;q=75&amp;fm=webp">
+<meta property="og:locale" content="en_AU">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Local Plumber Gold Coast | North &amp; Co Plumbing">
+<meta name="twitter:description" content="Reliable plumbing, blocked drain, hot water and repair services across the Gold Coast.">
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?auto=format&amp;fit=crop&amp;w=1600&amp;q=75&amp;fm=webp">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Plumber",
+  "name": "North & Co Plumbing",
+  "image": "https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?auto=format&fit=crop&w=1600&q=75&fm=webp",
+  "url": "https://webcloudsolutions.com.au/demos/north-co-plumbing/",
+  "telephone": "+61-7-5500-0102",
+  "email": "info@northcoplumbing.example",
+  "priceRange": "$$",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "48 Marina Quay Drive",
+    "addressLocality": "Southport",
+    "addressRegion": "QLD",
+    "postalCode": "4215",
+    "addressCountry": "AU"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": -27.9686,
+    "longitude": 153.4127
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "07:00",
+      "closes": "17:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Saturday"],
+      "opens": "08:00",
+      "closes": "13:00"
+    }
+  ],
+  "areaServed": [
+    "Southport", "Surfers Paradise", "Broadbeach", "Robina", "Burleigh Heads",
+    "Coolangatta", "Nerang", "Helensvale", "Coomera", "Currumbin", "Mudgeeraba", "Palm Beach"
+  ],
+  "sameAs": []
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How quickly can you respond to a plumbing emergency?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For urgent issues like burst pipes, gas leaks or blocked toilets, our average response time across the Gold Coast is under 60 minutes. Call our 24/7 emergency line and we'll dispatch the nearest available plumber."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which suburbs do you service?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We cover the whole Gold Coast, including Southport, Surfers Paradise, Broadbeach, Robina, Burleigh Heads, Coolangatta, Nerang, Helensvale, Coomera, Currumbin, Mudgeeraba and Palm Beach."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you provide upfront, fixed pricing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. We provide a clear, fixed-price quote before any work begins, so there are no surprises on your invoice. Emergency call-out rates are confirmed with you over the phone."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are your plumbers licensed and insured?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Every North & Co plumber is fully licensed (QBCC) and our work is covered by public liability insurance, so you can book with confidence."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can you help with hot water system replacement?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, we install, repair and replace electric, gas and continuous flow hot water systems, and can usually recommend a like-for-like replacement on the same visit if yours has failed."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I book a quote or a job?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use the quote request form on this page or call us directly on (07) 5500 0102. For after-hours emergencies, phone is fastest."
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<div class="nav-scrim" data-nav-scrim></div>
+
+<div class="container header-inner">
+    <a class="brand" href="#home" aria-label="North &amp; Co Plumbing — home">
+      <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#0B1E33"/>
+        <path d="M32 12c-8 10-13 17.5-13 24.5C19 45.5 24.9 52 32 52s13-6.5 13-15.5C45 29.5 40 22 32 12z" fill="#D9530A"/>
+        <path d="M32 24c-4.5 5.7-7 9.8-7 13.6 0 4.6 3.2 8.2 7 8.2" fill="none" stroke="#FDC332" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <span>
+        North &amp; Co Plumbing
+        <span class="brand-sub">Gold Coast Plumbers</span>
+      </span>
+    </a>
+
+    <nav class="primary-nav" id="primary-nav" aria-label="Primary">
+      <button class="nav-close" type="button" data-nav-close aria-label="Close menu">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      </button>
+      <ul class="nav-list">
+        <li><a href="#home" data-nav-link>Home</a></li>
+        <li><a href="#services" data-nav-link>Services</a></li>
+        <li><a href="#emergency" data-nav-link>Emergency Plumbing</a></li>
+        <li><a href="#about" data-nav-link>About</a></li>
+        <li><a href="#areas" data-nav-link>Service Areas</a></li>
+        <li><a href="#reviews" data-nav-link>Reviews</a></li>
+        <li><a href="#contact" data-nav-link>Contact</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a class="btn btn-primary btn-block" href="#contact">Request a Quote</a>
+        <a class="btn btn-outline-light btn-block" href="tel:+61755000102" aria-label="Call North and Co Plumbing now on (07) 5500 0102">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="18" height="18"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.9 21 3 13.1 3 3.9c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .7-.2 1L6.6 10.8z" fill="currentColor"/></svg>
+          Call Now
+        </a>
+      </div>
+    </nav>
+
+    <a class="header-call" href="tel:+61755000102" aria-label="Call North and Co Plumbing now on (07) 5500 0102">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.9 21 3 13.1 3 3.9c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .7-.2 1L6.6 10.8z" fill="currentColor"/></svg>
+      (07) 5500 0102
+    </a>
+
+    <button class="nav-toggle" type="button" data-nav-toggle aria-label="Open menu" aria-controls="primary-nav" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+  <ul class="trust-bar">
+    <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l7 3.5v5.3c0 5-3.4 8.9-7 10.2-3.6-1.3-7-5.2-7-10.2V5.5L12 2z" fill="currentColor"/></svg>Licensed &amp; Insured</li>
+    <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l7 3.5v5.3c0 5-3.4 8.9-7 10.2-3.6-1.3-7-5.2-7-10.2V5.5L12 2z" fill="currentColor"/></svg>QBCC Lic. 1234567</li>
+    <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10z" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>24/7 Emergency Service</li>
+    <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z" fill="currentColor"/></svg>5.0★ Google Reviews</li>
+  </ul>
+<main id="main">
+
+  <!-- HOME / HERO -->
+  <section id="home" class="hero" aria-label="Introduction">
+    <div class="hero-media">
+      <img
+        src="images/hero-media.webp"
+        alt="Licensed plumber in branded workwear repairing pipework in a modern Australian home"
+        fetchpriority="high"
+        width="1600" height="1000">
+    </div>
+    <div class="container">
+      <div class="hero-content">
+        <span class="hero-eyebrow">Gold Coast, QLD · 24/7 Emergency Line</span>
+        <h1>Reliable Plumbing. Done Right.</h1>
+        <p class="hero-sub">Professional residential and commercial plumbing with straightforward service and dependable workmanship.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary btn-lg" href="#contact">Request a Quote</a>
+          <a class="btn btn-outline-light btn-lg" href="tel:+61755000102" aria-label="Call North and Co Plumbing now on (07) 5500 0102">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="18" height="18"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.9 21 3 13.1 3 3.9c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .7-.2 1L6.6 10.8z" fill="currentColor"/></svg>
+            Call Now
+          </a>
+        </div>
+        <ul class="hero-badges">
+          <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Licensed &amp; fully insured</li>
+          <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Upfront, fixed pricing</li>
+          <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Avg. 60 min emergency response</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" aria-label="Our services">
+    <div class="container">
+      <div class="section-head center">
+        <span class="eyebrow">What We Do</span>
+        <h2>Plumbing Services You Can Rely On</h2>
+        <p>From dripping taps to full bathroom re-pipes, our licensed plumbers handle residential and commercial jobs across the Gold Coast — with clear pricing and no surprises.</p>
+      </div>
+
+      <div class="services-grid">
+        <article class="service-card">
+          <div class="service-card-media">
+            <span class="service-card-tag">Residential &amp; Commercial</span>
+            <img src="images/service-card-tag.webp" alt="Plumber kneeling to inspect and repair pipework inside a home" loading="lazy" width="800" height="600">
+          </div>
+          <div class="service-card-body">
+            <h3>General Plumbing</h3>
+            <p>Taps, toilets, valves, fittings and everyday repairs handled by a licensed plumber, done properly the first time.</p>
+            <a class="service-card-link" href="#contact">Get a quote
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <article class="service-card">
+          <div class="service-card-media">
+            <span class="service-card-tag">Fast Response</span>
+            <img src="images/service-card-tag-2.webp" alt="Plumber using hand tools to clear a blocked drain" loading="lazy" width="800" height="600">
+          </div>
+          <div class="service-card-body">
+            <h3>Blocked Drains</h3>
+            <p>High-pressure jetting and camera inspection to clear stubborn blockages fast and stop them coming back.</p>
+            <a class="service-card-link" href="#contact">Get a quote
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <article class="service-card">
+          <div class="service-card-media">
+            <span class="service-card-tag">Install &amp; Repair</span>
+            <img src="images/service-card-tag-3.webp" alt="Close-up of copper pipework and fittings for a hot water system" loading="lazy" width="800" height="600">
+          </div>
+          <div class="service-card-body">
+            <h3>Hot Water</h3>
+            <p>Repair, replacement and installation of electric, gas and continuous-flow hot water systems.</p>
+            <a class="service-card-link" href="#contact">Get a quote
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <article class="service-card">
+          <div class="service-card-media">
+            <span class="service-card-tag">Detect &amp; Repair</span>
+            <img src="images/service-card-tag-4.webp" alt="Plumber tightening a fitting to repair a leaking pipe joint" loading="lazy" width="800" height="600">
+          </div>
+          <div class="service-card-body">
+            <h3>Leak Repairs</h3>
+            <p>From a slow drip to a hidden slab leak, we find the source and repair it with minimal disruption.</p>
+            <a class="service-card-link" href="#contact">Get a quote
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <article class="service-card">
+          <div class="service-card-media">
+            <span class="service-card-tag">Renovation Ready</span>
+            <img src="images/service-card-tag-5.webp" alt="Modern bathroom plumbing fixtures during a renovation" loading="lazy" width="800" height="600">
+          </div>
+          <div class="service-card-body">
+            <h3>Bathroom Plumbing</h3>
+            <p>New bathroom builds and renovations — rough-in, fixture installation and finishing, done to code.</p>
+            <a class="service-card-link" href="#contact">Get a quote
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <article class="service-card">
+          <div class="service-card-media">
+            <span class="service-card-tag">24/7 Available</span>
+            <img src="images/service-card-tag-6.webp" alt="Plumber responding urgently to an emergency repair call-out" loading="lazy" width="800" height="600">
+          </div>
+          <div class="service-card-body">
+            <h3>Emergency Call-outs</h3>
+            <p>Burst pipes, gas leaks and urgent failures — our on-call plumbers respond around the clock.</p>
+            <a class="service-card-link" href="#emergency">See emergency service
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- EMERGENCY -->
+  <section id="emergency" class="emergency" aria-label="Emergency plumbing">
+    <div class="container">
+      <div class="emergency-grid">
+        <div>
+          <span class="emergency-badge">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 9v4m0 4h.01M10.3 3.9L2.6 17.5c-.6 1 .1 2.3 1.3 2.3h16.2c1.2 0 1.9-1.3 1.3-2.3L13.7 3.9c-.6-1-2-1-2.6 0z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            24/7 Emergency Response
+          </span>
+          <h2>Burst Pipe? Blocked Drain? We're On Our Way.</h2>
+          <p>Plumbing emergencies don't wait for business hours — and neither do we. Our on-call plumbers carry fully stocked vans and respond across the Gold Coast day or night.</p>
+          <ul class="emergency-list">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Burst or leaking pipes
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Blocked toilets and overflowing drains
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              No hot water
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Gas leaks and storm-related plumbing damage
+            </li>
+          </ul>
+          <div class="emergency-actions">
+            <a class="btn btn-secondary btn-lg" href="tel:+61755000102" aria-label="Call the emergency plumbing line now on (07) 5500 0102">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" width="18" height="18"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.9 21 3 13.1 3 3.9c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .7-.2 1L6.6 10.8z" fill="currentColor"/></svg>
+              Call the Emergency Line
+            </a>
+            <a class="btn btn-outline-light btn-lg" href="#contact">Request Urgent Call-out</a>
+          </div>
+        </div>
+        <div class="emergency-card">
+          <span class="eyebrow" style="color:var(--orange-700)">Emergency Hotline</span>
+          <a class="phone-big" href="tel:+61755000102">(07) 5500 0102</a>
+          <p>Answered 24 hours a day, 7 days a week. Average on-site response under 60 minutes across the Gold Coast.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" aria-label="About North and Co Plumbing">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-media">
+          <img src="images/about-media.webp" alt="North and Co plumber standing in branded workwear beside a service van" loading="lazy" width="800" height="600">
+        </div>
+        <div>
+          <span class="eyebrow">About North &amp; Co</span>
+          <h2>Straightforward Plumbing, Done Right the First Time</h2>
+          <p>North &amp; Co Plumbing has been fixing, installing and maintaining plumbing systems across the Gold Coast since 2011. We're a locally owned team that believes in honest advice, tidy workmanship and pricing you agree to before we start — no call-out surprises.</p>
+          <p>Every plumber on our team is fully licensed and background-checked, and every job is backed by our workmanship guarantee.</p>
+
+          <div class="about-stats">
+            <div class="stat-block">
+              <span class="stat-num">13+</span>
+              <span class="stat-label">Years serving the Gold Coast</span>
+            </div>
+            <div class="stat-block">
+              <span class="stat-num">8,400+</span>
+              <span class="stat-label">Jobs completed</span>
+            </div>
+            <div class="stat-block">
+              <span class="stat-num">100%</span>
+              <span class="stat-label">Upfront, fixed pricing</span>
+            </div>
+            <div class="stat-block">
+              <span class="stat-num">60 min</span>
+              <span class="stat-label">Avg. emergency response</span>
+            </div>
+          </div>
+
+          <div class="about-credentials">
+            <span class="credential-chip">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l7 3.5v5.3c0 5-3.4 8.9-7 10.2-3.6-1.3-7-5.2-7-10.2V5.5L12 2z" fill="currentColor"/></svg>
+              QBCC Licensed
+            </span>
+            <span class="credential-chip">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l7 3.5v5.3c0 5-3.4 8.9-7 10.2-3.6-1.3-7-5.2-7-10.2V5.5L12 2z" fill="currentColor"/></svg>
+              Fully Insured
+            </span>
+            <span class="credential-chip">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l7 3.5v5.3c0 5-3.4 8.9-7 10.2-3.6-1.3-7-5.2-7-10.2V5.5L12 2z" fill="currentColor"/></svg>
+              Master Plumbers Member
+            </span>
+            <span class="credential-chip">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l7 3.5v5.3c0 5-3.4 8.9-7 10.2-3.6-1.3-7-5.2-7-10.2V5.5L12 2z" fill="currentColor"/></svg>
+              Workmanship Guarantee
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BEFORE / AFTER GALLERY -->
+  <section id="gallery" class="bg-light" aria-label="Recent work gallery">
+    <div class="container">
+      <div class="section-head center">
+        <span class="eyebrow">Recent Work</span>
+        <h2>See the Difference, First-Hand</h2>
+        <p>Drag the slider to compare a couple of recent jobs — from the problem our clients called us about, to the finished result.</p>
+      </div>
+      <div class="gallery-grid">
+        <figure class="ba-slider" data-ba-slider>
+          <img class="ba-after" src="images/ba-after.webp" alt="After: neatly repaired and documented pipework, fixed and finished" loading="lazy" width="800" height="600">
+          <span class="ba-label after-label">After</span>
+          <div class="ba-before-wrap" data-ba-before-wrap>
+            <img src="images/ba-before-wrap.webp" alt="Before: a burst pipe causing water damage before repair" loading="lazy" width="800" height="600">
+          </div>
+          <span class="ba-label before-label">Before</span>
+          <div class="ba-handle" data-ba-handle></div>
+          <div class="ba-thumb" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="Drag to compare before and after burst pipe repair">
+          <figcaption class="visually-hidden">Before and after comparison of a burst pipe repair</figcaption>
+        </figure>
+
+        <figure class="ba-slider" data-ba-slider>
+          <img class="ba-after" src="images/ba-after-2.webp" alt="After: refreshed plumbing fixtures neatly installed and finished" loading="lazy" width="800" height="600">
+          <span class="ba-label after-label">After</span>
+          <div class="ba-before-wrap" data-ba-before-wrap>
+            <img src="images/ba-before-wrap-2.webp" alt="Before: worn pipework and fittings prior to replacement" loading="lazy" width="800" height="600">
+          </div>
+          <span class="ba-label before-label">Before</span>
+          <div class="ba-handle" data-ba-handle></div>
+          <div class="ba-thumb" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="Drag to compare before and after tap and fitting replacement">
+          <figcaption class="visually-hidden">Before and after comparison of a tap and fitting replacement</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICE AREAS -->
+  <section id="areas" aria-label="Service areas">
+    <div class="container">
+      <div class="section-head center">
+        <span class="eyebrow">Where We Work</span>
+        <h2>Servicing the Whole Gold Coast</h2>
+        <p>Based in Southport, our vans cover the full Gold Coast corridor — from Coomera in the north to Coolangatta in the south.</p>
+      </div>
+      <div class="areas-grid">
+        <ul class="areas-list">
+          <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>Southport</li>
+          <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>Surfers Paradise</li>
+          <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>Broadbeach</li>
+          <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>Robina</li>
+          <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>Burleigh Heads</li>
+          <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>Coolangatta</li>
+          <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>Nerang</li>
+          <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>Helensvale</li>
+          <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>Coomera</li>
+          <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>Currumbin</li>
+          <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>Mudgeeraba</li>
+          <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>Palm Beach</li>
+        </ul>
+        <div class="map-panel">
+          <div class="map-pin-wrap">
+            <span class="map-pin" style="top:38%;left:52%;" aria-hidden="true"></span>
+            <span class="map-pin" style="top:22%;left:68%;" aria-hidden="true"></span>
+            <span class="map-pin" style="top:58%;left:40%;" aria-hidden="true"></span>
+            <span class="map-pin" style="top:70%;left:74%;" aria-hidden="true"></span>
+            <span class="map-pin" style="top:48%;left:22%;" aria-hidden="true"></span>
+          </div>
+          <div class="map-caption">
+            <h3>Based in Southport, QLD</h3>
+            <p>Servicing a full Gold Coast radius — call ahead to confirm same-day availability in your suburb.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section id="reviews" class="bg-light" aria-label="Customer reviews">
+    <div class="container">
+      <div class="section-head center">
+        <span class="eyebrow">Customer Reviews</span>
+        <h2>Trusted by Gold Coast Homeowners</h2>
+      </div>
+
+      <div class="reviews-summary">
+        <span class="reviews-score">4.9</span>
+        <span class="stars" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+        </span>
+        <span class="reviews-count">Based on 240+ Google Reviews</span>
+      </div>
+
+      <div class="reviews-grid">
+        <article class="review-card">
+          <span class="stars" aria-label="5 out of 5 stars">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+          </span>
+          <blockquote>"Called at 9pm with a burst pipe under the kitchen sink and someone was here within the hour. Fixed, cleaned up, and the price matched exactly what I was quoted on the phone."</blockquote>
+          <p class="review-author">Megan T.</p>
+          <p class="review-meta">Robina, QLD · Emergency Call-out</p>
+        </article>
+
+        <article class="review-card">
+          <span class="stars" aria-label="5 out of 5 stars">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+          </span>
+          <blockquote>"Replaced our old hot water system same-day after it died overnight. Explained the options clearly, no pressure to upsell, and left the laundry spotless."</blockquote>
+          <p class="review-author">David K.</p>
+          <p class="review-meta">Burleigh Heads, QLD · Hot Water Replacement</p>
+        </article>
+
+        <article class="review-card">
+          <span class="stars" aria-label="5 out of 5 stars">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 17.3l-5.4 3.3 1.4-6.2-4.7-4.1 6.3-.6L12 3.5l2.4 6.2 6.3.6-4.7 4.1 1.4 6.2z"/></svg>
+          </span>
+          <blockquote>"Used North & Co for our full bathroom renovation plumbing. On time every visit, tidy, and the quote didn't change once work started. Would book again without hesitation."</blockquote>
+          <p class="review-author">Priya S.</p>
+          <p class="review-meta">Southport, QLD · Bathroom Renovation</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" aria-label="Frequently asked questions">
+    <div class="container">
+      <div class="section-head center">
+        <span class="eyebrow">Common Questions</span>
+        <h2>Frequently Asked Questions</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question" type="button" aria-expanded="false">
+            How quickly can you respond to a plumbing emergency?
+            <span class="plus" aria-hidden="true"></span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              <p>For urgent issues like burst pipes, gas leaks or blocked toilets, our average response time across the Gold Coast is under 60 minutes. Call our 24/7 emergency line and we'll dispatch the nearest available plumber.</p>
+            </div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" type="button" aria-expanded="false">
+            Which suburbs do you service?
+            <span class="plus" aria-hidden="true"></span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              <p>We cover the whole Gold Coast, including Southport, Surfers Paradise, Broadbeach, Robina, Burleigh Heads, Coolangatta, Nerang, Helensvale, Coomera, Currumbin, Mudgeeraba and Palm Beach.</p>
+            </div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" type="button" aria-expanded="false">
+            Do you provide upfront, fixed pricing?
+            <span class="plus" aria-hidden="true"></span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              <p>Yes. We provide a clear, fixed-price quote before any work begins, so there are no surprises on your invoice. Emergency call-out rates are confirmed with you over the phone.</p>
+            </div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" type="button" aria-expanded="false">
+            Are your plumbers licensed and insured?
+            <span class="plus" aria-hidden="true"></span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              <p>Every North &amp; Co plumber is fully licensed (QBCC) and our work is covered by public liability insurance, so you can book with confidence.</p>
+            </div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" type="button" aria-expanded="false">
+            Can you help with hot water system replacement?
+            <span class="plus" aria-hidden="true"></span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              <p>Yes, we install, repair and replace electric, gas and continuous flow hot water systems, and can usually recommend a like-for-like replacement on the same visit if yours has failed.</p>
+            </div>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question" type="button" aria-expanded="false">
+            How do I book a quote or a job?
+            <span class="plus" aria-hidden="true"></span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              <p>Use the quote request form below or call us directly on (07) 5500 0102. For after-hours emergencies, phone is fastest.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="bg-light" aria-label="Contact and quote request">
+    <div class="container">
+      <div class="contact-grid">
+        <div>
+          <span class="eyebrow">Get In Touch</span>
+          <h2>Request a Free Quote</h2>
+          <p>Tell us what's going on and we'll get back to you with a straightforward quote — usually within one business day. For urgent issues, please call.</p>
+
+          <div class="contact-info-list">
+            <div class="contact-info-item">
+              <span class="icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.9 21 3 13.1 3 3.9c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .7-.2 1L6.6 10.8z" fill="currentColor"/></svg>
+              </span>
+              <div>
+                <h3>Phone</h3>
+                <p><a href="tel:+61755000102">(07) 5500 0102</a> — 24/7 for emergencies</p>
+              </div>
+            </div>
+            <div class="contact-info-item">
+              <span class="icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6h18v12H3V6z" stroke="currentColor" stroke-width="1.8"/><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <div>
+                <h3>Email</h3>
+                <p><a href="mailto:info@northcoplumbing.example">info@northcoplumbing.example</a></p>
+              </div>
+            </div>
+            <div class="contact-info-item">
+              <span class="icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.4 7-12a7 7 0 10-14 0c0 5.6 7 12 7 12z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>
+              </span>
+              <div>
+                <h3>Address</h3>
+                <p>48 Marina Quay Drive, Southport QLD 4215</p>
+              </div>
+            </div>
+            <div class="contact-info-item">
+              <span class="icon-badge">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10z" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              </span>
+              <div>
+                <h3>Hours</h3>
+                <p>Mon–Fri 7:00am–5:00pm · Sat 8:00am–1:00pm<br>Emergency line open 24/7</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form class="quote-form" id="quote-form" novalidate>
+          <h3 class="visually-hidden">Request a quote form</h3>
+          <div class="form-status" id="form-status" role="alert" aria-live="assertive"></div>
+
+          <div class="form-row two-col">
+            <div class="field" id="field-name">
+              <label for="name">Full name <span class="required">*</span></label>
+              <input type="text" id="name" name="name" autocomplete="name" required aria-describedby="name-error">
+              <p class="field-error" id="name-error">Please enter your full name.</p>
+            </div>
+            <div class="field" id="field-phone">
+              <label for="phone">Phone <span class="required">*</span></label>
+              <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="04XX XXX XXX" required aria-describedby="phone-error phone-hint">
+              <p class="field-error" id="phone-error">Please enter a valid Australian phone number.</p>
+              <p class="field-hint" id="phone-hint">e.g. 0412 345 678 or (07) 5500 0102</p>
+            </div>
+          </div>
+
+          <div class="form-row two-col">
+            <div class="field" id="field-email">
+              <label for="email">Email <span class="required">*</span></label>
+              <input type="email" id="email" name="email" autocomplete="email" required aria-describedby="email-error">
+              <p class="field-error" id="email-error">Please enter a valid email address.</p>
+            </div>
+            <div class="field" id="field-suburb">
+              <label for="suburb">Suburb</label>
+              <input type="text" id="suburb" name="suburb" autocomplete="address-level2" placeholder="e.g. Robina">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field" id="field-service">
+              <label for="service">Service needed <span class="required">*</span></label>
+              <select id="service" name="service" required aria-describedby="service-error">
+                <option value="">Select a service…</option>
+                <option value="general">General Plumbing</option>
+                <option value="drains">Blocked Drains</option>
+                <option value="hotwater">Hot Water</option>
+                <option value="leak">Leak Repairs</option>
+                <option value="bathroom">Bathroom Plumbing</option>
+                <option value="emergency">Emergency Call-out</option>
+                <option value="other">Other</option>
+              </select>
+              <p class="field-error" id="service-error">Please select a service.</p>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field" id="field-message">
+              <label for="message">Tell us what's going on <span class="required">*</span></label>
+              <textarea id="message" name="message" required aria-describedby="message-error" placeholder="Briefly describe the issue or job…"></textarea>
+              <p class="field-error" id="message-error">Please add a short description so we can quote accurately.</p>
+            </div>
+          </div>
+
+          <div class="consent-row">
+            <input type="checkbox" id="consent" name="consent" required aria-describedby="consent-error">
+            <label for="consent">I agree to be contacted about my enquiry. <span class="required">*</span></label>
+          </div>
+          <p class="field-error" id="consent-error" style="margin-top:-0.9rem;margin-bottom:1rem;">Please confirm you're happy to be contacted.</p>
+
+          <button class="btn btn-primary btn-block btn-lg" type="submit">Request a Quote</button>
+          <p class="field-hint" style="text-align:center;margin-top:0.9rem;">This is a demo form — no data is sent or stored.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="#home">
+          <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+            <rect width="64" height="64" rx="14" fill="#0B1E33"/>
+            <path d="M32 12c-8 10-13 17.5-13 24.5C19 45.5 24.9 52 32 52s13-6.5 13-15.5C45 29.5 40 22 32 12z" fill="#D9530A"/>
+            <path d="M32 24c-4.5 5.7-7 9.8-7 13.6 0 4.6 3.2 8.2 7 8.2" fill="none" stroke="#FDC332" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <span>North &amp; Co Plumbing</span>
+        </a>
+        <p>Reliable residential and commercial plumbing across the Gold Coast, with straightforward pricing and dependable workmanship.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="North and Co Plumbing on Facebook">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 3h-2a5 5 0 00-5 5v2H6v4h2v7h4v-7h3l1-4h-4V8a1 1 0 011-1h3V3z" fill="currentColor"/></svg>
+          </a>
+          <a href="#" aria-label="North and Co Plumbing on Instagram">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <nav class="footer-col" aria-label="Footer navigation">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#emergency">Emergency Plumbing</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#reviews">Reviews</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="footer-col">
+        <h3>Services</h3>
+        <ul>
+          <li><a href="#services">General Plumbing</a></li>
+          <li><a href="#services">Blocked Drains</a></li>
+          <li><a href="#services">Hot Water</a></li>
+          <li><a href="#services">Leak Repairs</a></li>
+          <li><a href="#services">Bathroom Plumbing</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3>Contact</h3>
+        <ul>
+          <li><a href="tel:+61755000102">(07) 5500 0102</a></li>
+          <li><a href="mailto:info@northcoplumbing.example">info@northcoplumbing.example</a></li>
+          <li>48 Marina Quay Drive<br>Southport QLD 4215</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>
+        <p>&copy; <span id="year">2026</span> North &amp; Co Plumbing. ABN 55 123 456 789. QBCC Lic. 1234567.</p>
+        <p class="footer-demo-note">Demo website by Web &amp; Cloud Solutions — for portfolio illustration only, not a real business.</p>
+      </div>
+      <div class="footer-legal-links">
+        <a href="#" onclick="return false;" aria-disabled="true" title="Preview only">Privacy Policy</a>
+        <a href="#" onclick="return false;" aria-disabled="true" title="Preview only">Terms of Use</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="mobile-call-bar" aria-label="Quick actions">
+  <a class="call-action" href="tel:+61755000102" aria-label="Call North and Co Plumbing now on (07) 5500 0102">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.9 21 3 13.1 3 3.9c0-.6.4-1 1-1h3.4c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .7-.2 1L6.6 10.8z" fill="currentColor"/></svg>
+    Call Now
+  </a>
+  <a class="quote-action" href="#contact" aria-label="Go to the request a quote form">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 4h16v12H8l-4 4V4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Get a Quote
+  </a>
+</div>
+
+<script>
+/* ==========================================================================
+   North & Co Plumbing — demo website scripts
+   Vanilla JS. No dependencies, no network calls.
+   ========================================================================== */
+(function () {
+  "use strict";
+
+  /* ---------------- Mobile nav toggle ---------------- */
+  var navToggle = document.querySelector("[data-nav-toggle]");
+  var navClose = document.querySelector("[data-nav-close]");
+  var nav = document.getElementById("primary-nav");
+  var scrim = document.querySelector("[data-nav-scrim]");
+  var navLinks = document.querySelectorAll("[data-nav-link]");
+
+  function openNav() {
+    if (!nav) return;
+    nav.classList.add("is-open");
+    if (scrim) scrim.classList.add("is-visible");
+    if (navToggle) navToggle.setAttribute("aria-expanded", "true");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeNav() {
+    if (!nav) return;
+    nav.classList.remove("is-open");
+    if (scrim) scrim.classList.remove("is-visible");
+    if (navToggle) navToggle.setAttribute("aria-expanded", "false");
+    document.body.style.overflow = "";
+  }
+
+  if (navToggle) navToggle.addEventListener("click", openNav);
+  if (navClose) navClose.addEventListener("click", closeNav);
+  if (scrim) scrim.addEventListener("click", closeNav);
+  navLinks.forEach(function (link) {
+    link.addEventListener("click", closeNav);
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeNav();
+  });
+
+  /* ---------------- Before / after gallery sliders ---------------- */
+  var sliders = document.querySelectorAll("[data-ba-slider]");
+  sliders.forEach(function (slider) {
+    var range = slider.querySelector(".ba-range");
+    var beforeWrap = slider.querySelector("[data-ba-before-wrap]");
+    var handle = slider.querySelector("[data-ba-handle]");
+    var thumb = slider.querySelector(".ba-thumb");
+    if (!range || !beforeWrap) return;
+
+    function update(value) {
+      var pct = Math.min(100, Math.max(0, Number(value)));
+      beforeWrap.style.width = pct + "%";
+      var img = beforeWrap.querySelector("img");
+      if (img) {
+        var containerWidth = slider.getBoundingClientRect().width || 1;
+        img.style.width = (containerWidth) + "px";
+      }
+      if (handle) handle.style.left = pct + "%";
+      if (thumb) thumb.style.left = pct + "%";
+    }
+
+    range.addEventListener("input", function () {
+      update(range.value);
+    });
+    window.addEventListener("resize", function () {
+      update(range.value);
+    });
+    update(range.value);
+  });
+
+  /* ---------------- FAQ accordion ---------------- */
+  var faqItems = document.querySelectorAll(".faq-item");
+  faqItems.forEach(function (item) {
+    var button = item.querySelector(".faq-question");
+    var answer = item.querySelector(".faq-answer");
+    if (!button || !answer) return;
+
+    button.addEventListener("click", function () {
+      var isOpen = item.classList.contains("is-open");
+
+      faqItems.forEach(function (other) {
+        other.classList.remove("is-open");
+        var otherBtn = other.querySelector(".faq-question");
+        if (otherBtn) otherBtn.setAttribute("aria-expanded", "false");
+      });
+
+      if (!isOpen) {
+        item.classList.add("is-open");
+        button.setAttribute("aria-expanded", "true");
+      }
+    });
+  });
+
+  /* ---------------- Footer year ---------------- */
+  var yearEl = document.getElementById("year");
+  if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+  /* ---------------- Quote form validation ---------------- */
+  var form = document.getElementById("quote-form");
+  if (form) {
+    var status = document.getElementById("form-status");
+
+    var validators = {
+      name: function (value) {
+        return value.trim().length >= 2;
+      },
+      phone: function (value) {
+        var cleaned = value.trim().replace(/[\s()-]/g, "");
+        return /^(\+?61|0)[2-9]\d{8}$/.test(cleaned);
+      },
+      email: function (value) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+      },
+      service: function (value) {
+        return value.trim().length > 0;
+      },
+      message: function (value) {
+        return value.trim().length >= 10;
+      },
+      consent: function (value, el) {
+        return el.checked === true;
+      }
+    };
+
+    function setFieldError(fieldId, hasError) {
+      var wrap = document.getElementById("field-" + fieldId);
+      if (wrap) {
+        wrap.classList.toggle("has-error", hasError);
+      } else {
+        var errorEl = document.getElementById(fieldId + "-error");
+        if (errorEl) errorEl.style.display = hasError ? "block" : "none";
+      }
+    }
+
+    function showStatus(message, type) {
+      if (!status) return;
+      status.textContent = message;
+      status.classList.remove("is-success", "is-error");
+      status.classList.add(type === "success" ? "is-success" : "is-error");
+    }
+
+    function clearStatus() {
+      if (!status) return;
+      status.textContent = "";
+      status.classList.remove("is-success", "is-error");
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      clearStatus();
+
+      var fields = ["name", "phone", "email", "service", "message", "consent"];
+      var firstInvalid = null;
+      var allValid = true;
+
+      fields.forEach(function (fieldName) {
+        var el = form.elements[fieldName];
+        if (!el) return;
+        var value = el.type === "checkbox" ? el.checked : el.value;
+        var isValid = validators[fieldName] ? validators[fieldName](value, el) : true;
+
+        setFieldError(fieldName, !isValid);
+
+        if (!isValid) {
+          allValid = false;
+          if (!firstInvalid) firstInvalid = el;
+        }
+      });
+
+      if (!allValid) {
+        showStatus("Please fix the highlighted fields and try again.", "error");
+        if (firstInvalid) firstInvalid.focus();
+        return;
+      }
+
+      // Demo only — no backend, no network request is made.
+      showStatus("Thanks! Your quote request has been received. We'll be in touch shortly. (Demo form — no data was sent.)", "success");
+      form.reset();
+      fields.forEach(function (fieldName) {
+        setFieldError(fieldName, false);
+      });
+    });
+
+    // Clear individual field errors as the user corrects them.
+    ["name", "phone", "email", "service", "message"].forEach(function (fieldName) {
+      var el = form.elements[fieldName];
+      if (!el) return;
+      el.addEventListener("input", function () {
+        if (validators[fieldName](el.value, el)) {
+          setFieldError(fieldName, false);
+        }
+      });
+    });
+    var consentEl = form.elements["consent"];
+    if (consentEl) {
+      consentEl.addEventListener("change", function () {
+        if (consentEl.checked) setFieldError("consent", false);
+      });
+    }
+  }
+})();
+
+/* Graceful fallback for hotlinked photos that fail to load (network issues, dead links) */
+(function () {
+  var PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 400 300%27%3E%3Crect width=%27400%27 height=%27300%27 fill=%27%23d8d2c5%27/%3E%3Cpath d=%27M120 190l50-60 40 45 30-35 60 70H120z%27 fill=%27%23b3ab9a%27/%3E%3Ccircle cx=%27150%27 cy=%27110%27 r=%2720%27 fill=%27%23b3ab9a%27/%3E%3C/svg%3E";
+  function applyFallback(img) {
+    if (img.dataset.fallbackApplied) return;
+    img.dataset.fallbackApplied = "true";
+    img.src = PLACEHOLDER;
+    img.style.objectFit = "cover";
+  }
+  document.querySelectorAll("img").forEach(function (img) {
+    // Image already finished loading (successfully or not) by the time this runs
+    if (img.complete) {
+      if (img.naturalWidth === 0) applyFallback(img);
+      return;
+    }
+    img.addEventListener("error", function () { applyFallback(img); }, { once: true });
+  });
+})();
+
+</script>
+
+
+
+</body>
+</html>

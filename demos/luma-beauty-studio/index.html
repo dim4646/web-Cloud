@@ -1,0 +1,2008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beauty Studio Gold Coast | Luma Beauty Studio</title>
+<meta name="description" content="Brows, lashes, facials and personalised beauty treatments in a calm Gold Coast studio.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://webcloudsolutions.com.au/demos/luma-beauty-studio/">
+<style>
+/* ==========================================================================
+   Luma Beauty Studio — stylesheet
+   Editorial luxury: cream / blush / charcoal, soft accent, generous space.
+   Hand-written CSS, mobile-first, no framework.
+   ========================================================================== */
+
+/* -------------------------------------------------------------------------
+   Design tokens
+   ------------------------------------------------------------------------- */
+:root {
+  /* Brand palette — light (default) */
+  --color-cream: #faf6f1;
+  --color-cream-soft: #f2ece3;
+  --color-blush: #e9d6ce;
+  --color-blush-deep: #d8b9ac;
+  --color-charcoal: #2b2622;
+  --color-charcoal-soft: #4a423b;
+  --color-accent: #a9765f;       /* soft terracotta accent */
+  --color-accent-deep: #8c5c47;
+  --color-line: #ded3c7;
+  --color-white: #ffffff;
+
+  --bg: var(--color-cream);
+  --bg-alt: var(--color-cream-soft);
+  --bg-panel: var(--color-white);
+  --text: var(--color-charcoal);
+  --text-soft: var(--color-charcoal-soft);
+  --text-on-accent: #fff8f4;
+  --border: var(--color-line);
+  --accent: var(--color-accent);
+  --accent-deep: var(--color-accent-deep);
+  --focus-ring: #6b4a3a;
+
+  --font-display: "Cormorant Garamond", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-body: "Jost", "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
+
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.75rem;
+  --space-lg: 3rem;
+  --space-xl: 5rem;
+  --space-2xl: 8rem;
+
+  --max-width: 1180px;
+  --radius: 2px;
+  --transition-slow: 900ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-medium: 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 220ms ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1c1815;
+    --bg-alt: #221d19;
+    --bg-panel: #26211d;
+    --text: #f3ece4;
+    --text-soft: #cdc0b3;
+    --text-on-accent: #fff8f4;
+    --border: #3a332c;
+    --accent: #cf9a7d;
+    --accent-deep: #e0b294;
+    --focus-ring: #e0b294;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #1c1815;
+  --bg-alt: #221d19;
+  --bg-panel: #26211d;
+  --text: #f3ece4;
+  --text-soft: #cdc0b3;
+  --text-on-accent: #fff8f4;
+  --border: #3a332c;
+  --accent: #cf9a7d;
+  --accent-deep: #e0b294;
+  --focus-ring: #e0b294;
+}
+
+/* -------------------------------------------------------------------------
+   Reset & base
+   ------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: 1rem;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+button { font-family: inherit; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.15;
+  margin: 0 0 var(--space-sm);
+  letter-spacing: 0.01em;
+  color: var(--text);
+}
+
+h1 { font-size: clamp(2.6rem, 6vw, 4.6rem); font-weight: 500; }
+h2 { font-size: clamp(2rem, 4vw, 3rem); }
+h3 { font-size: clamp(1.3rem, 2.4vw, 1.7rem); }
+
+p { margin: 0 0 var(--space-sm); color: var(--text-soft); }
+
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: var(--space-sm);
+}
+
+@media (min-width: 768px) {
+  .container { padding-inline: var(--space-lg); }
+}
+
+section { padding-block: var(--space-xl); }
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  margin-bottom: var(--space-xs);
+}
+
+.section-head {
+  max-width: 640px;
+  margin-bottom: var(--space-lg);
+}
+
+.section-head.center {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.lede {
+  font-size: 1.1rem;
+  color: var(--text-soft);
+}
+
+/* -------------------------------------------------------------------------
+   Skip link
+   ------------------------------------------------------------------------- */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: var(--space-sm);
+  background: var(--text);
+  color: var(--bg);
+  padding: 0.75rem 1.25rem;
+  z-index: 1000;
+  border-radius: var(--radius);
+  transition: top var(--transition-fast);
+}
+.skip-link:focus {
+  top: var(--space-sm);
+}
+
+/* -------------------------------------------------------------------------
+   Focus states
+   ------------------------------------------------------------------------- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+/* -------------------------------------------------------------------------
+   Buttons
+   ------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.95rem 2.1rem;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+  white-space: nowrap;
+}
+.btn:active { transform: translateY(1px); }
+
+.btn-primary {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+.btn-primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); color: var(--text-on-accent); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--text);
+}
+.btn-outline:hover { background: var(--text); color: var(--bg); }
+
+.btn-block { width: 100%; }
+
+/* -------------------------------------------------------------------------
+   Header / Nav
+   ------------------------------------------------------------------------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: var(--space-sm);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--text);
+}
+.brand-mark {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+.brand-word {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  letter-spacing: 0.03em;
+}
+
+.nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.nav-toggle-bars {
+  position: relative;
+  width: 18px;
+  height: 12px;
+}
+.nav-toggle-bars span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--text);
+  transition: transform var(--transition-fast), opacity var(--transition-fast), top var(--transition-fast);
+}
+.nav-toggle-bars span:nth-child(1) { top: 0; }
+.nav-toggle-bars span:nth-child(2) { top: 50%; }
+.nav-toggle-bars span:nth-child(3) { top: 100%; }
+.nav-toggle[aria-expanded="true"] .nav-toggle-bars span:nth-child(1) { top: 50%; transform: rotate(45deg); }
+.nav-toggle[aria-expanded="true"] .nav-toggle-bars span:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] .nav-toggle-bars span:nth-child(3) { top: 50%; transform: rotate(-45deg); }
+
+.nav-menu {
+  display: none;
+  flex-direction: column;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: var(--space-sm) 0 var(--space-md);
+  border-top: 1px solid var(--border);
+}
+.nav-menu.is-open { display: flex; }
+
+.nav-menu a {
+  display: block;
+  padding: 0.85rem 0.2rem;
+  text-decoration: none;
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+  color: var(--text-soft);
+  border-bottom: 1px solid var(--border);
+  transition: color var(--transition-fast);
+}
+.nav-menu a:hover,
+.nav-menu a:focus-visible { color: var(--accent-deep); }
+
+.nav-cta { display: none; }
+
+@media (min-width: 900px) {
+  .nav-toggle { display: none; }
+  .nav-menu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-md);
+    border-top: none;
+    padding: 0;
+  }
+  .nav-menu a {
+    border-bottom: none;
+    padding: 0.4rem 0.1rem;
+    position: relative;
+  }
+  .nav-menu a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 1px;
+    background: var(--accent-deep);
+    transition: width var(--transition-medium);
+  }
+  .nav-menu a:hover::after,
+  .nav-menu a:focus-visible::after { width: 100%; }
+  .nav-cta {
+    display: inline-flex;
+    margin-left: var(--space-sm);
+  }
+}
+
+/* -------------------------------------------------------------------------
+   Hero
+   ------------------------------------------------------------------------- */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: stretch;
+}
+
+.hero-media {
+  order: -1;
+  position: relative;
+  min-height: 46vh;
+  overflow: hidden;
+  background: var(--bg-alt);
+}
+.hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  min-height: 46vh;
+}
+
+.hero-copy {
+  padding: var(--space-xl) var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero-copy .eyebrow { color: var(--accent-deep); }
+
+.hero-copy h1 {
+  margin-bottom: var(--space-sm);
+}
+
+.hero-copy .lede {
+  max-width: 46ch;
+  margin-bottom: var(--space-md);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+@media (min-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr 1fr;
+    min-height: 88vh;
+  }
+  .hero-media { order: 2; min-height: 100%; }
+  .hero-media img { min-height: 100%; }
+  .hero-copy {
+    order: 1;
+    padding: var(--space-2xl) var(--space-lg);
+    max-width: 640px;
+    margin-left: auto;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   Scroll reveal
+   ------------------------------------------------------------------------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity var(--transition-slow), transform var(--transition-slow);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* -------------------------------------------------------------------------
+   Treatments
+   ------------------------------------------------------------------------- */
+.treatments-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+@media (min-width: 640px) {
+  .treatments-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .treatments-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.treatment-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-medium), box-shadow var(--transition-medium), border-color var(--transition-medium);
+}
+.treatment-card:hover,
+.treatment-card:focus-within {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 48px -32px rgba(43, 38, 34, 0.35);
+  border-color: var(--accent);
+}
+
+.treatment-media {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--bg-alt);
+}
+.treatment-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+.treatment-card:hover .treatment-media img,
+.treatment-card:focus-within .treatment-media img {
+  transform: scale(1.05);
+}
+
+.treatment-body {
+  padding: var(--space-md);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.treatment-body h3 { margin-bottom: 0.4rem; }
+.treatment-body p { flex: 1; margin-bottom: var(--space-sm); }
+.treatment-price {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--accent-deep);
+}
+.treatment-toggle {
+  margin-top: var(--space-sm);
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+.treatment-details {
+  margin-top: var(--space-xs);
+  padding-top: var(--space-xs);
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height var(--transition-medium), opacity var(--transition-medium), margin var(--transition-medium), padding var(--transition-medium);
+}
+.treatment-details[hidden] { display: block; }
+.treatment-card.is-expanded .treatment-details {
+  max-height: 220px;
+  opacity: 1;
+}
+.treatment-card:not(.is-expanded) .treatment-details {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  margin-top: 0;
+  border-top-color: transparent;
+}
+
+/* -------------------------------------------------------------------------
+   About
+   ------------------------------------------------------------------------- */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .about-grid { grid-template-columns: 1.05fr 1fr; }
+  .about-grid.reverse { grid-template-columns: 1fr 1.05fr; }
+  .about-grid.reverse .about-media { order: 2; }
+}
+
+.about-media {
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+.about-media img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.about-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--border);
+}
+.about-stat .stat-num {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  color: var(--accent-deep);
+}
+.about-stat .stat-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--text-soft);
+}
+
+/* -------------------------------------------------------------------------
+   Results
+   ------------------------------------------------------------------------- */
+.results-strip {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+@media (min-width: 768px) {
+  .results-strip { grid-template-columns: repeat(3, 1fr); }
+}
+.result-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  padding: var(--space-md);
+  border-radius: var(--radius);
+}
+.result-media {
+  overflow: hidden;
+  border-radius: var(--radius);
+  margin-bottom: var(--space-sm);
+  aspect-ratio: 3 / 4;
+}
+.result-media img { width: 100%; height: 100%; object-fit: cover; }
+.result-quote { font-style: italic; color: var(--text); margin-bottom: 0.4rem; }
+.result-name { font-size: 0.82rem; color: var(--text-soft); letter-spacing: 0.03em; }
+
+.testimonials {
+  margin-top: var(--space-xl);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+@media (min-width: 768px) {
+  .testimonials { grid-template-columns: repeat(3, 1fr); }
+}
+.testimonial {
+  padding: var(--space-md);
+  border-left: 2px solid var(--accent);
+}
+.testimonial p { color: var(--text); font-style: italic; }
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: var(--space-sm);
+}
+.testimonial-author img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.testimonial-author span { font-size: 0.85rem; color: var(--text-soft); }
+
+/* -------------------------------------------------------------------------
+   Pricing
+   ------------------------------------------------------------------------- */
+.pricing-groups {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+}
+@media (min-width: 768px) {
+  .pricing-groups { grid-template-columns: repeat(2, 1fr); }
+}
+.pricing-group h3 {
+  padding-bottom: var(--space-xs);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-sm);
+}
+.pricing-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: 0.85rem 0;
+  border-bottom: 1px dashed var(--border);
+}
+.pricing-row:last-child { border-bottom: none; }
+.pricing-row .name { color: var(--text); }
+.pricing-row .note { display: block; font-size: 0.8rem; color: var(--text-soft); }
+.pricing-row .price {
+  font-family: var(--font-display);
+  color: var(--accent-deep);
+  white-space: nowrap;
+}
+.pricing-footnote {
+  margin-top: var(--space-lg);
+  font-size: 0.85rem;
+  color: var(--text-soft);
+}
+
+/* -------------------------------------------------------------------------
+   FAQ
+   ------------------------------------------------------------------------- */
+.faq-list { border-top: 1px solid var(--border); }
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0;
+  background: none;
+  border: none;
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--text);
+  cursor: pointer;
+}
+.faq-icon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  position: relative;
+}
+.faq-icon::before,
+.faq-icon::after {
+  content: "";
+  position: absolute;
+  background: var(--text);
+  transition: transform var(--transition-fast);
+}
+.faq-icon::before { top: 50%; left: 0; width: 100%; height: 1px; }
+.faq-icon::after { left: 50%; top: 0; height: 100%; width: 1px; }
+.faq-question[aria-expanded="true"] .faq-icon::after { transform: rotate(90deg); opacity: 0; }
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height var(--transition-medium), opacity var(--transition-medium), padding var(--transition-medium);
+}
+.faq-answer p { padding-bottom: var(--space-sm); }
+.faq-item.is-open .faq-answer {
+  max-height: 320px;
+  opacity: 1;
+}
+
+/* -------------------------------------------------------------------------
+   Gallery
+   ------------------------------------------------------------------------- */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-xs);
+}
+@media (min-width: 640px) {
+  .gallery-grid { grid-template-columns: repeat(3, 1fr); gap: var(--space-sm); }
+}
+.gallery-item {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: var(--radius);
+  position: relative;
+}
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+.gallery-item:hover img,
+.gallery-item:focus-within img { transform: scale(1.08); }
+.gallery-item.tall { grid-row: span 2; }
+
+/* -------------------------------------------------------------------------
+   Booking / Contact forms
+   ------------------------------------------------------------------------- */
+.split-panel {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
+}
+@media (min-width: 900px) {
+  .split-panel { grid-template-columns: 1fr 1fr; }
+}
+
+.info-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+}
+.info-list { list-style: none; padding: 0; margin: 0; }
+.info-list li {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-soft);
+}
+.info-list li:last-child { border-bottom: none; }
+.info-list dt { font-weight: 500; color: var(--text); min-width: 6.5rem; }
+.info-list .icon { flex-shrink: 0; color: var(--accent-deep); }
+
+.form-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+}
+
+.form-field {
+  margin-bottom: var(--space-md);
+}
+.form-field label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  color: var(--text);
+}
+.form-field .required-mark { color: var(--accent-deep); }
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  padding: 0.8rem 0.9rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  transition: border-color var(--transition-fast);
+}
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: var(--accent-deep);
+}
+.form-field textarea { resize: vertical; min-height: 100px; }
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md) var(--space-sm);
+}
+@media (min-width: 560px) {
+  .form-row.two { grid-template-columns: 1fr 1fr; }
+}
+
+.field-error {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  color: #b3432f;
+}
+:root[data-theme="dark"] .field-error { color: #ff9d85; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .field-error { color: #ff9d85; }
+}
+.form-field.has-error input,
+.form-field.has-error select,
+.form-field.has-error textarea {
+  border-color: #b3432f;
+}
+
+.form-status {
+  margin-top: var(--space-sm);
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  display: none;
+}
+.form-status.is-success {
+  display: block;
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border: 1px solid var(--accent);
+  color: var(--text);
+}
+.form-status.is-error {
+  display: block;
+  background: color-mix(in srgb, #b3432f 12%, transparent);
+  border: 1px solid #b3432f;
+  color: var(--text);
+}
+
+/* -------------------------------------------------------------------------
+   Footer
+   ------------------------------------------------------------------------- */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding-block: var(--space-lg) var(--space-md);
+  background: var(--bg-alt);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+@media (min-width: 768px) {
+  .footer-grid { grid-template-columns: 1.4fr 1fr 1fr; }
+}
+.footer-brand .brand { margin-bottom: var(--space-sm); }
+.footer-brand p { max-width: 40ch; }
+
+.footer-heading {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  margin-bottom: var(--space-sm);
+}
+.footer-links { list-style: none; margin: 0; padding: 0; }
+.footer-links li { margin-bottom: 0.6rem; }
+.footer-links a { text-decoration: none; color: var(--text-soft); transition: color var(--transition-fast); }
+.footer-links a:hover, .footer-links a:focus-visible { color: var(--accent-deep); }
+
+.social-row {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: var(--space-sm);
+}
+.social-row a {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text);
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+.social-row a:hover {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+.social-row svg { width: 16px; height: 16px; }
+
+.footer-base {
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  font-size: 0.82rem;
+  color: var(--text-soft);
+}
+.footer-base a { color: var(--text-soft); text-decoration: underline; text-underline-offset: 3px; }
+.footer-base a:hover { color: var(--accent-deep); }
+
+.footer-disclaimer {
+  margin-top: var(--space-sm);
+  font-size: 0.76rem;
+  color: var(--text-soft);
+  opacity: 0.85;
+}
+
+/* -------------------------------------------------------------------------
+   404 page
+   ------------------------------------------------------------------------- */
+.not-found {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-block: var(--space-2xl);
+}
+.not-found .eyebrow { margin-bottom: var(--space-sm); }
+.not-found h1 { font-size: clamp(3rem, 10vw, 6rem); }
+
+/* -------------------------------------------------------------------------
+   Simple content pages (privacy / terms)
+   ------------------------------------------------------------------------- */
+.legal-content {
+  max-width: 760px;
+  margin-inline: auto;
+}
+.legal-content h2 { margin-top: var(--space-lg); }
+.legal-content ul { color: var(--text-soft); padding-left: 1.2rem; }
+.legal-content li { margin-bottom: 0.4rem; }
+.legal-updated {
+  color: var(--text-soft);
+  font-size: 0.85rem;
+  margin-bottom: var(--space-lg);
+}
+
+/* -------------------------------------------------------------------------
+   Utility
+   ------------------------------------------------------------------------- */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.text-center { text-align: center; }
+.mt-lg { margin-top: var(--space-lg); }
+
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Luma Beauty Studio">
+<meta property="og:title" content="Beauty Studio Gold Coast | Luma Beauty Studio">
+<meta property="og:description" content="Brows, lashes, facials and personalised beauty treatments in a calm Gold Coast studio.">
+<meta property="og:url" content="https://webcloudsolutions.com.au/demos/luma-beauty-studio/">
+<meta property="og:image" content="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=1600&q=75&fm=webp">
+<meta property="og:image:alt" content="Portrait of a woman with soft, natural skin lit by daylight, in a calm neutral studio setting.">
+<meta property="og:locale" content="en_AU">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Beauty Studio Gold Coast | Luma Beauty Studio">
+<meta name="twitter:description" content="Brows, lashes, facials and personalised beauty treatments in a calm Gold Coast studio.">
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=1600&q=75&fm=webp">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BeautySalon",
+  "name": "Luma Beauty Studio",
+  "image": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=1600&q=75&fm=webp",
+  "url": "https://webcloudsolutions.com.au/demos/luma-beauty-studio/",
+  "telephone": "+61-7-5500-0103",
+  "priceRange": "$$",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "14 Tedder Avenue",
+    "addressLocality": "Main Beach",
+    "addressRegion": "QLD",
+    "postalCode": "4217",
+    "addressCountry": "AU"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": -27.9753,
+    "longitude": 153.4296
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "09:00",
+      "closes": "17:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Saturday"],
+      "opens": "09:00",
+      "closes": "14:00"
+    }
+  ],
+  "sameAs": [
+    "https://www.instagram.com/",
+    "https://www.facebook.com/"
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Do I need to book an appointment in advance?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Luma Beauty Studio operates by appointment only so we can give every client unhurried, one-on-one time. We recommend booking at least a week ahead, and earlier for weekend slots or beauty packages."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What should I expect at my first visit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Your first visit begins with a short consultation so we can understand your skin, your goals and any sensitivities before we start. Please arrive with a clean face and without contact lenses if you are booked in for a lash or brow service."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you offer patch tests for lash and tint services?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. A patch test is required at least 24 hours before your first lash lift, tint or extension appointment. We will arrange this during your booking confirmation."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is your cancellation policy?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We ask for at least 24 hours' notice to change or cancel an appointment. Late cancellations and no-shows may incur a fee, which helps us keep availability fair for all our clients."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you offer gift vouchers?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, gift vouchers are available for any treatment or dollar value and make a lovely gift. Ask our team by phone or email and we will arrange one for you."
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="container nav-bar">
+    <a class="brand" href="#home" aria-label="Luma Beauty Studio, back to top">
+      <svg class="brand-mark" viewBox="0 0 64 64" role="img" aria-hidden="true">
+        <rect width="64" height="64" rx="14" fill="#2b2622"/>
+        <path d="M20 16 C20 34 20 40 32 40 C40 40 44 36 44 30" fill="none" stroke="#e9d6ce" stroke-width="3.4" stroke-linecap="round"/>
+        <circle cx="44" cy="30" r="3.4" fill="#a9765f"/>
+      </svg>
+      <span class="brand-word">Luma Beauty Studio</span>
+    </a>
+
+    <button class="nav-toggle" type="button" aria-label="Open menu" aria-controls="primary-nav-menu" aria-expanded="false">
+      <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+    </button>
+
+    <nav aria-label="Primary">
+      <ul class="nav-menu" id="primary-nav-menu">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#treatments">Treatments</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#results">Results</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#booking">Booking</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <a class="btn btn-primary nav-cta" href="#booking">Book a Treatment</a>
+  </div>
+<main id="main">
+
+  <!-- ============================= HOME / HERO ============================= -->
+  <section id="home" class="hero" aria-label="Introduction">
+    <div class="hero-media">
+      <img
+        src="images/hero-media.webp"
+        alt="Close portrait of a woman with soft, natural skin and a calm expression, lit by gentle daylight."
+        fetchpriority="high"
+        width="1600" height="2000">
+    </div>
+    <div class="hero-copy">
+      <span class="eyebrow">Gold Coast Beauty Studio</span>
+      <h1>Feel Like You.<br>Only Brighter.</h1>
+      <p class="lede">Personalised beauty treatments designed around natural results, comfort and confidence.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#booking">Book a Treatment</a>
+        <a class="btn btn-outline" href="#treatments">Explore Treatments</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= TREATMENTS ============================= -->
+  <section id="treatments" aria-labelledby="treatments-heading">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Our Treatments</span>
+        <h2 id="treatments-heading">Considered care, treatment by treatment</h2>
+        <p class="lede">Every service begins with a conversation. We work with your natural features rather than against them, using a light hand and premium, skin-friendly products.</p>
+      </div>
+
+      <div class="treatments-grid">
+
+        <article class="treatment-card reveal">
+          <div class="treatment-media"><img src="images/treatment-media.webp" alt="Beautician outlining a client's eyebrow shape with a brow pencil, close up" loading="lazy" width="1000" height="1250"></div>
+          <div class="treatment-body">
+            <span class="eyebrow" aria-hidden="true">01</span>
+            <h3>Brows</h3>
+            <p>Shaping, tinting and lamination that frames your face without ever looking overdone. We map each brow to your natural growth pattern first.</p>
+            <span class="treatment-price">From $65</span>
+            <button class="treatment-toggle" type="button" aria-expanded="false">What's included</button>
+            <div class="treatment-details" hidden>
+              <p>Consultation, tweeze or wax shaping, tint and an aftercare map. Lamination and henna add-ons available on request.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="treatment-card reveal">
+          <div class="treatment-media"><img src="images/treatment-media-2.webp" alt="Lash technician applying individual eyelash extensions to a client with tweezers" loading="lazy" width="1000" height="1250"></div>
+          <div class="treatment-body">
+            <span class="eyebrow" aria-hidden="true">02</span>
+            <h3>Lashes</h3>
+            <p>Lash lifts, tints and fine classic or hybrid extensions for a soft, wide-eyed finish that still looks like your own lashes.</p>
+            <span class="treatment-price">From $85</span>
+            <button class="treatment-toggle" type="button" aria-expanded="false">What's included</button>
+            <div class="treatment-details" hidden>
+              <p>Patch test required before your first visit. Includes lash health check, styling consultation and refill guidance every two to three weeks.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="treatment-card reveal">
+          <div class="treatment-media"><img src="images/treatment-media-3.webp" alt="Client relaxing during a facial treatment while a clay mask is brushed onto her skin" loading="lazy" width="1000" height="1250"></div>
+          <div class="treatment-body">
+            <span class="eyebrow" aria-hidden="true">03</span>
+            <h3>Facials</h3>
+            <p>Bespoke signature facials combining gentle exfoliation, extraction where needed, and hydration for calm, balanced skin.</p>
+            <span class="treatment-price">From $120</span>
+            <button class="treatment-toggle" type="button" aria-expanded="false">What's included</button>
+            <div class="treatment-details" hidden>
+              <p>60 minutes. Double cleanse, enzyme exfoliation, steam, extractions if required, mask and facial massage, finished with SPF.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="treatment-card reveal">
+          <div class="treatment-media"><img src="images/treatment-media-4.webp" alt="Technician using a hydrafacial-style skin device on a client's forehead" loading="lazy" width="1000" height="1250"></div>
+          <div class="treatment-body">
+            <span class="eyebrow" aria-hidden="true">04</span>
+            <h3>Skin Treatments</h3>
+            <p>Targeted treatments — LED therapy, dermaplaning and gentle peels — chosen around your skin goals and reviewed regularly.</p>
+            <span class="treatment-price">From $140</span>
+            <button class="treatment-toggle" type="button" aria-expanded="false">What's included</button>
+            <div class="treatment-details" hidden>
+              <p>Includes an in-depth skin consultation, patch test where required, and a personalised home-care plan you can follow between visits.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="treatment-card reveal">
+          <div class="treatment-media"><img src="images/treatment-media-5.webp" alt="Rolled spa towels, a lit candle and warm string lights set up for a beauty treatment" loading="lazy" width="1000" height="1250"></div>
+          <div class="treatment-body">
+            <span class="eyebrow" aria-hidden="true">05</span>
+            <h3>Beauty Packages</h3>
+            <p>Curated combinations of brow, lash and skin treatments, built for special occasions or ongoing seasonal maintenance.</p>
+            <span class="treatment-price">From $180</span>
+            <button class="treatment-toggle" type="button" aria-expanded="false">What's included</button>
+            <div class="treatment-details" hidden>
+              <p>Popular for bridal parties, milestone birthdays and seasonal refreshes. Ask our team about group and back-to-back bookings.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="treatment-card reveal">
+          <div class="treatment-body">
+            <span class="eyebrow" aria-hidden="true">—</span>
+            <h3>Not sure where to start?</h3>
+            <p>Book a complimentary 15-minute skin and beauty consultation. We'll recommend a simple plan — no pressure, no upsell.</p>
+            <a class="btn btn-outline" href="#booking">Book a Consultation</a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= ABOUT ============================= -->
+  <section id="about" aria-labelledby="about-heading">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-media reveal">
+          <img
+            src="images/about-media.webp"
+            alt="Close-up portrait of a woman's face showing natural, healthy skin texture in soft daylight."
+            loading="lazy" width="1200" height="1500">
+        </div>
+        <div class="about-copy reveal">
+          <span class="eyebrow">About the Studio</span>
+          <h2 id="about-heading">A quieter kind of beauty studio</h2>
+          <p class="lede">Luma Beauty Studio was founded on a simple idea: beauty treatments should leave you feeling more like yourself, not less.</p>
+          <p>Tucked just back from the beach at Main Beach, our studio was built as a slow, unhurried space — soft light, natural materials, and appointments that never feel rushed. We keep our client list intentionally small so every treatment gets the attention it deserves.</p>
+          <p>Our small team trains continuously in the latest brow, lash and skin techniques, but we're just as focused on the basics: listening carefully, working gently, and never pushing a treatment you don't need.</p>
+
+          <dl class="about-stats">
+            <div class="about-stat">
+              <dt class="visually-hidden">Years operating</dt>
+              <dd><span class="stat-num">8+</span><span class="stat-label">Years on the Gold&nbsp;Coast</span></dd>
+            </div>
+            <div class="about-stat">
+              <dt class="visually-hidden">Average client rating</dt>
+              <dd><span class="stat-num">4.9</span><span class="stat-label">Average client rating</span></dd>
+            </div>
+            <div class="about-stat">
+              <dt class="visually-hidden">Booking style</dt>
+              <dd><span class="stat-num">1:1</span><span class="stat-label">Personalised, unhurried care</span></dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="about-grid reverse mt-lg">
+        <div class="about-media reveal">
+          <img
+            src="images/about-media-2.webp"
+            alt="Calm, neutral-toned studio interior with a soft chair and vanity mirror in natural light."
+            loading="lazy" width="1200" height="1500">
+        </div>
+        <div class="about-copy reveal">
+          <span class="eyebrow">Inside Luma</span>
+          <h3>A studio built for stillness</h3>
+          <p>Every detail of our space — the linen, the light, the quiet — is designed to help you exhale the moment you sit down. No harsh overhead lighting, no rushed changeovers, just one client and one treatment at a time.</p>
+          <p>We use clean, considered product lines and sanitise thoroughly between every single appointment, so you can relax completely.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= RESULTS ============================= -->
+  <section id="results" aria-labelledby="results-heading">
+    <div class="container">
+      <div class="section-head center reveal">
+        <span class="eyebrow">Results</span>
+        <h2 id="results-heading">Natural results our clients notice</h2>
+        <p class="lede">We measure success in how you feel walking out the door — brighter, calmer and unmistakably yourself.</p>
+      </div>
+
+      <div class="results-strip">
+        <article class="result-card reveal">
+          <div class="result-media">
+            <img
+              src="images/result-media.webp"
+              alt="Portrait of a woman with softly shaped, natural-looking eyebrows and clear skin." loading="lazy" width="800" height="1000">
+          </div>
+          <p class="result-quote">"My brows finally look like mine, just tidier. No harsh lines, no over-plucking."</p>
+          <p class="result-name">Brow shape &amp; tint client</p>
+        </article>
+
+        <article class="result-card reveal">
+          <div class="result-media">
+            <img
+              src="images/result-media-2.webp"
+              alt="Calming still-life of a candle and smooth stones, evoking the studio's quiet, unhurried atmosphere." loading="lazy" width="800" height="1000">
+          </div>
+          <p class="result-quote">"I've never left a facial feeling this relaxed. My skin was calm again within a day."</p>
+          <p class="result-name">Signature facial client</p>
+        </article>
+
+        <article class="result-card reveal">
+          <div class="result-media">
+            <img
+              src="images/result-media-3.webp"
+              alt="Close portrait of a woman with clear, hydrated skin after a skin treatment." loading="lazy" width="800" height="1000">
+          </div>
+          <p class="result-quote">"The LED and peel combination genuinely changed my skin's texture within a few sessions."</p>
+          <p class="result-name">Skin treatment client</p>
+        </article>
+      </div>
+
+      <div class="testimonials">
+        <blockquote class="testimonial reveal">
+          <p>"It's the calmest hour of my week. No pressure to add extras — just genuinely good, careful work."</p>
+          <footer class="testimonial-author">
+            <span aria-hidden="true">— Isla</span>
+            <span>Isla, Broadbeach</span>
+          </footer>
+        </blockquote>
+        <blockquote class="testimonial reveal">
+          <p>"Booked in for a lash lift before a wedding and it was the best decision — soft, natural, no falsies needed."</p>
+          <footer class="testimonial-author">
+            <span aria-hidden="true">— Mackenzie</span>
+            <span>Mackenzie, Burleigh Heads</span>
+          </footer>
+        </blockquote>
+        <blockquote class="testimonial reveal">
+          <p>"Finally found a studio that listens before recommending anything. My skin has never been better."</p>
+          <footer class="testimonial-author">
+            <span aria-hidden="true">— Priya</span>
+            <span>Priya, Southport</span>
+          </footer>
+        </blockquote>
+      </div>
+
+      <div class="mt-lg reveal">
+        <h3 class="text-center" style="margin-bottom: var(--space-md);">From the studio</h3>
+        <div class="gallery-grid" role="list" aria-label="Studio and treatment gallery">
+          <div class="gallery-item tall" role="listitem">
+            <img
+              src="images/gallery-item.webp"
+              alt="Editorial portrait of a woman with soft, glowing skin against a neutral backdrop." loading="lazy" width="800" height="1000">
+          </div>
+          <div class="gallery-item" role="listitem">
+            <img
+              src="images/gallery-item-2.webp"
+              alt="Flatlay of neutral-toned beauty and skincare products on a light surface." loading="lazy" width="800" height="800">
+          </div>
+          <div class="gallery-item" role="listitem">
+            <img
+              src="images/gallery-item-3.webp"
+              alt="Spa-style still life of skincare products arranged on a natural wood surface." loading="lazy" width="800" height="800">
+          </div>
+          <div class="gallery-item" role="listitem">
+            <img
+              src="images/gallery-item-4.webp"
+              alt="Close view of hands during a gentle skincare application, evoking a facial treatment." loading="lazy" width="800" height="800">
+          </div>
+          <div class="gallery-item" role="listitem">
+            <img
+              src="images/gallery-item-5.webp"
+              alt="Portrait detail of natural, healthy skin texture in soft daylight." loading="lazy" width="800" height="800">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= PRICING ============================= -->
+  <section id="pricing" aria-labelledby="pricing-heading">
+    <div class="container">
+      <div class="section-head center reveal">
+        <span class="eyebrow">Pricing</span>
+        <h2 id="pricing-heading">Simple, transparent pricing</h2>
+        <p class="lede">Guide prices below — your consultation will confirm the exact treatment and cost for your skin and goals.</p>
+      </div>
+
+      <div class="pricing-groups reveal">
+        <div class="pricing-group">
+          <h3>Brows &amp; Lashes</h3>
+          <div class="pricing-row">
+            <span class="name">Brow shape &amp; tint<span class="note">Tweeze or wax, includes tint</span></span>
+            <span class="price">$65</span>
+          </div>
+          <div class="pricing-row">
+            <span class="name">Brow lamination<span class="note">Includes shape &amp; tint</span></span>
+            <span class="price">$95</span>
+          </div>
+          <div class="pricing-row">
+            <span class="name">Lash lift &amp; tint</span>
+            <span class="price">$85</span>
+          </div>
+          <div class="pricing-row">
+            <span class="name">Classic lash extensions<span class="note">Full set</span></span>
+            <span class="price">$150</span>
+          </div>
+          <div class="pricing-row">
+            <span class="name">Hybrid lash extensions<span class="note">Full set</span></span>
+            <span class="price">$175</span>
+          </div>
+          <div class="pricing-row">
+            <span class="name">Lash refill<span class="note">Within 3 weeks</span></span>
+            <span class="price">$65</span>
+          </div>
+        </div>
+
+        <div class="pricing-group">
+          <h3>Facials &amp; Skin</h3>
+          <div class="pricing-row">
+            <span class="name">Signature facial<span class="note">60 minutes</span></span>
+            <span class="price">$120</span>
+          </div>
+          <div class="pricing-row">
+            <span class="name">Express glow facial<span class="note">30 minutes</span></span>
+            <span class="price">$75</span>
+          </div>
+          <div class="pricing-row">
+            <span class="name">Dermaplaning</span>
+            <span class="price">$110</span>
+          </div>
+          <div class="pricing-row">
+            <span class="name">LED light therapy add-on</span>
+            <span class="price">$35</span>
+          </div>
+          <div class="pricing-row">
+            <span class="name">Gentle enzyme peel</span>
+            <span class="price">$140</span>
+          </div>
+          <div class="pricing-row">
+            <span class="name">Beauty package<span class="note">Brow, lash &amp; mini facial</span></span>
+            <span class="price">$180</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="pricing-footnote reveal">Prices shown are indicative for this demo studio and may vary based on treatment length and product selection. Ask about seasonal offers when you book.</p>
+    </div>
+  </section>
+
+  <!-- ============================= FAQ ============================= -->
+  <section id="faq" aria-labelledby="faq-heading">
+    <div class="container">
+      <div class="section-head center reveal">
+        <span class="eyebrow">Good to Know</span>
+        <h2 id="faq-heading">Frequently asked questions</h2>
+      </div>
+
+      <div class="faq-list reveal">
+        <div class="faq-item">
+          <h3>
+            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-1">
+              <span>Do I need to book an appointment in advance?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="faq-answer" id="faq-answer-1">
+            <p>Yes. Luma Beauty Studio operates by appointment only so we can give every client unhurried, one-on-one time. We recommend booking at least a week ahead, and earlier for weekend slots or beauty packages.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <h3>
+            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-2">
+              <span>What should I expect at my first visit?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="faq-answer" id="faq-answer-2">
+            <p>Your first visit begins with a short consultation so we can understand your skin, your goals and any sensitivities before we start. Please arrive with a clean face and without contact lenses if you are booked in for a lash or brow service.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <h3>
+            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-3">
+              <span>Do you offer patch tests for lash and tint services?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="faq-answer" id="faq-answer-3">
+            <p>Yes. A patch test is required at least 24 hours before your first lash lift, tint or extension appointment. We will arrange this during your booking confirmation.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <h3>
+            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-4">
+              <span>What is your cancellation policy?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="faq-answer" id="faq-answer-4">
+            <p>We ask for at least 24 hours' notice to change or cancel an appointment. Late cancellations and no-shows may incur a fee, which helps us keep availability fair for all our clients.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <h3>
+            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-5">
+              <span>Do you offer gift vouchers?</span>
+              <span class="faq-icon" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="faq-answer" id="faq-answer-5">
+            <p>Yes, gift vouchers are available for any treatment or dollar value and make a lovely gift. Ask our team by phone or email and we will arrange one for you.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= BOOKING ============================= -->
+  <section id="booking" aria-labelledby="booking-heading">
+    <div class="container">
+      <div class="split-panel">
+        <div class="reveal">
+          <span class="eyebrow">Booking</span>
+          <h2 id="booking-heading">Request a booking</h2>
+          <p class="lede">Tell us a little about what you're after and preferred times, and our studio team will confirm your appointment by phone or email.</p>
+          <p>Prefer to book by phone? Call us on <a href="tel:+61755000103">(07) 5500 0103</a> during studio hours.</p>
+
+          <div class="info-card mt-lg">
+            <h3>Studio hours</h3>
+            <dl class="info-list">
+              <li><dt>Tue – Fri</dt><dd>9:00am – 5:00pm</dd></li>
+              <li><dt>Saturday</dt><dd>9:00am – 2:00pm</dd></li>
+              <li><dt>Sun &amp; Mon</dt><dd>Closed</dd></li>
+            </dl>
+          </div>
+        </div>
+
+        <div class="form-card reveal">
+          <form id="booking-form" novalidate>
+            <div class="form-row two">
+              <div class="form-field">
+                <label for="booking-name">Full name <span class="required-mark" aria-hidden="true">*</span></label>
+                <input type="text" id="booking-name" name="name" required autocomplete="name" data-error-required="Please enter your full name.">
+                <span class="field-error" role="alert" hidden></span>
+              </div>
+              <div class="form-field">
+                <label for="booking-email">Email <span class="required-mark" aria-hidden="true">*</span></label>
+                <input type="email" id="booking-email" name="email" required autocomplete="email" data-error-required="Please enter your email address.">
+                <span class="field-error" role="alert" hidden></span>
+              </div>
+            </div>
+
+            <div class="form-row two">
+              <div class="form-field">
+                <label for="booking-phone">Phone <span class="required-mark" aria-hidden="true">*</span></label>
+                <input type="tel" id="booking-phone" name="phone" required autocomplete="tel" data-error-required="Please enter your phone number.">
+                <span class="field-error" role="alert" hidden></span>
+              </div>
+              <div class="form-field">
+                <label for="booking-treatment">Treatment <span class="required-mark" aria-hidden="true">*</span></label>
+                <select id="booking-treatment" name="treatment" required data-error-required="Please choose a treatment.">
+                  <option value="">Choose a treatment</option>
+                  <option value="brows">Brows</option>
+                  <option value="lashes">Lashes</option>
+                  <option value="facials">Facials</option>
+                  <option value="skin">Skin Treatments</option>
+                  <option value="package">Beauty Package</option>
+                  <option value="not-sure">Not sure yet</option>
+                </select>
+                <span class="field-error" role="alert" hidden></span>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="booking-date">Preferred date &amp; time</label>
+              <input type="text" id="booking-date" name="preferred_time" placeholder="e.g. Wednesday afternoon, next week" autocomplete="off">
+              <span class="field-error" role="alert" hidden></span>
+            </div>
+
+            <div class="form-field">
+              <label for="booking-notes">Anything we should know?</label>
+              <textarea id="booking-notes" name="notes" rows="3" placeholder="Skin sensitivities, past treatments, occasion..."></textarea>
+              <span class="field-error" role="alert" hidden></span>
+            </div>
+
+            <button class="btn btn-primary btn-block" type="submit">Request Booking</button>
+            <p style="font-size:0.78rem;color:var(--text-soft);margin-top:0.6rem;">This is a demo form. No booking is actually submitted or stored.</p>
+            <div id="booking-form-status" class="form-status" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= CONTACT ============================= -->
+  <section id="contact" aria-labelledby="contact-heading">
+    <div class="container">
+      <div class="split-panel">
+        <div class="info-card reveal">
+          <span class="eyebrow">Contact</span>
+          <h2 id="contact-heading">Visit or reach the studio</h2>
+          <dl class="info-list">
+            <li>
+              <dt>Address</dt>
+              <dd>14 Tedder Avenue, Main Beach QLD 4217, Australia</dd>
+            </li>
+            <li>
+              <dt>Phone</dt>
+              <dd><a href="tel:+61755000103">(07) 5500 0103</a></dd>
+            </li>
+            <li>
+              <dt>Email</dt>
+              <dd><a href="mailto:studio@lumabeauty.example">studio@lumabeauty.example</a></dd>
+            </li>
+            <li>
+              <dt>Hours</dt>
+              <dd>Tue–Fri 9am–5pm, Sat 9am–2pm</dd>
+            </li>
+          </dl>
+
+          <div class="social-row" aria-label="Luma Beauty Studio on social media">
+            <a href="#" aria-label="Luma Beauty Studio on Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+            </a>
+            <a href="#" aria-label="Luma Beauty Studio on Facebook">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 8h-2a2 2 0 0 0-2 2v10M8 13h5"/><circle cx="12" cy="12" r="9"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="form-card reveal">
+          <h3>Send a message</h3>
+          <form id="contact-form" novalidate>
+            <div class="form-field">
+              <label for="contact-name">Full name <span class="required-mark" aria-hidden="true">*</span></label>
+              <input type="text" id="contact-name" name="name" required autocomplete="name" data-error-required="Please enter your full name.">
+              <span class="field-error" role="alert" hidden></span>
+            </div>
+
+            <div class="form-field">
+              <label for="contact-email">Email <span class="required-mark" aria-hidden="true">*</span></label>
+              <input type="email" id="contact-email" name="email" required autocomplete="email" data-error-required="Please enter your email address.">
+              <span class="field-error" role="alert" hidden></span>
+            </div>
+
+            <div class="form-field">
+              <label for="contact-message">Message <span class="required-mark" aria-hidden="true">*</span></label>
+              <textarea id="contact-message" name="message" rows="4" required data-error-required="Please enter a short message."></textarea>
+              <span class="field-error" role="alert" hidden></span>
+            </div>
+
+            <button class="btn btn-primary btn-block" type="submit">Send Message</button>
+            <p style="font-size:0.78rem;color:var(--text-soft);margin-top:0.6rem;">This is a demo form. No message is actually sent or stored.</p>
+            <div id="contact-form-status" class="form-status" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="#home" aria-label="Luma Beauty Studio, back to top">
+          <svg class="brand-mark" viewBox="0 0 64 64" role="img" aria-hidden="true">
+            <rect width="64" height="64" rx="14" fill="#2b2622"/>
+            <path d="M20 16 C20 34 20 40 32 40 C40 40 44 36 44 30" fill="none" stroke="#e9d6ce" stroke-width="3.4" stroke-linecap="round"/>
+            <circle cx="44" cy="30" r="3.4" fill="#a9765f"/>
+          </svg>
+          <span class="brand-word">Luma Beauty Studio</span>
+        </a>
+        <p>A calm, editorial beauty studio on the Gold Coast — brows, lashes, facials and skin treatments designed for natural results.</p>
+        <div class="social-row" aria-label="Luma Beauty Studio on social media">
+          <a href="#" aria-label="Luma Beauty Studio on Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+          </a>
+          <a href="#" aria-label="Luma Beauty Studio on Facebook">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 8h-2a2 2 0 0 0-2 2v10M8 13h5"/><circle cx="12" cy="12" r="9"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-nav">
+        <h3 class="footer-heading">Studio</h3>
+        <ul class="footer-links">
+          <li><a href="#treatments">Treatments</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#results">Results</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#booking">Booking</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-legal">
+        <h3 class="footer-heading">Information</h3>
+        <ul class="footer-links">
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="#" onclick="return false;" aria-disabled="true" title="Preview only">Privacy Policy</a></li>
+          <li><a href="#" onclick="return false;" aria-disabled="true" title="Preview only">Terms of Use</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-base">
+      <span>&copy; <span id="current-year">2026</span> Luma Beauty Studio. All rights reserved.</span>
+      <span>Main Beach, Gold Coast QLD, Australia</span>
+    </div>
+    <p class="footer-disclaimer">Demo website by Web &amp; Cloud Solutions — for portfolio illustration only, not a real business.</p>
+  </div>
+</footer>
+
+<script>
+/* ==========================================================================
+   Luma Beauty Studio — vanilla JS
+   Mobile nav toggle, scroll-reveal, treatment card interactions,
+   FAQ accordion, form validation with accessible success/error state.
+   No build step, no dependencies, no network calls.
+   ========================================================================== */
+(function () {
+  "use strict";
+
+  /* -----------------------------------------------------------------------
+     Mobile navigation toggle
+     ----------------------------------------------------------------------- */
+  function initNav() {
+    var toggle = document.querySelector(".nav-toggle");
+    var menu = document.getElementById("primary-nav-menu");
+    if (!toggle || !menu) return;
+
+    toggle.addEventListener("click", function () {
+      var isOpen = menu.classList.toggle("is-open");
+      toggle.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    menu.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        if (window.matchMedia("(max-width: 899px)").matches) {
+          menu.classList.remove("is-open");
+          toggle.setAttribute("aria-expanded", "false");
+        }
+      });
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && menu.classList.contains("is-open")) {
+        menu.classList.remove("is-open");
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.focus();
+      }
+    });
+  }
+
+  /* -----------------------------------------------------------------------
+     Soft scroll-reveal for elements marked .reveal
+     ----------------------------------------------------------------------- */
+  function initReveal() {
+    var items = document.querySelectorAll(".reveal");
+    if (!items.length) return;
+
+    if (!("IntersectionObserver" in window)) {
+      items.forEach(function (el) { el.classList.add("is-visible"); });
+      return;
+    }
+
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -60px 0px" }
+    );
+
+    items.forEach(function (el) { observer.observe(el); });
+  }
+
+  /* -----------------------------------------------------------------------
+     Treatment card "read more" interaction
+     ----------------------------------------------------------------------- */
+  function initTreatmentCards() {
+    var toggles = document.querySelectorAll(".treatment-toggle");
+    toggles.forEach(function (btn) {
+      var card = btn.closest(".treatment-card");
+      var details = card ? card.querySelector(".treatment-details") : null;
+      if (!card || !details) return;
+
+      btn.addEventListener("click", function () {
+        var expanded = card.classList.toggle("is-expanded");
+        btn.setAttribute("aria-expanded", String(expanded));
+        btn.textContent = expanded ? "Show less" : "What's included";
+        if (expanded) {
+          details.removeAttribute("hidden");
+        } else {
+          window.setTimeout(function () {
+            if (!card.classList.contains("is-expanded")) {
+              details.setAttribute("hidden", "");
+            }
+          }, 500);
+        }
+      });
+    });
+  }
+
+  /* -----------------------------------------------------------------------
+     FAQ accordion
+     ----------------------------------------------------------------------- */
+  function initFaq() {
+    var items = document.querySelectorAll(".faq-item");
+    items.forEach(function (item) {
+      var question = item.querySelector(".faq-question");
+      var answer = item.querySelector(".faq-answer");
+      if (!question || !answer) return;
+
+      question.addEventListener("click", function () {
+        var isOpen = item.classList.contains("is-open");
+
+        items.forEach(function (other) {
+          if (other !== item) {
+            other.classList.remove("is-open");
+            var otherQ = other.querySelector(".faq-question");
+            if (otherQ) otherQ.setAttribute("aria-expanded", "false");
+          }
+        });
+
+        item.classList.toggle("is-open", !isOpen);
+        question.setAttribute("aria-expanded", String(!isOpen));
+      });
+    });
+  }
+
+  /* -----------------------------------------------------------------------
+     Form validation helpers
+     ----------------------------------------------------------------------- */
+  var EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function setFieldError(field, message) {
+    var wrapper = field.closest(".form-field");
+    if (!wrapper) return;
+    var errorEl = wrapper.querySelector(".field-error");
+    if (message) {
+      wrapper.classList.add("has-error");
+      field.setAttribute("aria-invalid", "true");
+      if (errorEl) {
+        errorEl.textContent = message;
+        errorEl.hidden = false;
+      }
+    } else {
+      wrapper.classList.remove("has-error");
+      field.removeAttribute("aria-invalid");
+      if (errorEl) {
+        errorEl.textContent = "";
+        errorEl.hidden = true;
+      }
+    }
+  }
+
+  function validateField(field) {
+    var value = (field.value || "").trim();
+    var isRequired = field.hasAttribute("required");
+
+    if (isRequired && !value) {
+      setFieldError(field, field.dataset.errorRequired || "This field is required.");
+      return false;
+    }
+
+    if (field.type === "email" && value && !EMAIL_PATTERN.test(value)) {
+      setFieldError(field, "Please enter a valid email address.");
+      return false;
+    }
+
+    if (field.type === "tel" && value && value.replace(/[^0-9]/g, "").length < 8) {
+      setFieldError(field, "Please enter a valid phone number.");
+      return false;
+    }
+
+    if (field.tagName === "SELECT" && isRequired && !value) {
+      setFieldError(field, "Please choose an option.");
+      return false;
+    }
+
+    setFieldError(field, "");
+    return true;
+  }
+
+  function initForm(formId, statusId, successMessage) {
+    var form = document.getElementById(formId);
+    var status = document.getElementById(statusId);
+    if (!form || !status) return;
+
+    var fields = form.querySelectorAll("input, select, textarea");
+
+    fields.forEach(function (field) {
+      field.addEventListener("blur", function () { validateField(field); });
+      field.addEventListener("input", function () {
+        if (field.closest(".form-field").classList.contains("has-error")) {
+          validateField(field);
+        }
+      });
+    });
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      var isValid = true;
+      fields.forEach(function (field) {
+        if (!validateField(field)) isValid = false;
+      });
+
+      status.classList.remove("is-success", "is-error");
+
+      if (!isValid) {
+        status.textContent = "Please fix the highlighted fields and try again.";
+        status.classList.add("is-error");
+        var firstError = form.querySelector(".has-error input, .has-error select, .has-error textarea");
+        if (firstError) firstError.focus();
+        return;
+      }
+
+      /* No backend exists for this demo — simulate a successful submission. */
+      status.textContent = successMessage;
+      status.classList.add("is-success");
+      form.reset();
+      fields.forEach(function (field) { setFieldError(field, ""); });
+    });
+  }
+
+  /* -----------------------------------------------------------------------
+     Footer year
+     ----------------------------------------------------------------------- */
+  function initYear() {
+    var el = document.getElementById("current-year");
+    if (el) el.textContent = String(new Date().getFullYear());
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    initNav();
+    initReveal();
+    initTreatmentCards();
+    initFaq();
+    initForm("booking-form", "booking-form-status", "Thank you — your booking request has been received. Our studio team will confirm your appointment by phone or email within one business day.");
+    initForm("contact-form", "contact-form-status", "Thank you for reaching out. We will reply within one business day.");
+    initYear();
+  });
+})();
+
+/* Graceful fallback for hotlinked photos that fail to load (network issues, dead links) */
+(function () {
+  var PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 400 300%27%3E%3Crect width=%27400%27 height=%27300%27 fill=%27%23d8d2c5%27/%3E%3Cpath d=%27M120 190l50-60 40 45 30-35 60 70H120z%27 fill=%27%23b3ab9a%27/%3E%3Ccircle cx=%27150%27 cy=%27110%27 r=%2720%27 fill=%27%23b3ab9a%27/%3E%3C/svg%3E";
+  function applyFallback(img) {
+    if (img.dataset.fallbackApplied) return;
+    img.dataset.fallbackApplied = "true";
+    img.src = PLACEHOLDER;
+    img.style.objectFit = "cover";
+  }
+  document.querySelectorAll("img").forEach(function (img) {
+    // Image already finished loading (successfully or not) by the time this runs
+    if (img.complete) {
+      if (img.naturalWidth === 0) applyFallback(img);
+      return;
+    }
+    img.addEventListener("error", function () { applyFallback(img); }, { once: true });
+  });
+})();
+
+</script>
+
+
+
+
+</body>
+</html>
