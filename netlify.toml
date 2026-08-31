@@ -28,6 +28,21 @@
   to = "/thank-you.html"
   status = 200
 
+[[redirects]]
+  from = "/website-design-gold-coast"
+  to = "/website-design-gold-coast.html"
+  status = 200
+
+[[redirects]]
+  from = "/website-hosting-gold-coast"
+  to = "/website-hosting-gold-coast.html"
+  status = 200
+
+[[redirects]]
+  from = "/private-cloud-gold-coast"
+  to = "/private-cloud-gold-coast.html"
+  status = 200
+
 [[headers]]
   for = "/*"
   [headers.values]
