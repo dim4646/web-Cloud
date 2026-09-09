@@ -196,8 +196,10 @@
     display:flex;gap:10px;align-items:flex-start;
   }
   .plan li:first-child{border-top:none;}
+  .plan .btn{margin-top:auto;}
   .plan li::before{content:"✓";color:var(--accent-dim);font-weight:700;flex:none;}
   .plan-note{font-size:.76rem;color:var(--muted);text-align:center;margin-top:10px;}
+  .form-note{font-size:.76rem;color:var(--muted);text-align:center;margin-top:10px;}
   .plan-footnote{font-size:.72rem;color:var(--muted);margin-top:10px;line-height:1.4;}
 
   /* PORTFOLIO */
