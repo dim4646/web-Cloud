@@ -362,6 +362,7 @@
   .prose ul{color:var(--muted);max-width:70ch;margin:0 0 18px 20px;}
   .prose ul li{margin-bottom:9px;}
   .prose strong{color:var(--ink);}
+  .faq-list{max-width:860px;margin:0 auto;}
   .faq-item{border-top:1px solid var(--line);padding:20px 0;}
   .faq-item h3{margin:0 0 8px;font-size:1.05rem;}
   .faq-item p{margin:0;}
